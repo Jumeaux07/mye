@@ -1,19 +1,42 @@
-name: mye
-description: "A new Flutter project."
-publish_to: 'none'
-version: 0.1.0
+name: nom_du_projet
+description: Une nouvelle application Flutter.
+publish_to: "none" # Remplacez par 'none' si vous ne souhaitez pas publier ce package.
+
+version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: ">=3.22.2"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  get: ^4.6.6
+  pinput: ^5.0.0
+  # smart_auth: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/LOGO-MYE-Ligth.png"
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Light.ttf
+          weight: 100
+        - asset: fonts/Poppins-Medium.ttf
+        - asset: fonts/Poppins-SemiBold.ttf
+          weight: 500

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'screens/introdutions/main_intro.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,10 +12,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return GetMaterialApp(
+      theme:
+          ThemeData(fontFamily: "Poppins", colorSchemeSeed: Color(0xFFCBA948)),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: MainIntro(),
         ),
       ),
     );
