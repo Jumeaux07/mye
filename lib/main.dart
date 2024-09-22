@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
-import 'screens/introdutions/main_intro.dart';
+import 'app/modules/otp/controllers/otp_controller.dart';
+import 'app/routes/app_pages.dart';
 
 void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme:
           ThemeData(fontFamily: "Poppins", colorSchemeSeed: Color(0xFFCBA948)),
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: MainIntro(),
-        ),
-      ),
-    );
-  }
+      title: "Mye",
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
+      initialBinding: BindingsBuilder(() {
+        Get.put(OtpController());
+      }),
+    ),
+  );
 }

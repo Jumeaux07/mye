@@ -13,7 +13,9 @@ dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   get: ^4.6.6
+  get_storage: ^2.1.1
   pinput: ^5.0.0
+  unicons: ^3.0.0
   # smart_auth: ^2.0.0
 
 dev_dependencies:
