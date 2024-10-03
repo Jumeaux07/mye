@@ -8,6 +8,9 @@ abstract class Routes {
   static const REGISTER = _Paths.REGISTER;
   static const OTP = _Paths.OTP;
   static const PROFILEREGISTER = _Paths.PROFILEREGISTER;
+  static const LOGIN = _Paths.LOGIN;
+  static const SPLASHSCREEN = _Paths.SPLASHSCREEN;
+  static const INTERRESTPROFIL = _Paths.INTERRESTPROFIL;
 }
 
 abstract class _Paths {
@@ -17,4 +20,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const OTP = '/otp';
   static const PROFILEREGISTER = '/profileregister';
+  static const LOGIN = '/login';
+  static const SPLASHSCREEN = '/splashscreen';
+  static const INTERRESTPROFIL = '/interrestprofil';
 }

@@ -10,9 +10,11 @@ class CustomAlertDialog extends StatelessWidget {
       this.success = false,
       required this.onPressed,
       this.icon = Icons.check,
-      required this.showAlertIcon});
+      required this.showAlertIcon,
+      this.btnLabel});
 
   final String message;
+  final String? btnLabel;
   final bool success;
   final IconData icon;
   final void Function()? onPressed;
@@ -60,7 +62,7 @@ class CustomAlertDialog extends StatelessWidget {
               CustomButton(
                   onPressed: onPressed,
                   enabled: true,
-                  label: success ? "Ok" : "Réessayer"),
+                  label: success ? "Ok" : btnLabel ?? "Réessayer"),
             ],
           ),
         ),

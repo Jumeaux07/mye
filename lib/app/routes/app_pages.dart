@@ -1,22 +1,28 @@
 import 'package:get/get.dart';
 
+import '../modules/Login/bindings/login_binding.dart';
+import '../modules/Login/views/login_view.dart';
 import '../modules/MainIntro/bindings/main_intro_binding.dart';
 import '../modules/MainIntro/views/main_intro_view.dart';
 import '../modules/Profileregister/bindings/profileregister_binding.dart';
 import '../modules/Profileregister/views/profileregister_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
+import '../modules/interrestprofil/views/interrestprofil_view.dart';
 import '../modules/otp/bindings/otp_binding.dart';
 import '../modules/otp/views/otp_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/splashscreen/bindings/splashscreen_binding.dart';
+import '../modules/splashscreen/views/splashscreen_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.MAIN_INTRO;
+  static const INITIAL = Routes.SPLASHSCREEN;
 
   static final routes = [
     GetPage(
@@ -43,6 +49,21 @@ class AppPages {
       name: _Paths.PROFILEREGISTER,
       page: () => const ProfileregisterView(),
       binding: ProfileregisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASHSCREEN,
+      page: () => const SplashscreenView(),
+      binding: SplashscreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.INTERRESTPROFIL,
+      page: () => const InterrestprofilView(),
+      binding: InterrestprofilBinding(),
     ),
   ];
 }

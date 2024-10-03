@@ -5,6 +5,9 @@ import 'package:pinput/pinput.dart';
 const baseUrl = "https://mye.franckprod.com/api";
 const registerUrl = "/user/register/step1";
 const verifyOtpCodeUrl = "/user/otp_verify";
+const loginUrl = "/login";
+
+const getSecteurUrl = "/get-all-secteurs";
 
 const focusedBorderColor = Color(0xFFCBA948);
 const fillColor = Color.fromRGBO(243, 246, 249, 0);
@@ -23,3 +26,5 @@ final defaultPinTheme = PinTheme(
     border: Border.all(color: borderColor),
   ),
 );
+
+const mapsToken = "pk.22cea6c61d7cd26bad1424434572ed85";

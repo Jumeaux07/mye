@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
+import '../controllers/interrestprofil_controller.dart';
 
-class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+class InterrestprofilView extends GetView<InterrestprofilController> {
+  const InterrestprofilView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeView'),
+        title: const Text('InterrestprofilView'),
         centerTitle: true,
       ),
       body: const Center(
         child: Text(
-          'Home page',
+          'InterrestprofilView is working',
           style: TextStyle(fontSize: 20),
         ),
       ),

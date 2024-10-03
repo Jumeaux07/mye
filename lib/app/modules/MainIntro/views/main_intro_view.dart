@@ -1,99 +1,103 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
+import 'package:nom_du_projet/app/data/constant.dart';
+import 'package:nom_du_projet/app/modules/Login/views/login_view.dart';
+import 'package:nom_du_projet/app/modules/register/views/register_view.dart';
 import '../../../widgets/bouttongoogle.dart';
 import '../../../widgets/goldbuttonlight.dart';
 import '../controllers/main_intro_controller.dart';
 
 class MainIntroView extends GetView<MainIntroController> {
   const MainIntroView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              // Logo
-              Image.asset(
-                "assets/images/LOGO-MYE-Ligth.png",
-                width: Get.width * 0.45,
-              ),
-              // Image View Introduction
-              Container(
-                height: Get.height * 0.30,
-                child: PageView.builder(
-                    onPageChanged: (int page) {
-                      controller.pageactivePage.value = page;
-                    },
-                    controller: controller.pageController.value,
-                    itemCount: controller.intropages.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return controller
-                          .intropages[index % controller.intropages.length];
-                    }),
-              ),
-              // Boutton activate
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Centrer les indicateurs
-                children: List<Widget>.generate(controller.intropages.length,
-                    (index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: InkWell(
-                      onTap: () {
-                        controller.pageController.value.animateToPage(index,
-                            duration: Duration(seconds: 3),
-                            curve: Curves.linear);
-                      },
-                      child: CircleAvatar(
-                        radius: 5, // Ajuster la taille de l'indicateur
-                        backgroundColor: index ==
-                                controller.pageactivePage.value
-                            ? Color(0xFFCBA948)
-                            : Colors
-                                .grey, // Modifier la couleur pour plus de clarté
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              // Button connexion
-              Column(
+    return Obx(() => Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  GoldButtonLight(
-                    isLoading: false,
-                    label: 'Connexion',
-                    onTap: () => Get.to(() => null),
+                  // Logo
+                  Image.asset(
+                    "assets/images/LOGO-MYE-Ligth.png",
+                    width: Get.width * 0.45,
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GoldButtonGoogle(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  InkWell(
-                    onTap: () => Get.toNamed('register'),
-                    child: Text(
-                      "S'inscrire",
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black),
+                  // PageView Introduction
+                  Container(
+                    height: Get.height * 0.30,
+                    child: PageView.builder(
+                      onPageChanged: (int page) {
+                        controller.pageactivePage.value = page;
+                      },
+                      controller: controller
+                          .pageController.value, // Utilisation du contrôleur
+                      itemCount: controller.getIntroPage().length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return controller.getIntroPage()[index];
+                      },
                     ),
                   ),
+                  // Indicateurs de pagination
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List<Widget>.generate(
+                        controller.getIntroPage().length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: InkWell(
+                          onTap: () {
+                            controller.pageController.value.animateToPage(index,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.linear);
+                          },
+                          child: CircleAvatar(
+                            radius: 5,
+                            backgroundColor:
+                                index == controller.pageactivePage.value
+                                    ? Color(0xFFCBA948)
+                                    : Colors.grey,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                  // Boutons de connexion
+                  Column(
+                    children: [
+                      GoldButtonLight(
+                          isLoading: false,
+                          label: 'Connexion',
+                          onTap: () {
+                            box.write("is_first", false);
+                            Get.to(() => LoginView());
+                          }),
+                      SizedBox(height: 15),
+                      GoldButtonGoogle(),
+                      SizedBox(height: 15),
+                      InkWell(
+                        onTap: () {
+                          box.write("is_first", false);
+                          Get.to(() => RegisterView());
+                        },
+                        child: Text(
+                          "S'inscrire",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

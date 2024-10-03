@@ -3,7 +3,9 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/routes/app_pages.dart';
 
+import '../../../data/constant.dart';
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
 import '../../../widgets/customEmailTextField.dart';
@@ -15,6 +17,7 @@ class RegisterView extends GetView<RegisterController> {
   const RegisterView({super.key});
   @override
   Widget build(BuildContext context) {
+    Get.put(RegisterController());
     return Obx(() => Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -91,6 +94,19 @@ class RegisterView extends GetView<RegisterController> {
                                 controller
                                     .passwordConfirmationController.value.text);
                           },
+                        ),
+                        SizedBox(
+                          height: 35,
+                        ),
+                        InkWell(
+                          onTap: () => Get.offAllNamed(Routes.LOGIN),
+                          child: Center(
+                            child: Text(
+                              "Se connecter",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                          ),
                         ),
                       ],
                     )),

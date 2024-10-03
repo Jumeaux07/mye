@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
+import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/otp/views/otp_view.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
+
+import '../../../data/models/user_model.dart';
 
 class RegisterController extends GetxController with StateMixin {
   //TODO: Implement RegisterController
@@ -47,6 +50,9 @@ class RegisterController extends GetxController with StateMixin {
       final response = await _authProvider.sendOtpRegister(data);
 
       if (response.statusCode == 200) {
+        final userModel = UserModel.fromJson(response.body["user"]);
+        await box.write("token", response.body["user"].toString());
+        await box.write("is_active", userModel.isActive);
         showDialog(
             context: Get.context!,
             builder: (_) => CustomAlertDialog(
@@ -62,6 +68,7 @@ class RegisterController extends GetxController with StateMixin {
         showDialog(
             context: Get.context!,
             builder: (_) => CustomAlertDialog(
+                btnLabel: "Continuer",
                 message: response.body["error"].toString(),
                 onPressed: () {
                   Get.back();
