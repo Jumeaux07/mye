@@ -1,4 +1,4 @@
-package com.example.mye
+package com.chrysalidedev.mye
 
 import io.flutter.embedding.android.FlutterActivity
 

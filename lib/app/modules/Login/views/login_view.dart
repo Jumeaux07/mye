@@ -14,6 +14,7 @@ class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
   @override
   Widget build(BuildContext context) {
+    Get.put(LoginController());
     return Obx(() => Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(

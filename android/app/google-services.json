@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "525902566155",
+    "project_id": "myeapp-chrysalidedev",
+    "storage_bucket": "myeapp-chrysalidedev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525902566155:android:f48c97764613a6c920480e",
+        "android_client_info": {
+          "package_name": "com.chrysalidedev.mye"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525902566155-s12lr621vq4eni16769hb3cpol13aul6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chrysalidedev.mye",
+            "certificate_hash": "e44c456dd0a2c4fb69d62a979459e7d212903fd3"
+          }
+        },
+        {
+          "client_id": "525902566155-i2pi0m6e8cf25ki7rc01l6abtc8dbne4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs9w6rU18dCRM09tne8C882G9brog5mSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525902566155-i2pi0m6e8cf25ki7rc01l6abtc8dbne4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "525902566155-c1721k0n1k4sjcsvdhmhbgmen333hsl2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.chrysalidedev.mye"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

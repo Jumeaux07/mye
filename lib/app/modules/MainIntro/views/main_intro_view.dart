@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/Login/views/login_view.dart';
 import 'package:nom_du_projet/app/modules/register/views/register_view.dart';
+import '../../../services/auh_service.dart';
 import '../../../widgets/bouttongoogle.dart';
 import '../../../widgets/goldbuttonlight.dart';
 import '../controllers/main_intro_controller.dart';
@@ -14,6 +15,7 @@ class MainIntroView extends GetView<MainIntroController> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService _googleSignIn = AuthService();
     return Obx(() => Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -77,7 +79,11 @@ class MainIntroView extends GetView<MainIntroController> {
                             Get.to(() => LoginView());
                           }),
                       SizedBox(height: 15),
-                      GoldButtonGoogle(),
+                      GoldButtonGoogle(
+                        onTap: () {
+                          controller.signInWithGoogle();
+                        },
+                      ),
                       SizedBox(height: 15),
                       InkWell(
                         onTap: () {

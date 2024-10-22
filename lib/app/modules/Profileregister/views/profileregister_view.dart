@@ -5,6 +5,7 @@ import 'package:nom_du_projet/app/data/models/position_model.dart';
 import 'package:nom_du_projet/app/data/models/secteur_model.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
+import '../../../data/constant.dart';
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
 import '../../../widgets/goldbuttonlight.dart';
@@ -24,7 +25,12 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
             padding: EdgeInsets.all(15),
             children: [
               //AppBar
-              Customappbar(),
+              Customappbar(
+                onTap: () {
+                  box.erase();
+                  Get.offAllNamed(Routes.MAIN_INTRO);
+                },
+              ),
               //Avatar
               Stack(
                 alignment: AlignmentDirectional.center,
@@ -105,7 +111,10 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                         items: controller.positionAddressList,
                         controller: SingleSelectController(PositionModel(
                             address: Address(
-                                name: controller.villeController.value.text))),
+                                name: controller.villeController.value.text ==
+                                        ""
+                                    ? "Entrez votre la ville"
+                                    : controller.villeController.value.text))),
                         onChanged: (value) {
                           controller.updateVille(value?.address?.name ?? "");
                         },
@@ -122,7 +131,9 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                       CustomDropdown<PositionModel>.searchRequest(
                         controller: SingleSelectController(PositionModel(
                             displayName:
-                                controller.adresseController.value.text)),
+                                controller.adresseController.value.text == ""
+                                    ? "Entrez votre adresse"
+                                    : controller.adresseController.value.text)),
                         searchHintText: "Entrez votre adresse",
                         headerBuilder: (context, selectedItem, enabled) {
                           return Text("${selectedItem.displayName ?? ""}");
@@ -156,11 +167,11 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                       ),
                       SizedBox(height: 5),
                       CustomDropdown.search(
-                          noResultFoundText: "Aucun ecteurs d'activité",
+                          noResultFoundText: "Aucun secteurs d'activité",
                           decoration: CustomDropdownDecoration(
                               closedBorder: Border.all(),
                               closedBorderRadius: BorderRadius.circular(4)),
-                          hintText: "Selectionner une spécialité",
+                          hintText: "Selectionner un secteur d'activité",
                           items: controller.secteursList,
                           listItemBuilder:
                               (context, item, isSelected, onItemSelect) {

@@ -5,6 +5,8 @@ import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
+import '../../../routes/app_pages.dart';
+
 class LoginController extends GetxController {
   //TODO: Implement LoginController
   final formKey = GlobalKey<FormState>().obs;
@@ -37,6 +39,26 @@ class LoginController extends GetxController {
       box.write("token", response.body["token"]);
       box.write("is_active", response.body["is_active"]);
       user.value = UserModel.fromJson(response.body["user"]);
+      isLoginLaoding.value = false;
+
+      if (user.value.isActive == 0) {
+        showDialog(
+            context: Get.context!,
+            builder: (_) => CustomAlertDialog(
+                  message: response.body["message"].toString(),
+                  onPressed: () {
+                    Get.back();
+                    Get.offAllNamed(Routes.HOME);
+                  },
+                  showAlertIcon: false,
+                  success: true,
+                  btnLabel: "Continuer",
+                ));
+      } else {
+        isLoginLaoding.value = false;
+        Get.offAllNamed(Routes.HOME);
+      }
+    } else {
       isLoginLaoding(false);
       showDialog(
           context: Get.context!,
@@ -44,20 +66,8 @@ class LoginController extends GetxController {
               message: response.body["message"].toString(),
               onPressed: () {
                 Get.back();
-                user.value.isActive == 0
-                    ? showDialog(
-                        context: Get.context!,
-                        builder: (_) => CustomAlertDialog(
-                            message: response.body["message"].toString(),
-                            onPressed: () {
-                              Get.back();
-                            },
-                            showAlertIcon: true))
-                    : null;
               },
               showAlertIcon: true));
-    } else {
-      isLoginLaoding(false);
     }
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Customappbar extends StatelessWidget {
-  const Customappbar({super.key});
+  Customappbar({super.key, this.onTap});
+
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class Customappbar extends StatelessWidget {
           height: 60,
         ),
         InkWell(
-          onTap: () => Get.back(),
+          onTap: onTap ?? () => Get.back(),
           child: Icon(
             Icons.close,
             size: 40,

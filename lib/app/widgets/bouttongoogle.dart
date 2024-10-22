@@ -6,12 +6,12 @@ class GoldButtonGoogle extends StatelessWidget {
     super.key,
     this.onTap,
   });
-  final Function? onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap,
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(10),
         height: 50,
