@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
@@ -19,5 +20,9 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
+  RxInt selectedIndex = 0.obs;
+
+  void navigate(int index) {
+    selectedIndex.value = index;
+  }
 }

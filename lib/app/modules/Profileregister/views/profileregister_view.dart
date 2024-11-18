@@ -27,7 +27,6 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
               //AppBar
               Customappbar(
                 onTap: () {
-                  box.erase();
                   Get.offAllNamed(Routes.MAIN_INTRO);
                 },
               ),

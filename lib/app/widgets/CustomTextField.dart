@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 class Customtextfield extends StatefulWidget {
   const Customtextfield(
-      {super.key, required this.textController, required this.label});
+      {super.key,
+      required this.textController,
+      required this.label,
+      this.hintText});
   final TextEditingController textController;
   final String label;
+  final String? hintText;
 
   @override
   State<Customtextfield> createState() => _CustomtextfieldState();
@@ -44,7 +48,7 @@ class _CustomtextfieldState extends State<Customtextfield> {
             focusColor: Color(0xFFCBA948),
             hoverColor: Color(0xFFCBA948),
             errorText: _textError,
-            hintText: widget.label,
+            hintText: widget.hintText ?? widget.label,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
           ),
         ),

@@ -34,7 +34,7 @@ class SplashscreenController extends GetxController {
         } else {
           log('Utilisateur inactif, redirection vers register');
           Future.delayed(const Duration(seconds: 5)).then((_) {
-            Get.offAllNamed(Routes.PROFILEREGISTER);
+            Get.offAllNamed(Routes.HOME);
           });
         }
       } else {

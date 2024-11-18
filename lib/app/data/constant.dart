@@ -12,6 +12,7 @@ const getSecteurUrl = "/get-all-secteurs";
 const focusedBorderColor = Color(0xFFCBA948);
 const fillColor = Color.fromRGBO(243, 246, 249, 0);
 const borderColor = Color(0xFFCBA948);
+const orColor = Color(0xFFCBA948);
 
 GetStorage box = GetStorage();
 

@@ -57,7 +57,7 @@ class OtpController extends GetxController {
                   message: json["message"],
                   onPressed: () {
                     Get.back();
-                    Get.offAllNamed('profileregister');
+                    Get.offAllNamed('home');
                   },
                   showAlertIcon: true,
                 ));
