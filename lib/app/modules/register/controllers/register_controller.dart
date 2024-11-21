@@ -1,17 +1,9 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
-import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/otp/controllers/otp_controller.dart';
 import 'package:nom_du_projet/app/modules/otp/views/otp_view.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
-
-import '../../../data/models/user_model.dart';
-import '../../../services/auh_service.dart';
 
 class RegisterController extends GetxController with StateMixin {
   //TODO: Implement RegisterController

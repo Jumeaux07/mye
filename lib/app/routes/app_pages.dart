@@ -6,12 +6,14 @@ import '../modules/MainIntro/bindings/main_intro_binding.dart';
 import '../modules/MainIntro/views/main_intro_view.dart';
 import '../modules/Profileregister/bindings/profileregister_binding.dart';
 import '../modules/Profileregister/views/profileregister_view.dart';
+import '../modules/abonnement/bindings/abonnement_binding.dart';
+import '../modules/abonnement/views/abonnement_view.dart';
+import '../modules/cinetpay/bindings/cinetpay_binding.dart';
+import '../modules/cinetpay/views/cinetpay_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
-import '../modules/otp/bindings/otp_binding.dart';
-import '../modules/otp/views/otp_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/splashscreen/bindings/splashscreen_binding.dart';
@@ -64,6 +66,16 @@ class AppPages {
       name: _Paths.INTERRESTPROFIL,
       page: () => const InterrestprofilView(),
       binding: InterrestprofilBinding(),
+    ),
+    GetPage(
+      name: _Paths.ABONNEMENT,
+      page: () => AbonnementView(),
+      binding: AbonnementBinding(),
+    ),
+    GetPage(
+      name: _Paths.CINETPAY,
+      page: () => const CinetpayView(),
+      binding: CinetpayBinding(),
     ),
   ];
 }

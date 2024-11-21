@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nom_du_projet/app/widgets/CustomTextField.dart';
 
-import 'customEmailTextField.dart';
 import 'profile_card.dart';
 
 class Accueil extends StatelessWidget {

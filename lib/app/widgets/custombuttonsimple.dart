@@ -29,16 +29,15 @@ class CustomButton extends StatelessWidget {
       height: height ?? 50,
       child: OutlinedButton(
         style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith(
-                (states) => Colors.transparent),
-            backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                enabled
-                    ? backgroundColor ?? Color(0xFFCBA948)
-                    : Color(0xFFCBA948).withOpacity(.5)),
-            shape: MaterialStateProperty.resolveWith((states) =>
+            overlayColor:
+                WidgetStateProperty.resolveWith((states) => Colors.transparent),
+            backgroundColor: WidgetStateProperty.resolveWith((states) => enabled
+                ? backgroundColor ?? Color(0xFFCBA948)
+                : Color(0xFFCBA948).withOpacity(.5)),
+            shape: WidgetStateProperty.resolveWith((states) =>
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
-            side: MaterialStateProperty.resolveWith((states) => BorderSide(
+            side: WidgetStateProperty.resolveWith((states) => BorderSide(
                 color: !enabled
                     ? Color(0xFFCBA948).withOpacity(.5)
                     : borderColor ?? Color(0xFFCBA948)))),

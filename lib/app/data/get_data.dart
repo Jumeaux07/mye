@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get.dart';
@@ -26,6 +25,31 @@ class GetDataProvider extends GetConnect {
     final response = await get(
         "https://api.locationiq.com/v1/autocomplete?key=$mapsToken&q=$query&limit=5&dedupe=1&");
     log("List of addresse ${response.body}");
+    return response;
+  }
+
+  Future<Response> getAbonnement() async {
+    final url = baseUrl + getAbonnementUrl;
+
+    Response response;
+    try {
+      // Effectuer la requête GET
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+
+      // Vérification de la réponse
+      if (response.isOk) {
+        log("List of abonnements: ${response.body}");
+      } else {
+        log("Erreur lors de la récupération des abonnements: ${response}");
+      }
+    } catch (e) {
+      log("Exception lors de la récupération des abonnements: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la récupération des abonnements');
+    }
+
     return response;
   }
 }

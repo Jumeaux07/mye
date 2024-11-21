@@ -1,3 +1,4 @@
 {
-    "dart.flutterSdkPath": "C:\\Users\\Essis Cedric\\StudioProjects\\coditrans_mobile_pro\\.fvm\\versions\\3.19.6"
+  "dart.flutterSdkPath": ".fvm/versions/3.22.2",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

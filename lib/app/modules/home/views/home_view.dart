@@ -8,7 +8,7 @@ import '../../../widgets/accueil_page.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/message.dart';
 import '../../../widgets/notifications.dart';
-import '../../../widgets/plan_abonnement.dart';
+import '../../abonnement/views/abonnement_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -63,7 +63,7 @@ class HomeView extends GetView<HomeController> {
           body: controller.selectedIndex.value == 0
               ? Accueil()
               : controller.selectedIndex.value == 1
-                  ? SubscriptionView()
+                  ? AbonnementView()
                   : ChatView(
                       currentUserId: '12',
                       recipientId: '21',

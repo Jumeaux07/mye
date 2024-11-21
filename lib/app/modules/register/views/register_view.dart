@@ -1,11 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 
-import '../../../data/constant.dart';
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
 import '../../../widgets/customEmailTextField.dart';

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/customAppBar.dart';
 
-import '../../../data/constant.dart';
 import '../../../widgets/customEmailTextField.dart';
 import '../../../widgets/customPasswordTextField.dart';
 import '../../../widgets/goldbuttonlight.dart';

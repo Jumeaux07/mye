@@ -11,6 +11,8 @@ abstract class Routes {
   static const LOGIN = _Paths.LOGIN;
   static const SPLASHSCREEN = _Paths.SPLASHSCREEN;
   static const INTERRESTPROFIL = _Paths.INTERRESTPROFIL;
+  static const ABONNEMENT = _Paths.ABONNEMENT;
+  static const CINETPAY = _Paths.CINETPAY;
 }
 
 abstract class _Paths {
@@ -23,4 +25,6 @@ abstract class _Paths {
   static const LOGIN = '/login';
   static const SPLASHSCREEN = '/splashscreen';
   static const INTERRESTPROFIL = '/interrestprofil';
+  static const ABONNEMENT = '/abonnement';
+  static const CINETPAY = '/cinetpay';
 }
