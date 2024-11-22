@@ -16,7 +16,7 @@ Future<void> main() async {
   // Assurez-vous que les widgets Flutter sont initialisés
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = PUBLISHABLEKEY;
-  // await Stripe.instance.applySettings();
+  await Stripe.instance.applySettings();
 
   // Initialiser Firebase
   await Firebase.initializeApp(

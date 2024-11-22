@@ -6,14 +6,17 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
-  flutter: ">=3.22.2"
+  flutter: ">=3.24.5"
 
 dependencies:
   animated_custom_dropdown: ^3.1.1
   cinetpay: ^1.0.7
   dio: ^5.7.0
-  firebase_auth: ^5.3.1
-  firebase_core:
+  flutter_inappwebview: ^6.0.0
+  # firebase_core: ^2.32.0
+  # firebase_auth: ^4.15.0
+  firebase_auth: ^5.3.3
+  firebase_core: ^3.8.0
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
