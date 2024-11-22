@@ -104,7 +104,7 @@ class AbonnementView extends GetView<AbonnementController> {
                       child: ElevatedButton(
                         onPressed: () {
                           // TODO: Implémenter la logique d'abonnement
-                          PayementService.instance.makePayement();
+                          PaymentService.instance.handlePayment();
                           print("Payer par carte");
                         },
                         child: Padding(

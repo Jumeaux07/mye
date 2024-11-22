@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/widgets/CustomTextField.dart';
+import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
 import 'profile_card.dart';
 
-class Accueil extends StatelessWidget {
+class Accueil extends GetView<HomeController> {
   const Accueil({
     super.key,
   });
@@ -41,24 +44,29 @@ class Accueil extends StatelessWidget {
               ],
             ),
           ),
-          ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            children: [
-              ProfileCard(),
-              SizedBox(
-                height: 10,
-              ),
-              ProfileCard(),
-              SizedBox(
-                height: 10,
-              ),
-              ProfileCard(),
-              SizedBox(
-                height: 10,
-              ),
-              ProfileCard(),
-            ],
+          controller.obx(
+            (data) => ListView.builder(
+              itemCount: controller.userList.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              itemBuilder: (BuildContext context, int index) {
+                return ProfileCard(
+                  image: controller.userList[index].profileImage,
+                  secteur: controller.userList[index].secteurActivite,
+                  username: controller.userList[index].pseudo,
+                  adresse: controller.userList[index].adresseGeographique,
+                );
+              },
+            ),
+            onLoading: Center(child: CircularProgressIndicator()),
+            onError: (error) {
+              return CustomAlertDialog(
+                  message: "$error",
+                  onPressed: () {
+                    controller.getAllUser();
+                  },
+                  showAlertIcon: true);
+            },
           ),
         ],
       ),

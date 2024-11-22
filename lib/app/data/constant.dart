@@ -6,6 +6,7 @@ const baseUrl = "https://mye.franckprod.com/api";
 const registerUrl = "/user/register/step1";
 const verifyOtpCodeUrl = "/user/otp_verify";
 const getAbonnementUrl = "/get-all-facturation";
+const getAllUserUrl = "/get-all-profile";
 const loginUrl = "/login";
 
 const getSecteurUrl = "/get-all-secteurs";

@@ -1,25 +1,27 @@
-import 'dart:convert';
+// To parse this JSON data, do
+//
+//     final userModel = userModelFromJson(jsonString);
 
 class UserModel {
-  int? id;
-  String? nom;
-  String? prenom;
-  String? pseudo;
-  String? secteurActivite;
-  String? adresseGeographique;
-  String? competence;
-  String? biographie;
-  String? phone;
-  String? email;
-  dynamic emailVerifiedAt;
-  int? isPremium;
-  String? profileImage;
-  int? isActive;
-  int? isAdmin;
-  String? posteSouhait;
-  String? apiToken;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  final int? id;
+  final String? nom;
+  final String? prenom;
+  final String? pseudo;
+  final String? secteurActivite;
+  final String? adresseGeographique;
+  final dynamic competence;
+  final String? biographie;
+  final String? phone;
+  final String? email;
+  final dynamic emailVerifiedAt;
+  final int? isPremium;
+  final String? profileImage;
+  final int? isActive;
+  final int? isAdmin;
+  final String? posteSouhait;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final dynamic facturationId;
 
   UserModel({
     this.id,
@@ -38,9 +40,9 @@ class UserModel {
     this.isActive,
     this.isAdmin,
     this.posteSouhait,
-    this.apiToken,
     this.createdAt,
     this.updatedAt,
+    this.facturationId,
   });
 
   UserModel copyWith({
@@ -50,7 +52,7 @@ class UserModel {
     String? pseudo,
     String? secteurActivite,
     String? adresseGeographique,
-    String? competence,
+    dynamic competence,
     String? biographie,
     String? phone,
     String? email,
@@ -60,9 +62,9 @@ class UserModel {
     int? isActive,
     int? isAdmin,
     String? posteSouhait,
-    String? apiToken,
     DateTime? createdAt,
     DateTime? updatedAt,
+    dynamic facturationId,
   }) =>
       UserModel(
         id: id ?? this.id,
@@ -81,15 +83,10 @@ class UserModel {
         isActive: isActive ?? this.isActive,
         isAdmin: isAdmin ?? this.isAdmin,
         posteSouhait: posteSouhait ?? this.posteSouhait,
-        apiToken: apiToken ?? this.apiToken,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
+        facturationId: facturationId ?? this.facturationId,
       );
-
-  factory UserModel.fromRawJson(String str) =>
-      UserModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         id: json["id"],
@@ -104,17 +101,17 @@ class UserModel {
         email: json["email"],
         emailVerifiedAt: json["email_verified_at"],
         isPremium: json["is_premium"],
-        profileImage: json["profileImage"],
+        profileImage: json["profile_image"],
         isActive: json["is_active"],
         isAdmin: json["is_admin"],
         posteSouhait: json["poste_souhait"],
-        apiToken: json["api_token"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        facturationId: json["facturation_id"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -130,12 +127,12 @@ class UserModel {
         "email": email,
         "email_verified_at": emailVerifiedAt,
         "is_premium": isPremium,
-        "profileImage": profileImage,
+        "profile_image": profileImage,
         "is_active": isActive,
         "is_admin": isAdmin,
         "poste_souhait": posteSouhait,
-        "api_token": apiToken,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
+        "facturation_id": facturationId,
       };
 }

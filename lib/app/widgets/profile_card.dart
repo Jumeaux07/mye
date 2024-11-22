@@ -6,7 +6,16 @@ import '../data/constant.dart';
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
     super.key,
+    this.image,
+    this.username,
+    this.secteur,
+    this.adresse,
   });
+
+  final String? image;
+  final String? username;
+  final String? secteur;
+  final String? adresse;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +32,8 @@ class ProfileCard extends StatelessWidget {
           //Avatar
           CircleAvatar(
             radius: 35.0,
-            backgroundImage: NetworkImage(
-                "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"),
+            backgroundImage: NetworkImage(image ??
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg"),
             backgroundColor: Colors.transparent,
           ),
 
@@ -46,7 +55,7 @@ class ProfileCard extends StatelessWidget {
                     children: [
                       Text(
                         overflow: TextOverflow.ellipsis,
-                        box.read("username") ?? "",
+                        username ?? "",
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
@@ -54,7 +63,7 @@ class ProfileCard extends StatelessWidget {
                       ),
                       Text(
                         overflow: TextOverflow.ellipsis,
-                        "Activte",
+                        secteur ?? "",
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w100,
@@ -67,7 +76,7 @@ class ProfileCard extends StatelessWidget {
                   width: 200,
                   child: Text(
                     overflow: TextOverflow.ellipsis,
-                    "Abidjan, Cocody",
+                    adresse ?? "",
                     style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w100,

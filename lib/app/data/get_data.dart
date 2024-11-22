@@ -52,4 +52,28 @@ class GetDataProvider extends GetConnect {
 
     return response;
   }
+
+  Future<Response> getAllUser() async {
+    final url = baseUrl + getAllUserUrl;
+
+    Response response;
+    try {
+      // Effectuer la requête GET
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+
+      // Vérification de la réponse
+      if (response.isOk) {
+        log("List of abonnement all profiles: ${response.body}");
+      } else {
+        log("Erreur lors de la récupération des profiles: ${response}");
+      }
+    } catch (e) {
+      log("Exception lors de la récupération des profiles: $e");
+      return Response(
+          statusCode: 500, body: 'Erreur lors de la récupération des profiles');
+    }
+
+    return response;
+  }
 }
