@@ -36,7 +36,9 @@ class _CustomemailtextfieldState extends State<Customemailtextfield> {
         Text(
           widget.labal,
           style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.w100, color: Colors.black),
+            fontSize: 17,
+            fontWeight: FontWeight.w100,
+          ),
         ),
         TextFormField(
           controller: widget.emailController,

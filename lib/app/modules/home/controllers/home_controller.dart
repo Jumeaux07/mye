@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 
 import '../../../data/get_data.dart';
 
@@ -8,6 +9,7 @@ class HomeController extends GetxController with StateMixin<dynamic> {
 
   final _dataProvider = GetDataProvider();
   final userList = <UserModel>[].obs;
+  final user = UserModel().obs;
 
   Future<void> getAllUser() async {
     try {
@@ -29,9 +31,30 @@ class HomeController extends GetxController with StateMixin<dynamic> {
     }
   }
 
+  Future<void> getAuthUser() async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _dataProvider.getMe();
+
+      if (response.statusCode == 200) {
+        user.value = UserModel.fromJson(response.body['data']);
+        change(user, status: RxStatus.success());
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'produite lors du chargement des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'produite lors du chargement des données => $e"));
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
+    getAuthUser();
     getAllUser();
   }
 

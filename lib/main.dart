@@ -9,10 +9,14 @@ import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_
 
 import 'app/modules/abonnement/controllers/abonnement_controller.dart';
 import 'app/modules/otp/controllers/otp_controller.dart';
+import 'app/modules/profile_detail/controllers/profile_detail_controller.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'app/routes/app_pages.dart';
+import 'app/services/theme_service.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  initializeDateFormatting('fr_FR', null);
   // Assurez-vous que les widgets Flutter sont initialisés
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = PUBLISHABLEKEY;
@@ -26,14 +30,17 @@ Future<void> main() async {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme:
-          ThemeData(fontFamily: "Poppins", colorSchemeSeed: Color(0xFFCBA948)),
+      theme: ThemeService.lightTheme,
+      darkTheme: ThemeService.darkTheme,
+      themeMode:
+          ThemeService.loadThemeData() ? ThemeMode.dark : ThemeMode.light,
       title: "Mye",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
         Get.put(SplashscreenController());
         Get.put(AbonnementController());
+        Get.put(ProfileDetailController());
         Get.lazyPut(() => OtpController());
       }),
     ),

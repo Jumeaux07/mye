@@ -36,7 +36,9 @@ class _CustomtextfieldState extends State<Customtextfield> {
         Text(
           widget.label,
           style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.w100, color: Colors.black),
+            fontSize: 17,
+            fontWeight: FontWeight.w100,
+          ),
         ),
         TextFormField(
           controller: widget.textController,

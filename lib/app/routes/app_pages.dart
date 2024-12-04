@@ -14,8 +14,12 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
+import '../modules/profile_detail/bindings/profile_detail_binding.dart';
+import '../modules/profile_detail/views/profile_detail_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/setting/bindings/setting_binding.dart';
+import '../modules/setting/views/setting_view.dart';
 import '../modules/splashscreen/bindings/splashscreen_binding.dart';
 import '../modules/splashscreen/views/splashscreen_view.dart';
 
@@ -76,6 +80,16 @@ class AppPages {
       name: _Paths.CINETPAY,
       page: () => const CinetpayView(),
       binding: CinetpayBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE_DETAIL,
+      page: () => const ProfileDetailView(),
+      binding: ProfileDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTING,
+      page: () => const SettingView(),
+      binding: SettingBinding(),
     ),
   ];
 }

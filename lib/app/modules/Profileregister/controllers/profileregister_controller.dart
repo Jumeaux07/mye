@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/position_model.dart';
 import 'package:nom_du_projet/app/data/models/secteur_model.dart';
+import 'package:nom_du_projet/app/data/models/user_model.dart';
+
+import '../../../services/image_picker_service.dart';
+import '../../../widgets/custom_alert.dart';
 
 class ProfileregisterController extends GetxController
     with StateMixin<dynamic> {
@@ -19,6 +25,8 @@ class ProfileregisterController extends GetxController
   final competenceController = TextEditingController().obs;
   final bioController = TextEditingController().obs;
   final query = TextEditingController().obs;
+  final imageEnBase64 = "".obs;
+  final ImagePickerService _imagePickerService = ImagePickerService();
 
   final adresse =
       SingleSelectController<PositionModel?>(PositionModel(displayName: ""))
@@ -38,6 +46,15 @@ class ProfileregisterController extends GetxController
   /*
     funtions Heleprs
   */
+  void cleanImagebase64() {
+    imageEnBase64.value = "";
+  }
+
+  void updateImageBase64(String value) {
+    imageEnBase64.value = value;
+    update();
+  }
+
   void updateVille(String value) {
     villeController.value.text = value;
   }
@@ -48,6 +65,16 @@ class ProfileregisterController extends GetxController
 
   void updateaddresse(String value) {
     adresseController.value.text = value;
+  }
+
+  Future<void> pickImage() async {
+    final base64Image = await _imagePickerService.pickImageAndConvertToBase64();
+    log("IMAGE => ${base64Image}");
+    if (base64Image != null || base64Image != "") {
+      updateImageBase64(base64Image.toString());
+    } else {
+      updateImageBase64("");
+    }
   }
 
   Future<void> getSecteur() async {
@@ -75,6 +102,50 @@ class ProfileregisterController extends GetxController
     }
   }
 
+  Future<void> updateUser(String? nom, String? prenom, String? secteur_activite,
+      String? adresse_geographique, String? biographie) async {
+    try {
+      change(null, status: RxStatus.loading());
+
+      final response = await _dataProvider.updateUser(
+          nom,
+          prenom,
+          secteur_activite,
+          adresse_geographique,
+          biographie,
+          imageEnBase64.value);
+
+      if (response.statusCode == 200) {
+        nomController.value.clear();
+        prenomController.value.clear();
+        villeController.value.clear();
+        adresseController.value.clear();
+        secteurController.value.clear();
+        competenceController.value.clear();
+        bioController.value.clear();
+        cleanImagebase64();
+        query.value.clear();
+
+        UserModel userModel = UserModel.fromJson(response.body['data']);
+        Get.dialog(CustomAlertDialog(
+            success: true,
+            message: response.body['message'],
+            onPressed: () {
+              Get.back();
+              Get.back();
+            },
+            showAlertIcon: true));
+        change(userModel, status: RxStatus.success());
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite: ${response.body['message'] != null ? response.body['message'] : "Une erreur s'est produite"}"));
+      }
+    } catch (e) {
+      change(null, status: RxStatus.error("Une erreur s'est produite $e"));
+    }
+  }
+
   Future<List<PositionModel>> findPositionAddress(String query) async {
     try {
       // change(null, status: RxStatus.loading());
@@ -87,23 +158,15 @@ class ProfileregisterController extends GetxController
               (e) => PositionModel.fromJson(e),
             )
             .toList();
-        // change(secteursList, status: RxStatus.success());
-      } else {
-        // change(null,
-        // status: RxStatus.error(
-        //     "Une erreur s'produite lors du chargement des données"));
-      }
-    } catch (e) {
-      // change(null,
-      //     status: RxStatus.error(
-      //         "Une erreur s'produite lors du chargement des données => $e"));
-    }
+      } else {}
+    } catch (e) {}
     return positionAddressList;
   }
 
   @override
   void onInit() {
     super.onInit();
+    getSecteur();
   }
 
   @override

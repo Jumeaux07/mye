@@ -7,6 +7,8 @@
 <key>NSCameraUsageDescription
 &lt;string&gt;To scan cards&lt;/string&gt;</key>
 <string>To scan cards</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>In order to access your photo library</string>
 		<key>GIDClientID</key>
 		<string>525902566155-i2pi0m6e8cf25ki7rc01l6abtc8dbne4.apps.googleusercontent.com</string>
 		<key>CFBundleDevelopmentRegion</key>

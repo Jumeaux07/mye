@@ -15,7 +15,6 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     Get.put(LoginController());
     return Obx(() => Scaffold(
-          backgroundColor: Colors.white,
           body: SafeArea(
               child: ListView(
             padding: EdgeInsets.all(15),
@@ -36,9 +35,9 @@ class LoginView extends GetView<LoginController> {
                       Text(
                         "Connexion",
                         style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black),
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
 
                       SizedBox(

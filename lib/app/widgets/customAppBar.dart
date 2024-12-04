@@ -12,11 +12,6 @@ class Customappbar extends StatelessWidget {
         Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset(
-          "assets/images/LOGO-MYE-Ligth.png",
-          width: 60,
-          height: 60,
-        ),
         InkWell(
           onTap: onTap ?? () => Get.back(),
           child: Icon(

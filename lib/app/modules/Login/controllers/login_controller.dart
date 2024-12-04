@@ -39,8 +39,9 @@ class LoginController extends GetxController {
       box.write("token", response.body["token"]);
       box.write("is_active", response.body["is_active"]);
       user.value = UserModel.fromJson(response.body["user"]);
-      box.write("username", user.value.pseudo ?? "");
+      box.write("username", user.value.secteurActivite ?? "");
       box.write("email", user.value.email ?? "");
+      box.write("id", user.value.id.toString());
       box.write("secteur_activite", user.value.secteurActivite ?? "");
       isLoginLaoding.value = false;
 

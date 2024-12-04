@@ -1,6 +1,4 @@
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
+import 'package:intl/intl.dart';
 
 class UserModel {
   final int? id;
@@ -9,7 +7,7 @@ class UserModel {
   final String? pseudo;
   final String? secteurActivite;
   final String? adresseGeographique;
-  final dynamic competence;
+  final String? competence;
   final String? biographie;
   final String? phone;
   final String? email;
@@ -22,6 +20,7 @@ class UserModel {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final dynamic facturationId;
+  final List<Experience>? experiences;
 
   UserModel({
     this.id,
@@ -43,6 +42,7 @@ class UserModel {
     this.createdAt,
     this.updatedAt,
     this.facturationId,
+    this.experiences,
   });
 
   UserModel copyWith({
@@ -52,7 +52,7 @@ class UserModel {
     String? pseudo,
     String? secteurActivite,
     String? adresseGeographique,
-    dynamic competence,
+    String? competence,
     String? biographie,
     String? phone,
     String? email,
@@ -65,6 +65,7 @@ class UserModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     dynamic facturationId,
+    List<Experience>? experiences,
   }) =>
       UserModel(
         id: id ?? this.id,
@@ -86,11 +87,12 @@ class UserModel {
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         facturationId: facturationId ?? this.facturationId,
+        experiences: experiences ?? this.experiences,
       );
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id: json["id"],
-        nom: json["nom"],
+        id: json["id"] ?? 0,
+        nom: json["nom"] ?? "",
         prenom: json["prenom"],
         pseudo: json["pseudo"],
         secteurActivite: json["secteur_activite"],
@@ -101,7 +103,7 @@ class UserModel {
         email: json["email"],
         emailVerifiedAt: json["email_verified_at"],
         isPremium: json["is_premium"],
-        profileImage: json["profile_image"],
+        profileImage: json["profileImage"],
         isActive: json["is_active"],
         isAdmin: json["is_admin"],
         posteSouhait: json["poste_souhait"],
@@ -112,6 +114,10 @@ class UserModel {
             ? null
             : DateTime.parse(json["updated_at"]),
         facturationId: json["facturation_id"],
+        experiences: json["experiences"] == null
+            ? []
+            : List<Experience>.from(
+                json["experiences"]!.map((x) => Experience.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -127,12 +133,102 @@ class UserModel {
         "email": email,
         "email_verified_at": emailVerifiedAt,
         "is_premium": isPremium,
-        "profile_image": profileImage,
+        "profileImage": profileImage,
         "is_active": isActive,
         "is_admin": isAdmin,
         "poste_souhait": posteSouhait,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "facturation_id": facturationId,
+        "experiences": experiences == null
+            ? []
+            : List<dynamic>.from(experiences!.map((x) => x.toJson())),
+      };
+
+  List<String> getCompetence() {
+    List<String> competences;
+
+    if (competence != null) {
+      competences = competence.toString().split(',');
+    } else {
+      competences = [];
+    }
+    return competences;
+  }
+}
+
+class Experience {
+  final int? id;
+  final String? poste;
+  final String? nomEntreprise;
+  final DateTime? dateDebut;
+  final DateTime? dateFin;
+  final int? status;
+  final int? userId;
+  final dynamic createdAt;
+  final dynamic updatedAt;
+
+  Experience({
+    this.id,
+    this.poste,
+    this.nomEntreprise,
+    this.dateDebut,
+    this.dateFin,
+    this.status,
+    this.userId,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  Experience copyWith({
+    int? id,
+    String? poste,
+    String? nomEntreprise,
+    DateTime? dateDebut,
+    DateTime? dateFin,
+    int? status,
+    int? userId,
+    dynamic createdAt,
+    dynamic updatedAt,
+  }) =>
+      Experience(
+        id: id ?? this.id,
+        poste: poste ?? this.poste,
+        nomEntreprise: nomEntreprise ?? this.nomEntreprise,
+        dateDebut: dateDebut ?? this.dateDebut,
+        dateFin: dateFin ?? this.dateFin,
+        status: status ?? this.status,
+        userId: userId ?? this.userId,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+
+  factory Experience.fromJson(Map<String, dynamic> json) => Experience(
+        id: json["id"],
+        poste: json["poste"],
+        nomEntreprise: json["nom_entreprise"],
+        dateDebut: json["date_debut"] == null
+            ? null
+            : DateTime.parse(json["date_debut"]),
+        dateFin:
+            json["date_fin"] == null ? null : DateTime.parse(json["date_fin"]),
+        status: json["status"],
+        userId: json["user_id"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "poste": poste,
+        "nom_entreprise": nomEntreprise,
+        "date_debut":
+            "${dateDebut!.year.toString().padLeft(4, '0')}-${dateDebut!.month.toString().padLeft(2, '0')}-${dateDebut!.day.toString().padLeft(2, '0')}",
+        "date_fin":
+            "${dateFin!.year.toString().padLeft(4, '0')}-${dateFin!.month.toString().padLeft(2, '0')}-${dateFin!.day.toString().padLeft(2, '0')}",
+        "status": status,
+        "user_id": userId,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }

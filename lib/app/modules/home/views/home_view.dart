@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 import 'package:nom_du_projet/setting.dart';
 
 import '../../../data/constant.dart';
+import '../../../routes/app_pages.dart';
 import '../../../widgets/accueil_page.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/message.dart';
@@ -15,6 +17,7 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
+    final profileDetailController = Get.find<ProfileDetailController>();
     return Obx(() => Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.white,
@@ -36,17 +39,28 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
           appBar: AppBar(
-            backgroundColor: Colors.white,
             leading: InkWell(
               onTap: () {
-                Get.to(() => SettingsView());
+                profileDetailController
+                    .showUser(controller.user.value.id.toString());
               },
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"),
+                  controller.user.value.profileImage ??
+                      "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996",
+                ),
               ),
             ),
             actions: [
+              InkWell(
+                onTap: () {
+                  Get.toNamed(Routes.SETTING);
+                },
+                child: GoldIcons(size: 30, icon: Icons.settings),
+              ),
+              SizedBox(
+                width: 15,
+              ),
               InkWell(
                 onTap: () {
                   Get.to(() => NotificationsView());
@@ -57,7 +71,7 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
             ],
-            title: Text("Bienvenue ${box.read("username") ?? ""}! 👋"),
+            title: Text("${controller.user.value.pseudo ?? ""}! 👋"),
             centerTitle: true,
           ),
           body: controller.selectedIndex.value == 0

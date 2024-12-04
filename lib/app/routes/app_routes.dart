@@ -13,6 +13,8 @@ abstract class Routes {
   static const INTERRESTPROFIL = _Paths.INTERRESTPROFIL;
   static const ABONNEMENT = _Paths.ABONNEMENT;
   static const CINETPAY = _Paths.CINETPAY;
+  static const PROFILE_DETAIL = _Paths.PROFILE_DETAIL;
+  static const SETTING = _Paths.SETTING;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const INTERRESTPROFIL = '/interrestprofil';
   static const ABONNEMENT = '/abonnement';
   static const CINETPAY = '/cinetpay';
+  static const PROFILE_DETAIL = '/profile-detail';
+  static const SETTING = '/setting';
 }

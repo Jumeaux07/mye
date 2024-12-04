@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:pinput/pinput.dart';
 
 const baseUrl = "https://mye.franckprod.com/api";
@@ -7,7 +9,11 @@ const registerUrl = "/user/register/step1";
 const verifyOtpCodeUrl = "/user/otp_verify";
 const getAbonnementUrl = "/get-all-facturation";
 const getAllUserUrl = "/get-all-profile";
+const showUserUrl = "/show-profile/";
 const loginUrl = "/login";
+const getUserUrl = "/me";
+const updateUserUrl = "/update-profile";
+const updatePswdUrl = "/update-password";
 
 const getSecteurUrl = "/get-all-secteurs";
 
@@ -38,3 +44,11 @@ const PUBLISHABLEKEY =
     "pk_test_51Nae9OCTPwtZUmrOoAgs4oIBecNZIAYQUkiMt25puI0o8auPaDAgQ2rY93HxFxLzCXdqksnisdye3xXzz2lZZZAH00GK0MIV2j";
 const STRIPEKEY =
     "sk_test_51Nae9OCTPwtZUmrOCTHr2SHw8ydiYwxU6nURgqRJalX1eWf1A471d9qFRy3zotnvSXCmdow4IpwFXKF5fIMmD7U300B51fuqou";
+
+final permissionService = PermissionService();
+
+String convertDate(String? dateEn) {
+  DateTime date = DateTime.parse(dateEn ?? "");
+  String formattedDate = DateFormat.yMMMMEEEEd('fr_FR').format(date);
+  return formattedDate;
+}

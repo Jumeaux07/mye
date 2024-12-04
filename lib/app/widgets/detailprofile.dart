@@ -24,7 +24,7 @@ class ProfileDetailScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
-                            'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg'),
+                            'https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -41,7 +41,7 @@ class ProfileDetailScreen extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(
-                            'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg'),
+                            'https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996'),
                       ),
                     ),
                   ),
@@ -144,16 +144,12 @@ class ProfileDetailScreen extends StatelessWidget {
                             company: 'TechCorp',
                             position: 'Senior Flutter Developer',
                             period: '2020 - Présent',
-                            description:
-                                'Développement d\'applications mobiles innovantes',
                           ),
                           Divider(),
                           ExperienceItem(
                             company: 'StartupXYZ',
                             position: 'Développeur Mobile',
                             period: '2018 - 2020',
-                            description:
-                                'Création d\'applications cross-platform',
                           ),
                         ],
                       ),

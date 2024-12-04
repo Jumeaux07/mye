@@ -210,7 +210,6 @@ class _ChatViewState extends State<ChatView> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black12,

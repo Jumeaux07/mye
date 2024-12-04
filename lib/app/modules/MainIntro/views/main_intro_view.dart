@@ -15,7 +15,6 @@ class MainIntroView extends GetView<MainIntroController> {
   Widget build(BuildContext context) {
     final AuthService _googleSignIn = AuthService();
     return Obx(() => Scaffold(
-          backgroundColor: Colors.white,
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(15),
@@ -91,9 +90,9 @@ class MainIntroView extends GetView<MainIntroController> {
                         child: Text(
                           "S'inscrire",
                           style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ],

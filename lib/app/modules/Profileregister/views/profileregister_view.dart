@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/models/position_model.dart';
-import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
+import '../../../services/image_picker_service.dart';
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
 import '../../../widgets/goldbuttonlight.dart';
+import '../../profile_detail/controllers/profile_detail_controller.dart';
 import '../controllers/profileregister_controller.dart';
 
 class ProfileregisterView extends GetView<ProfileregisterController> {
@@ -14,9 +17,9 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.getSecteur();
+    final profiledetailController = Get.put(ProfileDetailController());
+    final _imagePickerService = ImagePickerService();
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: controller.obx(
           (data) => ListView(
@@ -25,29 +28,37 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
               //AppBar
               Customappbar(
                 onTap: () {
-                  Get.offAllNamed(Routes.MAIN_INTRO);
+                  Get.back();
                 },
               ),
               //Avatar
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"),
-                    radius: 50,
-                  ),
-                  Positioned(
-                    child: Icon(
-                      Icons.edit,
-                      size: 40,
-                      color: Color(0xFFCBA948),
-                    ),
-                    bottom: 1,
-                    right: 130,
-                  ),
-                ],
-              ),
+              Obx(() => Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          await controller.pickImage();
+                        },
+                        child: controller.imageEnBase64.value.isEmpty
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    profiledetailController
+                                            .user.value.profileImage ??
+                                        "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996"),
+                                radius: 50,
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(90),
+                                child: SizedBox(
+                                  width: 110,
+                                  height: 110,
+                                  child: _imagePickerService.displayBase64Image(
+                                      controller.imageEnBase64.value),
+                                ),
+                              ),
+                      ),
+                    ],
+                  )),
               SizedBox(height: 30),
               //Formulaire
               Container(
@@ -58,11 +69,10 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                     children: [
                       //Titre
                       Text(
-                        "Profile",
+                        "Profil",
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 30),
@@ -78,52 +88,13 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                         label: 'Prénoms',
                       ),
                       SizedBox(height: 15),
-                      //Champs ville
-                      Text(
-                        "Ville",
-                        style: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.black),
-                      ),
-                      SizedBox(height: 5),
-                      CustomDropdown<PositionModel>.searchRequest(
-                        searchHintText: "Entrez votre la ville",
-                        headerBuilder: (context, selectedItem, enabled) {
-                          return Text("${selectedItem.address?.name ?? ""}");
-                        },
-                        listItemBuilder:
-                            (context, item, isSelected, onItemSelect) {
-                          return Text("${item.address?.name ?? ""}");
-                        },
-                        futureRequest: (value) {
-                          return controller.findPositionAddress(value);
-                        },
-                        futureRequestDelay: Duration(milliseconds: 1500),
-                        hintText: 'Ville',
-                        noResultFoundText: "Aucune ville",
-                        decoration: CustomDropdownDecoration(
-                            closedBorder: Border.all(),
-                            closedBorderRadius: BorderRadius.circular(4)),
-                        items: controller.positionAddressList,
-                        controller: SingleSelectController(PositionModel(
-                            address: Address(
-                                name: controller.villeController.value.text ==
-                                        ""
-                                    ? "Entrez votre la ville"
-                                    : controller.villeController.value.text))),
-                        onChanged: (value) {
-                          controller.updateVille(value?.address?.name ?? "");
-                        },
-                      ),
-                      SizedBox(height: 15),
                       //Champs Adresse
                       Text(
                         "Adresse",
                         style: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.black),
+                          fontSize: 21,
+                          fontWeight: FontWeight.w100,
+                        ),
                       ),
                       CustomDropdown<PositionModel>.searchRequest(
                         controller: SingleSelectController(PositionModel(
@@ -133,7 +104,10 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                                     : controller.adresseController.value.text)),
                         searchHintText: "Entrez votre adresse",
                         headerBuilder: (context, selectedItem, enabled) {
-                          return Text("${selectedItem.displayName ?? ""}");
+                          return Text(
+                            "${selectedItem.displayName ?? ""}",
+                            style: TextStyle(color: Colors.black),
+                          );
                         },
                         listItemBuilder:
                             (context, item, isSelected, onItemSelect) {
@@ -146,6 +120,10 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                         hintText: 'Adresse',
                         noResultFoundText: "Aucune adresse",
                         decoration: CustomDropdownDecoration(
+                            closedFillColor:
+                                !Get.isDarkMode ? Colors.black : Colors.white,
+                            expandedFillColor:
+                                Get.isDarkMode ? Colors.black : Colors.white,
                             closedBorder: Border.all(),
                             closedBorderRadius: BorderRadius.circular(4)),
                         items: controller.positionAddressList,
@@ -158,14 +136,18 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                       Text(
                         "Secteur d'activité",
                         style: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.black),
+                          fontSize: 21,
+                          fontWeight: FontWeight.w100,
+                        ),
                       ),
                       SizedBox(height: 5),
                       CustomDropdown.search(
                           noResultFoundText: "Aucun secteurs d'activité",
                           decoration: CustomDropdownDecoration(
+                              closedFillColor:
+                                  !Get.isDarkMode ? Colors.black : Colors.white,
+                              expandedFillColor:
+                                  Get.isDarkMode ? Colors.black : Colors.white,
                               closedBorder: Border.all(),
                               closedBorderRadius: BorderRadius.circular(4)),
                           hintText: "Selectionner un secteur d'activité",
@@ -189,11 +171,7 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                           }),
 
                       SizedBox(height: 15),
-                      Customtextfield(
-                        textController: controller.competenceController.value,
-                        label: 'Compétences',
-                      ),
-                      SizedBox(height: 15),
+
                       Customtextfield(
                         textController: controller.bioController.value,
                         label: 'Bio',
@@ -204,14 +182,12 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                           isLoading: false,
                           label: 'Suivant',
                           onTap: () {
-                            Get.dialog(CustomAlertDialog(
-                                message:
-                                    "Fontionnalité en cours de devéloppement...",
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                showAlertIcon: true));
-                            // Get.toNamed(Routes.INTERRESTPROFIL);
+                            controller.updateUser(
+                                controller.nomController.value.text,
+                                controller.prenomController.value.text,
+                                controller.secteurController.value.text,
+                                controller.adresseController.value.text,
+                                controller.bioController.value.text);
                           }),
                     ],
                   ),
