@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
-import 'package:nom_du_projet/app/services/image_picker_service.dart';
 
 import '../../../data/constant.dart';
 import '../../../routes/app_pages.dart';
@@ -14,6 +13,34 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   final _getData = GetDataProvider();
   final user = UserModel().obs;
   final profilreregisterController = Get.put(ProfileregisterController());
+  final tags = <String>[].obs;
+
+  void updateTags(String value) {
+    tags.add(value);
+    update();
+  }
+
+  Future<void> updateSkill() async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateSkill(tags.join(','));
+
+      if (response.statusCode == 200) {
+        change(user, status: RxStatus.success());
+        await showUser("${box.read("user_id_show")}");
+        update();
+        Get.back();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
 
   Future<void> showUser(String id) async {
     try {
@@ -28,12 +55,12 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       } else {
         change(null,
             status: RxStatus.error(
-                "Une erreur s'produite lors du chargement des données"));
+                "Une erreur s'est produite lors de la mise à jour des données"));
       }
     } catch (e) {
       change(null,
           status: RxStatus.error(
-              "Une erreur s'produite lors du chargement des données => $e"));
+              "Une erreur s'est produite lors la mise à jour des données => $e"));
     }
   }
 
@@ -61,12 +88,12 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       } else {
         change(null,
             status: RxStatus.error(
-                "Une erreur s'produite lors du chargement des données"));
+                "Une erreur s'est produite lors du chargement des données"));
       }
     } catch (e) {
       change(null,
           status: RxStatus.error(
-              "Une erreur s'produite lors du chargement des données => $e"));
+              "Une erreur s'est produite lors du chargement des données => $e"));
     }
   }
 

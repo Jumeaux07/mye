@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
+import 'package:nom_du_projet/app/services/firebase_controller.dart';
 
 import 'app/modules/abonnement/controllers/abonnement_controller.dart';
 import 'app/modules/otp/controllers/otp_controller.dart';
@@ -42,6 +43,7 @@ Future<void> main() async {
         Get.put(AbonnementController());
         Get.put(ProfileDetailController());
         Get.lazyPut(() => OtpController());
+        Get.put(FirebaseController());
       }),
     ),
   );

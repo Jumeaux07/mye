@@ -19,7 +19,7 @@ class CinetpayView extends GetView<CinetpayController> {
           configData: <String, dynamic>{
             'apikey': API_KEY,
             'site_id': SITE_ID,
-            'notify_url': 'https://mye.franckprod.com/api/get-all-secteurs'
+            'notify_url': 'https://api.franckprod.com/api/get-all-secteurs'
           },
           paymentData: <String, dynamic>{
             'transaction_id': 'YOUR_TRANSACTION_ID',

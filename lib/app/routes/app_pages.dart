@@ -14,10 +14,14 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
+import '../modules/notification/bindings/notification_binding.dart';
+import '../modules/notification/views/notification_view.dart';
 import '../modules/profile_detail/bindings/profile_detail_binding.dart';
 import '../modules/profile_detail/views/profile_detail_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/register_main/bindings/register_main_binding.dart';
+import '../modules/register_main/views/register_main_view.dart';
 import '../modules/setting/bindings/setting_binding.dart';
 import '../modules/setting/views/setting_view.dart';
 import '../modules/splashscreen/bindings/splashscreen_binding.dart';
@@ -90,6 +94,16 @@ class AppPages {
       name: _Paths.SETTING,
       page: () => const SettingView(),
       binding: SettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATION,
+      page: () => const NotificationView(),
+      binding: NotificationBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER_MAIN,
+      page: () => const RegisterMainView(),
+      binding: RegisterMainBinding(),
     ),
   ];
 }

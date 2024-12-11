@@ -7,7 +7,7 @@ class UserModel {
   final String? pseudo;
   final String? secteurActivite;
   final String? adresseGeographique;
-  final String? competence;
+  final String? skill;
   final String? biographie;
   final String? phone;
   final String? email;
@@ -29,7 +29,7 @@ class UserModel {
     this.pseudo,
     this.secteurActivite,
     this.adresseGeographique,
-    this.competence,
+    this.skill,
     this.biographie,
     this.phone,
     this.email,
@@ -52,7 +52,7 @@ class UserModel {
     String? pseudo,
     String? secteurActivite,
     String? adresseGeographique,
-    String? competence,
+    String? skill,
     String? biographie,
     String? phone,
     String? email,
@@ -74,7 +74,7 @@ class UserModel {
         pseudo: pseudo ?? this.pseudo,
         secteurActivite: secteurActivite ?? this.secteurActivite,
         adresseGeographique: adresseGeographique ?? this.adresseGeographique,
-        competence: competence ?? this.competence,
+        skill: skill ?? this.skill,
         biographie: biographie ?? this.biographie,
         phone: phone ?? this.phone,
         email: email ?? this.email,
@@ -97,7 +97,7 @@ class UserModel {
         pseudo: json["pseudo"],
         secteurActivite: json["secteur_activite"],
         adresseGeographique: json["adresse_geographique"],
-        competence: json["competence"],
+        skill: json["skill"],
         biographie: json["biographie"],
         phone: json["phone"],
         email: json["email"],
@@ -127,7 +127,7 @@ class UserModel {
         "pseudo": pseudo,
         "secteur_activite": secteurActivite,
         "adresse_geographique": adresseGeographique,
-        "competence": competence,
+        "skill": skill,
         "biographie": biographie,
         "phone": phone,
         "email": email,
@@ -148,8 +148,8 @@ class UserModel {
   List<String> getCompetence() {
     List<String> competences;
 
-    if (competence != null) {
-      competences = competence.toString().split(',');
+    if (skill != null) {
+      competences = skill.toString().split(',');
     } else {
       competences = [];
     }

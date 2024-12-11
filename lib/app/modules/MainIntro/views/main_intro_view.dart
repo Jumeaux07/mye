@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/Login/views/login_view.dart';
 import 'package:nom_du_projet/app/modules/register/views/register_view.dart';
+import '../../../routes/app_pages.dart';
 import '../../../services/auh_service.dart';
 import '../../../widgets/bouttongoogle.dart';
 import '../../../widgets/goldbuttonlight.dart';
@@ -85,7 +86,7 @@ class MainIntroView extends GetView<MainIntroController> {
                       InkWell(
                         onTap: () {
                           box.write("is_first", false);
-                          Get.to(() => RegisterView());
+                          Get.offAllNamed(Routes.REGISTER);
                         },
                         child: Text(
                           "S'inscrire",

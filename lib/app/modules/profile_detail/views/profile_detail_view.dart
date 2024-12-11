@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
+import 'package:nom_du_projet/app/widgets/custombuttonsimple.dart';
 
 import '../../../data/constant.dart';
 import '../../../widgets/custom_alert.dart';
+import '../../../widgets/customtagtextfield.dart';
 import '../../../widgets/eperienceitem.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/skill.dart';
@@ -142,10 +144,12 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                     ),
                     // Informations de base
                     Visibility(
+                      replacement: Text("Aucune descriprtion"),
                       visible: controller.user.value.biographie == null
                           ? false
                           : true,
                       child: Card(
+                        elevation: 0.0,
                         child: Padding(
                           padding: EdgeInsets.all(16),
                           child: Column(
@@ -172,53 +176,123 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                     ),
                     // Expérience professionnelle
                     Visibility(
+                      replacement: Text("Aucune Expérience"),
                       visible: controller.user.value.experiences?.length == 0
                           ? false
                           : true,
                       child: Card(
+                          elevation: 0.0,
                           child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.all(16),
-                        itemCount:
-                            controller.user.value.experiences?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return ExperienceItem(
-                            company: controller.user.value.experiences?[index]
-                                    .nomEntreprise ??
-                                "",
-                            position: controller
-                                    .user.value.experiences?[index].poste ??
-                                "",
-                            period:
-                                "${controller.user.value.experiences?[index].dateDebut ?? ""} - ${controller.user.value.experiences?[index].dateDebut}",
-                          );
-                        },
-                      )),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(16),
+                            itemCount:
+                                controller.user.value.experiences?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return ExperienceItem(
+                                company: controller.user.value
+                                        .experiences?[index].nomEntreprise ??
+                                    "",
+                                position: controller
+                                        .user.value.experiences?[index].poste ??
+                                    "",
+                                period:
+                                    "${controller.user.value.experiences?[index].dateDebut ?? ""} - ${controller.user.value.experiences?[index].dateDebut}",
+                              );
+                            },
+                          )),
                     ),
 
                     SizedBox(height: 16),
-                    Text(
-                      'Compétences',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
+                            child: Text(
+                              'Compétences',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                              height: 50,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.defaultDialog(
+                                    title: "Compétences",
+                                    content: Column(
+                                      children: [
+                                        TagTextField(
+                                          onTagsChanged: (tags) {
+                                            controller.update(tags);
+                                            // Faire quelque chose avec les tags
+                                            print('Tags actuels : $tags');
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        CustomButton(
+                                          onPressed: () {
+                                            controller.updateSkill();
+                                          },
+                                          enabled: controller.tags.isNotEmpty,
+                                          label: "Valider",
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Visibility(
+                                  visible: box.read("id").toString() !=
+                                          controller.user.value.id.toString()
+                                      ? false
+                                      : true,
+                                  child: GoldIcons(
+                                    icon: Icons.edit,
+                                  ),
+                                ),
+                              )),
+                        ),
+                      ],
                     ),
                     // Compétences
                     Visibility(
+                      replacement: Text("Aucune compétence"),
                       visible: controller.user.value.getCompetence().length == 0
                           ? false
                           : true,
-                      child: Card(
-                          child: ListView.builder(
-                        itemCount: controller.user.value.getCompetence().length,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.all(16),
-                        itemBuilder: (context, index) {
-                          return SkillChip(
-                              controller.user.value.getCompetence()[index]);
-                        },
-                      )),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 100,
+                              child: Card(
+                                  elevation: 0.0,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: controller.user.value
+                                        .getCompetence()
+                                        .length,
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.all(16),
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SkillChip(controller.user.value
+                                            .getCompetence()[index]),
+                                      );
+                                    },
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

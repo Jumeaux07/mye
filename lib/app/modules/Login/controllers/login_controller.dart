@@ -43,6 +43,7 @@ class LoginController extends GetxController {
       box.write("email", user.value.email ?? "");
       box.write("id", user.value.id.toString());
       box.write("secteur_activite", user.value.secteurActivite ?? "");
+      _authProvider.updateFcmToken("${box.read("fcm_token")}");
       isLoginLaoding.value = false;
 
       if (user.value.isActive == 0) {

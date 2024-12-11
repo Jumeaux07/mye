@@ -15,6 +15,8 @@ abstract class Routes {
   static const CINETPAY = _Paths.CINETPAY;
   static const PROFILE_DETAIL = _Paths.PROFILE_DETAIL;
   static const SETTING = _Paths.SETTING;
+  static const NOTIFICATION = _Paths.NOTIFICATION;
+  static const REGISTER_MAIN = _Paths.REGISTER_MAIN;
 }
 
 abstract class _Paths {
@@ -31,4 +33,6 @@ abstract class _Paths {
   static const CINETPAY = '/cinetpay';
   static const PROFILE_DETAIL = '/profile-detail';
   static const SETTING = '/setting';
+  static const NOTIFICATION = '/notification';
+  static const REGISTER_MAIN = '/register-main';
 }

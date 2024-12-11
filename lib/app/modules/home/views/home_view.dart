@@ -9,7 +9,6 @@ import '../../../routes/app_pages.dart';
 import '../../../widgets/accueil_page.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/message.dart';
-import '../../../widgets/notifications.dart';
 import '../../abonnement/views/abonnement_view.dart';
 import '../controllers/home_controller.dart';
 
@@ -18,6 +17,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final profileDetailController = Get.find<ProfileDetailController>();
+    profileDetailController.showUser(controller.user.value.id.toString());
     return Obx(() => Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.white,
@@ -63,7 +63,7 @@ class HomeView extends GetView<HomeController> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(() => NotificationsView());
+                  Get.toNamed(Routes.NOTIFICATION);
                 },
                 child: GoldIcons(
                   size: 30,

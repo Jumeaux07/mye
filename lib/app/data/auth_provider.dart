@@ -9,6 +9,29 @@ class AuthProvider extends GetConnect {
     httpClient.baseUrl = baseUrl;
   }
 
+  Future<Response> updateFcmToken(String fcm_token) async {
+    final url = baseUrl + updateFcmTokenUrl;
+    var body = {"fcm_token": fcm_token};
+    Response response;
+
+    try {
+      response = await post(
+          url, headers: {"Authorization": "Bearer ${box.read("token")}"}, body);
+      if (response.isOk) {
+        log("Mise a jour du token de l'utilisateur: ${response.body}");
+      } else {
+        log("Erreur lors de la mise a jour du tokende l'utilisateur: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la mise a jour du tokende l'utilisateur: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la mise a jour du token de l'
+              'utilisateur');
+    }
+    return response;
+  }
+
   Future<Response> sendOtpRegister(Map<String, dynamic> data) async {
     final response = await post(baseUrl + registerUrl, data);
     return response;

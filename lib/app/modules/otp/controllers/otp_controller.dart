@@ -34,10 +34,11 @@ class OtpController extends GetxController {
   }
 
   Future<void> verifyOtpCode(String email, String otp, String password,
-      String passwordConfirmation) async {
+      String passwordConfirmation, String secteur_activite) async {
     isLoadingOtp(true);
     try {
       var data = {
+        "secteur_activite": secteur_activite,
         "email": email,
         "otp": otp,
         "password": password,

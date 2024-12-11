@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:pinput/pinput.dart';
 
-const baseUrl = "https://mye.franckprod.com/api";
+const baseUrl = "https://api.franckprod.com/api";
 const registerUrl = "/user/register/step1";
 const verifyOtpCodeUrl = "/user/otp_verify";
 const getAbonnementUrl = "/get-all-facturation";
@@ -14,6 +14,13 @@ const loginUrl = "/login";
 const getUserUrl = "/me";
 const updateUserUrl = "/update-profile";
 const updatePswdUrl = "/update-password";
+const updateSkilUrl = "/update-skill";
+const updateFcmTokenUrl = "/update-fcm-token";
+const getAllNotificationUrl = "/notifications";
+const readNotificationUrl = "/notifications-read/";
+const readAllNotificationUrl = "/notifications-read-all";
+const deleteNotificationUrl = "/delete-notification/";
+const deleteAllNotificationUrl = "/delete-all-notification/";
 
 const getSecteurUrl = "/get-all-secteurs";
 
@@ -51,4 +58,19 @@ String convertDate(String? dateEn) {
   DateTime date = DateTime.parse(dateEn ?? "");
   String formattedDate = DateFormat.yMMMMEEEEd('fr_FR').format(date);
   return formattedDate;
+}
+
+String formatTimestamp(DateTime timestamp) {
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+
+  if (difference.inMinutes < 60) {
+    return 'Il y a ${difference.inMinutes} min';
+  } else if (difference.inHours < 24) {
+    return 'Il y a ${difference.inHours}h';
+  } else if (difference.inDays < 7) {
+    return 'Il y a ${difference.inDays}j';
+  } else {
+    return DateFormat('dd/MM/yyyy').format(timestamp);
+  }
 }

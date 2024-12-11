@@ -120,10 +120,12 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                         hintText: 'Adresse',
                         noResultFoundText: "Aucune adresse",
                         decoration: CustomDropdownDecoration(
-                            closedFillColor:
-                                !Get.isDarkMode ? Colors.black : Colors.white,
-                            expandedFillColor:
-                                Get.isDarkMode ? Colors.black : Colors.white,
+                            closedFillColor: !Get.isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            expandedFillColor: Get.isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.white,
                             closedBorder: Border.all(),
                             closedBorderRadius: BorderRadius.circular(4)),
                         items: controller.positionAddressList,
@@ -131,44 +133,6 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                           controller.updateaddresse(value?.displayName ?? "");
                         },
                       ),
-                      SizedBox(height: 15),
-                      // Secteur d'activité récupéré depuis les données
-                      Text(
-                        "Secteur d'activité",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      CustomDropdown.search(
-                          noResultFoundText: "Aucun secteurs d'activité",
-                          decoration: CustomDropdownDecoration(
-                              closedFillColor:
-                                  !Get.isDarkMode ? Colors.black : Colors.white,
-                              expandedFillColor:
-                                  Get.isDarkMode ? Colors.black : Colors.white,
-                              closedBorder: Border.all(),
-                              closedBorderRadius: BorderRadius.circular(4)),
-                          hintText: "Selectionner un secteur d'activité",
-                          items: controller.secteursList,
-                          listItemBuilder:
-                              (context, item, isSelected, onItemSelect) {
-                            return Text(item.libelle ?? "");
-                          },
-                          headerBuilder: (context, selectedItem, enabled) {
-                            return Text(
-                              selectedItem.libelle ?? "",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w100,
-                                  color: Colors.black),
-                            );
-                          },
-                          onChanged: (value) {
-                            print("${controller.secteurController.value.text}");
-                            controller.updateSecteur(value?.libelle ?? "");
-                          }),
 
                       SizedBox(height: 15),
 

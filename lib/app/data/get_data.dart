@@ -197,4 +197,133 @@ class GetDataProvider extends GetConnect {
     }
     return response;
   }
+
+  Future<Response> updateSkill(String skill) async {
+    final url = baseUrl + updateSkilUrl;
+    var body = {"skill": skill};
+    Response response;
+
+    try {
+      response = await post(
+          url, headers: {"Authorization": "Bearer ${box.read("token")}"}, body);
+      if (response.isOk) {
+        log("Mise a jour des compétences de l'utilisateur: ${response.body}");
+      } else {
+        log("Erreur lors de la mise a jour des compétences de l'utilisateur: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la mise a jour des compétences de l'utilisateur: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la mise a jour des compétences  de l'
+              'utilisateur');
+    }
+    return response;
+  }
+
+  Future<Response> getAllNotification() async {
+    final url = baseUrl + getAllNotificationUrl;
+    Response response;
+
+    try {
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+      if (response.isOk) {
+        log("Récuperation des notifications de l'utilisateur: ${response.body}");
+      } else {
+        log("Erreur lors de la récuperation des notifications de l'utilisateur: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la récuperation des notifications de l'utilisateur: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la récuperation des notifications  de l'
+              'utilisateur');
+    }
+    return response;
+  }
+
+  Future<Response> readNotification(String id) async {
+    final url = baseUrl + readNotificationUrl + id;
+    Response response;
+
+    try {
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+      if (response.isOk) {
+        log("Lecture de notification ${response.body}");
+      } else {
+        log("Erreur lors de la lecture d'une notification: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la lecture d'une notification: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la lecture d\'une notification');
+    }
+    return response;
+  }
+
+  Future<Response> readAllNotification() async {
+    final url = baseUrl + readAllNotificationUrl;
+    Response response;
+
+    try {
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+      if (response.isOk) {
+        log("Lecture de toutes notification ${response.body}");
+      } else {
+        log("Erreur lors de la lecture de toutes notification: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la lecture de toutes notification: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la lecture de toutes notification');
+    }
+    return response;
+  }
+
+  Future<Response> deleteNotification(String id) async {
+    final url = baseUrl + deleteNotificationUrl + id;
+    Response response;
+
+    try {
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+      if (response.isOk) {
+        log("suppression de notification ${response.body}");
+      } else {
+        log("Erreur lors de la suppression d'une notification: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la suppression d'une notification: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la suppression d\'une notification');
+    }
+    return response;
+  }
+
+  Future<Response> deleteAllNotification() async {
+    final url = baseUrl + deleteAllNotificationUrl;
+    Response response;
+
+    try {
+      response = await get(url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"});
+      if (response.isOk) {
+        log("suppression de toutes notification ${response.body}");
+      } else {
+        log("Erreur lors de la suppression de toutes notification: ${response.body}");
+      }
+    } catch (e) {
+      log("Exception lors de la suppression de toutes notification: $e");
+      return Response(
+          statusCode: 500,
+          body: 'Erreur lors de la suppression de toutes notification');
+    }
+    return response;
+  }
 }

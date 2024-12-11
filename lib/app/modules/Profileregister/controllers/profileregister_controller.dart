@@ -7,7 +7,10 @@ import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/position_model.dart';
 import 'package:nom_du_projet/app/data/models/secteur_model.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
+import '../../../data/constant.dart';
 import '../../../services/image_picker_service.dart';
 import '../../../widgets/custom_alert.dart';
 
@@ -25,6 +28,8 @@ class ProfileregisterController extends GetxController
   final competenceController = TextEditingController().obs;
   final bioController = TextEditingController().obs;
   final query = TextEditingController().obs;
+  final RxList<String> skills = <String>[].obs;
+  final skillsController = StringTagController().obs;
   final imageEnBase64 = "".obs;
   final ImagePickerService _imagePickerService = ImagePickerService();
 
@@ -116,6 +121,12 @@ class ProfileregisterController extends GetxController
           imageEnBase64.value);
 
       if (response.statusCode == 200) {
+        change(null, status: RxStatus.success());
+        await ProfileDetailController().showUser("${box.read("user_id_show")}");
+        update();
+        Get.back();
+        Get.back();
+
         nomController.value.clear();
         prenomController.value.clear();
         villeController.value.clear();
@@ -125,17 +136,16 @@ class ProfileregisterController extends GetxController
         bioController.value.clear();
         cleanImagebase64();
         query.value.clear();
-
-        UserModel userModel = UserModel.fromJson(response.body['data']);
-        Get.dialog(CustomAlertDialog(
-            success: true,
-            message: response.body['message'],
-            onPressed: () {
-              Get.back();
-              Get.back();
-            },
-            showAlertIcon: true));
-        change(userModel, status: RxStatus.success());
+//
+        // UserModel userModel = UserModel.fromJson(response.body['data']);
+        // Get.dialog(CustomAlertDialog(
+        //     success: true,
+        //     message: response.body['message'],
+        //     onPressed: () async {
+        //       Get.back();
+        //       Get.back();
+        //     },
+        // showAlertIcon: true));
       } else {
         change(null,
             status: RxStatus.error(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
-import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/CustomTextField.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 

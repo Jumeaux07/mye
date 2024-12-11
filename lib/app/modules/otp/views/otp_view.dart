@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../data/constant.dart';
@@ -17,6 +18,7 @@ class OtpView extends GetView<OtpController> {
   final String? passwordConfirmation;
 
   final registerController = Get.find<RegisterController>();
+  final profileRegisterController = Get.find<ProfileregisterController>();
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,9 @@ class OtpView extends GetView<OtpController> {
                                 email ?? "",
                                 controller.pinController.value.text,
                                 password ?? "",
-                                passwordConfirmation ?? "");
+                                passwordConfirmation ?? "",
+                                profileRegisterController
+                                    .secteurController.value.text);
                           }),
                     ),
                     InkWell(
