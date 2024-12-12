@@ -14,6 +14,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
+import '../modules/messagerie/bindings/messagerie_binding.dart';
+import '../modules/messagerie/views/messagerie_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/profile_detail/bindings/profile_detail_binding.dart';
@@ -105,5 +107,10 @@ class AppPages {
       page: () => const RegisterMainView(),
       binding: RegisterMainBinding(),
     ),
+    // GetPage(
+    //   name: _Paths.MESSAGERIE,
+    //   page: () => const MessagerieView(),
+    //   binding: MessagerieBinding(),
+    // ),
   ];
 }

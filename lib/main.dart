@@ -8,6 +8,7 @@ import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
 
+import 'app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'app/modules/abonnement/controllers/abonnement_controller.dart';
 import 'app/modules/otp/controllers/otp_controller.dart';
 import 'app/modules/profile_detail/controllers/profile_detail_controller.dart';
@@ -40,6 +41,7 @@ Future<void> main() async {
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
         Get.put(SplashscreenController());
+        Get.put(ProfileregisterController());
         Get.put(AbonnementController());
         Get.put(ProfileDetailController());
         Get.lazyPut(() => OtpController());

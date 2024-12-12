@@ -81,7 +81,9 @@ class LoginView extends GetView<LoginController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: () => Get.offAllNamed(Routes.REGISTER),
+                    onTap: () {
+                      Get.offAllNamed(Routes.REGISTER);
+                    },
                     child: Text(
                       "S'inscrire",
                       style:

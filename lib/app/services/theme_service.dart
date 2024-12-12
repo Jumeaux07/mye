@@ -31,7 +31,7 @@ class ThemeService {
       iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: const TextStyle(
         color: Colors.white,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -61,7 +61,7 @@ class ThemeService {
       iconTheme: const IconThemeData(color: Colors.white),
       titleTextStyle: const TextStyle(
         color: Colors.white,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
     ),

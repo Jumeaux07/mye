@@ -11,6 +11,7 @@ import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_det
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../../../data/constant.dart';
+import '../../../routes/app_pages.dart';
 import '../../../services/image_picker_service.dart';
 import '../../../widgets/custom_alert.dart';
 
@@ -94,6 +95,8 @@ class ProfileregisterController extends GetxController
               (e) => SecteurModel.fromJson(e),
             )
             .toList();
+        update();
+        print("List => ${secteursList}");
         change(secteursList, status: RxStatus.success());
       } else {
         change(null,
@@ -122,7 +125,6 @@ class ProfileregisterController extends GetxController
 
       if (response.statusCode == 200) {
         change(null, status: RxStatus.success());
-        await ProfileDetailController().showUser("${box.read("user_id_show")}");
         update();
         Get.back();
         Get.back();
@@ -137,7 +139,7 @@ class ProfileregisterController extends GetxController
         cleanImagebase64();
         query.value.clear();
 //
-        // UserModel userModel = UserModel.fromJson(response.body['data']);
+        UserModel userModel = UserModel.fromJson(response.body['data']);
         // Get.dialog(CustomAlertDialog(
         //     success: true,
         //     message: response.body['message'],
@@ -146,6 +148,9 @@ class ProfileregisterController extends GetxController
         //       Get.back();
         //     },
         // showAlertIcon: true));
+        await ProfileDetailController()
+            .showUser("${box.write("user_id_show", userModel.id.toString())}");
+        Get.offAllNamed(Routes.HOME);
       } else {
         change(null,
             status: RxStatus.error(

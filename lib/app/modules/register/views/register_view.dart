@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
-
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
 import '../../../widgets/customEmailTextField.dart';
@@ -57,6 +56,7 @@ class RegisterView extends GetView<RegisterController> {
                         SizedBox(
                           height: 15,
                         ),
+
                         Custompasswordtextfield(
                             passwordController:
                                 controller.passwordController.value,

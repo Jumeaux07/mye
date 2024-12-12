@@ -4,6 +4,7 @@ import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
 import '../../../data/constant.dart';
+import '../../../routes/app_pages.dart';
 
 class OtpController extends GetxController {
   final pinController = TextEditingController().obs;
@@ -56,7 +57,7 @@ class OtpController extends GetxController {
                   message: json["message"],
                   onPressed: () {
                     Get.back();
-                    Get.offAllNamed('home');
+                    Get.offAllNamed(Routes.PROFILEREGISTER);
                   },
                   showAlertIcon: true,
                 ));

@@ -17,6 +17,7 @@ abstract class Routes {
   static const SETTING = _Paths.SETTING;
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const REGISTER_MAIN = _Paths.REGISTER_MAIN;
+  static const MESSAGERIE = _Paths.MESSAGERIE;
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const SETTING = '/setting';
   static const NOTIFICATION = '/notification';
   static const REGISTER_MAIN = '/register-main';
+  static const MESSAGERIE = '/messagerie';
 }

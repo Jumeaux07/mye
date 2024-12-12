@@ -4,6 +4,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/models/position_model.dart';
+import 'package:nom_du_projet/app/data/models/secteur_model.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 import '../../../services/image_picker_service.dart';
 import '../../../widgets/CustomTextField.dart';
@@ -87,6 +88,46 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                         textController: controller.prenomController.value,
                         label: 'Prénoms',
                       ),
+                      SizedBox(height: 15),
+                      //Champs Secteur
+                      Text(
+                        "Secteur d'activité",
+                        style: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
+                      CustomDropdown<SecteurModel>.search(
+                        controller: SingleSelectController(
+                            controller.secteursList.first),
+                        searchHintText: "Secteur d'activité",
+                        headerBuilder: (context, selectedItem, enabled) {
+                          return Text(
+                            "${selectedItem.libelle ?? ""}",
+                            style: TextStyle(color: Colors.black),
+                          );
+                        },
+                        listItemBuilder:
+                            (context, item, isSelected, onItemSelect) {
+                          return Text("${item.libelle ?? ""}");
+                        },
+                        hintText: 'Secteur d\'activité',
+                        noResultFoundText: "Aucun secteur d'activité",
+                        decoration: CustomDropdownDecoration(
+                            closedFillColor: !Get.isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            expandedFillColor: Get.isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            closedBorder: Border.all(),
+                            closedBorderRadius: BorderRadius.circular(4)),
+                        items: controller.secteursList,
+                        onChanged: (value) {
+                          controller.updateSecteur(value?.libelle ?? "");
+                        },
+                      ),
+
                       SizedBox(height: 15),
                       //Champs Adresse
                       Text(
