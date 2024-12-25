@@ -5,6 +5,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
+import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
 
@@ -40,6 +41,7 @@ Future<void> main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
+         Get.put(HomeController());
         Get.put(SplashscreenController());
         Get.put(ProfileregisterController());
         Get.put(AbonnementController());

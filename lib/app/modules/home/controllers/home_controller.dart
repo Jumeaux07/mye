@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
-import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 
+import '../../../data/constant.dart';
 import '../../../data/get_data.dart';
 
 class HomeController extends GetxController with StateMixin<dynamic> {
@@ -38,6 +40,11 @@ class HomeController extends GetxController with StateMixin<dynamic> {
 
       if (response.statusCode == 200) {
         user.value = UserModel.fromJson(response.body['data']);
+        Env.userAuth = UserModel.fromJson(response.body['data']);
+        // Env.usertoken = response.body['token'];
+        Env.skill = response.body['data']['skill'].toString().split(',');
+    
+        log("${Env.userAuth.toJson()}");
         change(user, status: RxStatus.success());
       } else {
         change(null,

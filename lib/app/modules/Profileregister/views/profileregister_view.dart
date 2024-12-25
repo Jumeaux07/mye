@@ -20,197 +20,74 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
   Widget build(BuildContext context) {
     final profiledetailController = Get.put(ProfileDetailController());
     final _imagePickerService = ImagePickerService();
-    return Scaffold(
-      body: SafeArea(
-        child: controller.obx(
-          (data) => ListView(
-            padding: EdgeInsets.all(15),
-            children: [
-              //AppBar
-              Customappbar(
-                onTap: () {
-                  Get.back();
-                },
-              ),
-              //Avatar
-              Obx(() => Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          await controller.pickImage();
-                        },
-                        child: controller.imageEnBase64.value.isEmpty
-                            ? CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    profiledetailController
-                                            .user.value.profileImage ??
-                                        "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996"),
-                                radius: 50,
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(90),
-                                child: SizedBox(
-                                  width: 110,
-                                  height: 110,
-                                  child: _imagePickerService.displayBase64Image(
-                                      controller.imageEnBase64.value),
+    return Obx(() => Scaffold(
+          body: SafeArea(
+            child:Center(
+              child: ListView(
+                  padding: EdgeInsets.all(15),
+                  children: [
+                    //AppBar
+                    Customappbar(
+                      onTap: () {
+                        Get.back();
+                      },
+                    ),
+                    //Avatar
+                  Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                await controller.pickImage();
+                              },
+                              child: controller.imageEnBase64.value.isEmpty
+                                  ? CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          profiledetailController
+                                                  .user.value.profileImage ??
+                                              "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996"),
+                                  radius: 50,
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(90),
+                                  child: SizedBox(
+                                    width: 110,
+                                    height: 110,
+                                    child: _imagePickerService.displayBase64Image(
+                                        controller.imageEnBase64.value),
+                                  ),
                                 ),
-                              ),
-                      ),
-                    ],
-                  )),
-              SizedBox(height: 30),
-              //Formulaire
+                        ),
+                      ],
+                    ),
+                SizedBox(height: 30),
+                //Formulaire
               Container(
-                child: Form(
-                  key: key,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //Titre
-                      Text(
-                        "Profil",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 30),
-                      //Champs du formulaire
-                      Customtextfield(
-                        textController: controller.nomController.value,
-                        label: 'Nom',
-                      ),
-                      SizedBox(height: 15),
-                      //Champs prenoms
-                      Customtextfield(
-                        textController: controller.prenomController.value,
-                        label: 'Prénoms',
-                      ),
-                      SizedBox(height: 15),
-                      //Champs Secteur
-                      Text(
-                        "Secteur d'activité",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                      CustomDropdown<SecteurModel>.search(
-                        controller: SingleSelectController(
-                            controller.secteursList.first),
-                        searchHintText: "Secteur d'activité",
-                        headerBuilder: (context, selectedItem, enabled) {
-                          return Text(
-                            "${selectedItem.libelle ?? ""}",
-                            style: TextStyle(color: Colors.black),
-                          );
-                        },
-                        listItemBuilder:
-                            (context, item, isSelected, onItemSelect) {
-                          return Text("${item.libelle ?? ""}");
-                        },
-                        hintText: 'Secteur d\'activité',
-                        noResultFoundText: "Aucun secteur d'activité",
-                        decoration: CustomDropdownDecoration(
-                            closedFillColor: !Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            expandedFillColor: Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            closedBorder: Border.all(),
-                            closedBorderRadius: BorderRadius.circular(4)),
-                        items: controller.secteursList,
-                        onChanged: (value) {
-                          controller.updateSecteur(value?.libelle ?? "");
-                        },
-                      ),
-
-                      SizedBox(height: 15),
-                      //Champs Adresse
-                      Text(
-                        "Adresse",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                      CustomDropdown<PositionModel>.searchRequest(
-                        controller: SingleSelectController(PositionModel(
-                            displayName:
-                                controller.adresseController.value.text == ""
-                                    ? "Entrez votre adresse"
-                                    : controller.adresseController.value.text)),
-                        searchHintText: "Entrez votre adresse",
-                        headerBuilder: (context, selectedItem, enabled) {
-                          return Text(
-                            "${selectedItem.displayName ?? ""}",
-                            style: TextStyle(color: Colors.black),
-                          );
-                        },
-                        listItemBuilder:
-                            (context, item, isSelected, onItemSelect) {
-                          return Text("${item.displayName ?? ""}");
-                        },
-                        futureRequest: (value) {
-                          return controller.findPositionAddress(value);
-                        },
-                        futureRequestDelay: Duration(milliseconds: 1500),
-                        hintText: 'Adresse',
-                        noResultFoundText: "Aucune adresse",
-                        decoration: CustomDropdownDecoration(
-                            closedFillColor: !Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            expandedFillColor: Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            closedBorder: Border.all(),
-                            closedBorderRadius: BorderRadius.circular(4)),
-                        items: controller.positionAddressList,
-                        onChanged: (value) {
-                          controller.updateaddresse(value?.displayName ?? "");
-                        },
-                      ),
-
-                      SizedBox(height: 15),
-
-                      Customtextfield(
-                        textController: controller.bioController.value,
-                        label: 'Bio',
-                      ),
-                      SizedBox(height: 15),
-                      //Bouton Suivant
-                      GoldButtonLight(
-                          isLoading: false,
-                          label: 'Suivant',
-                          onTap: () {
-                            controller.updateUser(
-                                controller.nomController.value.text,
-                                controller.prenomController.value.text,
-                                controller.secteurController.value.text,
-                                controller.adresseController.value.text,
-                                controller.bioController.value.text);
-                          }),
-                    ],
+                                child: Form(
+                                  key: key,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      //Titre
+                                    
+                        //Bouton Suivant
+                        GoldButtonLight(
+                            isLoading: false,
+                            label: 'Suivant',
+                            onTap: () {
+                              profiledetailController.updateImageProfile(controller.imageEnBase64.value);
+                            })
+                           
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          onLoading: Center(child: CircularProgressIndicator()),
-          onError: (error) {
-            return CustomAlertDialog(
-                message: "$error",
-                onPressed: () {
-                  controller.getSecteur();
-                },
-                showAlertIcon: true);
-          },
+              ],
+            ),
         ),
-      ),
+          
+        ),
+      )
     );
   }
 }

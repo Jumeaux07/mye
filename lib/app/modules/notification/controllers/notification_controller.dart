@@ -21,7 +21,7 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
       } else {
         change(null,
             status: RxStatus.error(
-                "Une erreur s'est produite lors du chargement de données"));
+                "Une erreur s'est produite lors du chargement de données ${response.body}"));
       }
     } catch (e) {
       change(null,

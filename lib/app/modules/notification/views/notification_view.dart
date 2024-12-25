@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 import '../../../widgets/notificationItem.dart';
 import '../controllers/notification_controller.dart';
 
@@ -8,6 +9,7 @@ class NotificationView extends GetView<NotificationController> {
   const NotificationView({super.key});
   @override
   Widget build(BuildContext context) {
+     controller.getAllNotification();
     return Scaffold(
       appBar: AppBar(
         title: Text('Notifications'),
@@ -43,13 +45,22 @@ class NotificationView extends GetView<NotificationController> {
         ],
       ),
       body: controller.obx(
-          (data) => RefreshIndicator(
+          (data) =>controller.listNotification.length == 0?   Center(
+            child: Text(
+                    'Aucune notification',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500
+                    ),
+                  ),
+          ):  RefreshIndicator(
                 onRefresh: () async {
                   // TODO: Rafraîchir les notifications
                   await Future.delayed(Duration(seconds: 1));
                   controller.getAllNotification();
                 },
-                child: ListView.builder(
+                child:  ListView.builder(
                   itemCount: controller.listNotification.length,
                   itemBuilder: (context, index) {
                     return Notificationitem(
@@ -58,6 +69,7 @@ class NotificationView extends GetView<NotificationController> {
                   },
                 ),
               ),
+             onLoading: Center(child: CircularProgressIndicator(),),
           onEmpty: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -16,7 +16,7 @@ class AuthProvider extends GetConnect {
 
     try {
       response = await post(
-          url, headers: {"Authorization": "Bearer ${box.read("token")}"}, body);
+          url, headers: {"Authorization": "Bearer ${Env.usertoken}"}, body);
       if (response.isOk) {
         log("Mise a jour du token de l'utilisateur: ${response.body}");
       } else {

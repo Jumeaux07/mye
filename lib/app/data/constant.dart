@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:pinput/pinput.dart';
 
@@ -10,11 +11,18 @@ const verifyOtpCodeUrl = "/user/otp_verify";
 const getAbonnementUrl = "/get-all-facturation";
 const getAllUserUrl = "/get-all-profile";
 const showUserUrl = "/show-profile/";
+const updateProfillUrl = "/update-profile";
 const loginUrl = "/login";
 const getUserUrl = "/me";
-const updateUserUrl = "/update-profile";
+const startconversationUrl = "/startConversation";
 const updatePswdUrl = "/update-password";
 const updateSkilUrl = "/update-skill";
+const updateImageUrl = "/update-imageprofile";
+const updateBioUrl = "/update-bio";
+const getConversation = "get-conversation";
+const getmessageUrl = "/get-message/";
+const updateExperienceUrl = "/update-experience";
+const sendMessageUrl = "send-message";
 const updateFcmTokenUrl = "/update-fcm-token";
 const getAllNotificationUrl = "/notifications";
 const readNotificationUrl = "/notifications-read/";
@@ -74,3 +82,12 @@ String formatTimestamp(DateTime timestamp) {
     return DateFormat('dd/MM/yyyy').format(timestamp);
   }
 }
+
+class Env {
+ static UserModel userAuth = UserModel();
+  static UserModel userOther = UserModel();
+ static String usertoken = "";
+static List<String> skill = [];
+}
+
+final dateFormatter = DateFormat('yyyy-MM-dd'); 

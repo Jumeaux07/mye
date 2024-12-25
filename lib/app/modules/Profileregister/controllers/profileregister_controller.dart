@@ -24,6 +24,8 @@ class ProfileregisterController extends GetxController
   final nomController = TextEditingController().obs;
   final prenomController = TextEditingController().obs;
   final villeController = TextEditingController().obs;
+  final ville = "".obs;
+  final activite = "".obs;
   final adresseController = TextEditingController().obs;
   final secteurController = TextEditingController().obs;
   final competenceController = TextEditingController().obs;
@@ -32,6 +34,7 @@ class ProfileregisterController extends GetxController
   final RxList<String> skills = <String>[].obs;
   final skillsController = StringTagController().obs;
   final imageEnBase64 = "".obs;
+  final isLoading = false.obs;
   final ImagePickerService _imagePickerService = ImagePickerService();
 
   final adresse =
@@ -62,14 +65,17 @@ class ProfileregisterController extends GetxController
   }
 
   void updateVille(String value) {
+    ville.value = value;
     villeController.value.text = value;
   }
 
   void updateSecteur(String value) {
+    activite.value = value;
     secteurController.value.text = value;
   }
 
   void updateaddresse(String value) {
+    ville.value = value;
     adresseController.value.text = value;
   }
 
@@ -110,46 +116,24 @@ class ProfileregisterController extends GetxController
     }
   }
 
-  Future<void> updateUser(String? nom, String? prenom, String? secteur_activite,
-      String? adresse_geographique, String? biographie) async {
+    Future<void> updateImage() async {
+        // return log("$nom $prenom $secteur_activite $adresse_geographique $biographie"); 
     try {
       change(null, status: RxStatus.loading());
 
-      final response = await _dataProvider.updateUser(
-          nom,
-          prenom,
-          secteur_activite,
-          adresse_geographique,
-          biographie,
+      final response = await _dataProvider.updateImageProfile(
           imageEnBase64.value);
 
       if (response.statusCode == 200) {
+        Env.userAuth = UserModel.fromJson(response.body['data']);
         change(null, status: RxStatus.success());
+          await ProfileDetailController().showUser("${Env.userAuth.id}}");
         update();
-        Get.back();
-        Get.back();
-
-        nomController.value.clear();
-        prenomController.value.clear();
-        villeController.value.clear();
-        adresseController.value.clear();
-        secteurController.value.clear();
-        competenceController.value.clear();
-        bioController.value.clear();
         cleanImagebase64();
         query.value.clear();
-//
-        UserModel userModel = UserModel.fromJson(response.body['data']);
-        // Get.dialog(CustomAlertDialog(
-        //     success: true,
-        //     message: response.body['message'],
-        //     onPressed: () async {
-        //       Get.back();
-        //       Get.back();
-        //     },
-        // showAlertIcon: true));
+      
         await ProfileDetailController()
-            .showUser("${box.write("user_id_show", userModel.id.toString())}");
+            .showUser("${Env.userAuth.id}");
         Get.offAllNamed(Routes.HOME);
       } else {
         change(null,
@@ -157,9 +141,11 @@ class ProfileregisterController extends GetxController
                 "Une erreur s'est produite: ${response.body['message'] != null ? response.body['message'] : "Une erreur s'est produite"}"));
       }
     } catch (e) {
-      change(null, status: RxStatus.error("Une erreur s'est produite $e"));
+      change(null, status: RxStatus.error("Une erreur s'est produitee $e"));
     }
   }
+
+  
 
   Future<List<PositionModel>> findPositionAddress(String query) async {
     try {

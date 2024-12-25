@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 
+import '../../../data/constant.dart';
+
 class SplashscreenController extends GetxController {
   final splashLoading = true.obs;
   final box = GetStorage();
@@ -19,13 +21,14 @@ class SplashscreenController extends GetxController {
 
     log('is_first: $isFirst');
     log('is_active: ${box.read("is_active")}');
+    log('is_active: ${Env.userAuth.isActive}}');
 
     if (isFirst == false) {
       // Si ce n'est pas la première fois
-      if (box.hasData("token")) {
+      if (box.read("token") != "") {
         // Si le token existe
         log('Token trouvé');
-        if (box.read("is_active") == 1) {
+        if(Env.userAuth.isActive == 1) {
           // Si l'utilisateur est actif (profil complété)
           log('Utilisateur actif');
           Future.delayed(const Duration(seconds: 5)).then((_) {
@@ -34,7 +37,7 @@ class SplashscreenController extends GetxController {
         } else {
           log('Utilisateur inactif, redirection vers register');
           Future.delayed(const Duration(seconds: 5)).then((_) {
-            Get.offAllNamed(Routes.PROFILEREGISTER);
+            Get.offAllNamed(Routes.HOME);
           });
         }
       } else {

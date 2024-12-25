@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 
+import '../data/constant.dart';
+
 class TagTextField extends StatefulWidget {
   final void Function(List<String> tags) onTagsChanged;
   final String? hintText;
@@ -22,11 +24,11 @@ class TagTextField extends StatefulWidget {
 
 class _TagTextFieldState extends State<TagTextField> {
   final TextEditingController _controller = TextEditingController();
-  final ProfileDetailController _profile_detail_controller = Get.find();
 
   @override
   void initState() {
     super.initState();
+    _controller.text = Env.userAuth.skill??"";
     _controller.addListener(_onTextChanged);
   }
 
@@ -39,36 +41,36 @@ class _TagTextFieldState extends State<TagTextField> {
       String newTag = text.substring(0, text.length - 1).trim();
 
       if (newTag.isNotEmpty &&
-          !_profile_detail_controller.tags.contains(newTag)) {
+          !Env.skill.contains(newTag)) {
         setState(() {
-          _profile_detail_controller.tags.add(newTag);
+          Env.skill.add(newTag);
           _controller.clear();
         });
 
         // Appelle le callback avec la liste mise à jour des tags
-        widget.onTagsChanged(_profile_detail_controller.tags);
+        widget.onTagsChanged(Env.skill);
       }
     }
   }
 
   void _removeTag(String tag) {
     setState(() {
-      _profile_detail_controller.tags.remove(tag);
+      Env.skill.remove(tag);
     });
-    widget.onTagsChanged(_profile_detail_controller.tags);
+    widget.onTagsChanged(Env.skill);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Column(
+    return  Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Affichage des tags existants
-            if (_profile_detail_controller.tags.isNotEmpty)
+            if (Env.skill.isNotEmpty)
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
-                children: _profile_detail_controller.tags.map((tag) {
+                children: Env.skill.map((tag) {
                   return Chip(
                     label: Text(tag),
                     onDeleted: () => _removeTag(tag),
@@ -92,7 +94,7 @@ class _TagTextFieldState extends State<TagTextField> {
               style: widget.textStyle,
             ),
           ],
-        ));
+        );
   }
 
   @override

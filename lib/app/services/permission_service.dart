@@ -79,6 +79,7 @@ class PermissionService {
       alert: true,
       badge: true,
       sound: true,
+      provisional: true
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {

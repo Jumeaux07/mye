@@ -4,6 +4,7 @@ import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
 import '../../../data/constant.dart';
+import '../../../data/models/user_model.dart';
 import '../../../routes/app_pages.dart';
 
 class OtpController extends GetxController {
@@ -39,7 +40,6 @@ class OtpController extends GetxController {
     isLoadingOtp(true);
     try {
       var data = {
-        "secteur_activite": secteur_activite,
         "email": email,
         "otp": otp,
         "password": password,
@@ -49,7 +49,10 @@ class OtpController extends GetxController {
       var json = response.body;
 
       if (response.statusCode == 200) {
-        box.write("token", json["token"]);
+        print("${json["user"]}");
+        Env.userAuth = UserModel.fromJson(json["user"]);
+        Env.usertoken = json["token"];
+        box.write("token",json["token"] );
         showDialog(
             context: Get.context!,
             builder: (_) => CustomAlertDialog(
@@ -57,7 +60,7 @@ class OtpController extends GetxController {
                   message: json["message"],
                   onPressed: () {
                     Get.back();
-                    Get.offAllNamed(Routes.PROFILEREGISTER);
+                    Get.offAllNamed(Routes.HOME);
                   },
                   showAlertIcon: true,
                 ));
@@ -78,7 +81,7 @@ class OtpController extends GetxController {
       showDialog(
           context: Get.context!,
           builder: (_) => CustomAlertDialog(
-                message: e.toString(),
+                message: "Exception ${e}",
                 onPressed: () {
                   Get.back();
                 },

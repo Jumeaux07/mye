@@ -60,7 +60,7 @@ class Accueil extends GetView<HomeController> {
                   return GestureDetector(
                     onTap: () {
                       profiledetailController
-                          .showUser(controller.userList[index].id.toString());
+                          .showUserOther(controller.userList[index].id.toString());
                     },
                     child: ProfileCard(
                       image: controller.userList[index].profileImage,

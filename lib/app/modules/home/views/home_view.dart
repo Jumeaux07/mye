@@ -9,6 +9,7 @@ import '../../../routes/app_pages.dart';
 import '../../../widgets/accueil_page.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/message.dart';
+import '../../../widgets/message/conversation_screen.dart';
 import '../../abonnement/views/abonnement_view.dart';
 import '../controllers/home_controller.dart';
 
@@ -17,7 +18,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final profileDetailController = Get.find<ProfileDetailController>();
-    profileDetailController.showUser(controller.user.value.id.toString());
+    // profileDetailController.showUser(Env.userAuth.id.toString());
     return Obx(() => Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.white,
@@ -41,8 +42,7 @@ class HomeView extends GetView<HomeController> {
           appBar: AppBar(
             leading: InkWell(
               onTap: () {
-                profileDetailController
-                    .showUser(controller.user.value.id.toString());
+                Get.toNamed(Routes.PROFILE_DETAIL);
               },
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
@@ -71,18 +71,14 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
             ],
-            title: Text("${controller.user.value.pseudo ?? ""}! 👋"),
+            title: Text("${Env.userAuth.pseudo ?? ""}! 👋"),
             centerTitle: true,
           ),
           body: controller.selectedIndex.value == 0
               ? Accueil()
               : controller.selectedIndex.value == 1
                   ? AbonnementView()
-                  : ChatView(
-                      currentUserId: '12',
-                      recipientId: '21',
-                      recipientName: 'Essis',
-                    ),
+                  : ConversationsScreen()
         ));
   }
 }

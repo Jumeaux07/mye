@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/widgets/customPasswordTextField.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
@@ -17,6 +18,7 @@ class SettingView extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     final profiledetailController = Get.find<ProfileDetailController>();
+    final homeController = Get.find<HomeController>();
     return Obx(() => Scaffold(
           appBar: AppBar(
             title: Text('Paramètres'),
@@ -29,22 +31,21 @@ class SettingView extends GetView<SettingController> {
                 [
                   ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(profiledetailController
-                              .user.value.profileImage ??
+                      backgroundImage: NetworkImage(Env.userAuth.profileImage ??
                           'https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996'),
                       radius: 25,
                     ),
-                    title: profiledetailController.user.value.prenom == null
+                    title: Env.userAuth.prenom == null
                         ? Text(
-                            "${profiledetailController.user.value.pseudo ?? ""}")
+                            "${Env.userAuth.pseudo  ?? ""}")
                         : Text(
-                            "${profiledetailController.user.value.prenom ?? ""} ${profiledetailController.user.value.nom ?? ""}"),
+                            "${Env.userAuth.prenom ?? Env.userAuth.pseudo} ${Env.userAuth.nom ?? ""}"),
                     subtitle:
-                        Text(profiledetailController.user.value.email ?? ""),
+                        Text(Env.userAuth.email ?? ""),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
                       // TODO: Navigation vers édition du profil
-                      profiledetailController.showUser("${box.read("id")}");
+                    Get.toNamed(Routes.PROFILE_DETAIL);
                     },
                   ),
                 ],
@@ -355,6 +356,7 @@ class SettingView extends GetView<SettingController> {
             TextButton(
               child: Text('Se déconnecter'),
               onPressed: () {
+                
                 box.erase();
                 Get.offAllNamed(Routes.LOGIN);
               },

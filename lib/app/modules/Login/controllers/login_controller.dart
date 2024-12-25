@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
@@ -36,16 +38,12 @@ class LoginController extends GetxController {
     final response = await _authProvider.login(data);
 
     if (response.statusCode == 200) {
-      box.write("token", response.body["token"]);
-      box.write("is_active", response.body["is_active"]);
-      user.value = UserModel.fromJson(response.body["user"]);
-      box.write("username", user.value.secteurActivite ?? "");
-      box.write("email", user.value.email ?? "");
-      box.write("id", user.value.id.toString());
-      box.write("secteur_activite", user.value.secteurActivite ?? "");
+      box.write("token", "${response.body["token"]}");
+     Env.usertoken = response.body["token"];
+      Env.userAuth = UserModel.fromJson(response.body["user"]);
+      log("$Env");
       _authProvider.updateFcmToken("${box.read("fcm_token")}");
       isLoginLaoding.value = false;
-
       if (user.value.isActive == 0) {
         showDialog(
             context: Get.context!,

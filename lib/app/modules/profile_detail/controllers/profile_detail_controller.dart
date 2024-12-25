@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
+import 'package:nom_du_projet/app/widgets/detailspageother.dart';
 
 import '../../../data/constant.dart';
 import '../../../routes/app_pages.dart';
@@ -12,24 +15,125 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
 
   final _getData = GetDataProvider();
   final user = UserModel().obs;
+    final userOther = UserModel().obs;
+  final bio = TextEditingController().obs;
+   final poste = TextEditingController().obs;
+    final entreprise = TextEditingController().obs;
+     final debut = TextEditingController().obs;
+      final fin = TextEditingController().obs;
   final profilreregisterController = Get.put(ProfileregisterController());
   final tags = <String>[].obs;
+  final GetDataProvider _dataProvider = GetDataProvider();
+    var isLoading = false.obs;
+  var error = Rxn<String>(); 
 
   void updateTags(String value) {
     tags.add(value);
     update();
   }
 
+
+
   Future<void> updateSkill() async {
+  
     try {
       change(null, status: RxStatus.loading());
-      final response = await _getData.updateSkill(tags.join(','));
+      final response = await _getData.updateSkill(Env.skill.join(','));
+      if (response.statusCode == 200) {
+         Env.userAuth = UserModel.fromJson(response.body['data']);
+        change(user, status: RxStatus.success());
+        await showUser("${Env.userAuth.id}");
+        update();
+        
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
+
+    Future<void> updateBio() async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateBio(bio.value.text);
+      if (response.statusCode == 200) {
+        Env.userAuth = UserModel.fromJson(response.body['data']);
+        change(user, status: RxStatus.success());
+        await showUser("${Env.userAuth.id}");
+        update();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
+
+    Future<void> updateProfile(String nom,String prenom, String secteur,String ville) async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateProfile(nom, prenom, secteur, ville);
+      if (response.statusCode == 200) {
+       Env.userAuth = UserModel.fromJson(response.body['data']);
+        change(user, status: RxStatus.success());
+        await showUser("${Env.userAuth.id}");
+        update();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
+
+
+       Future<void> updateExperience(String poste,String entreprise, String dateDebut,String dateFin) async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateExperience(
+        poste, entreprise, dateDebut, dateFin
+        );
 
       if (response.statusCode == 200) {
+       Env.userAuth = UserModel.fromJson(response.body['data']);
         change(user, status: RxStatus.success());
-        await showUser("${box.read("user_id_show")}");
+        await showUser("${box.read("${Env.userAuth.id}")}");
         update();
-        Get.back();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
+
+       Future<void> updateImageProfile(String image) async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateImageProfile(image);
+
+      if (response.statusCode == 200) {
+         Env.userAuth = UserModel.fromJson(response.body['data']);
+        change(user, status: RxStatus.success());
+        await showUser("${box.read("${Env.userAuth.id}")}");
+        update();
       } else {
         change(null,
             status: RxStatus.error(
@@ -44,29 +148,51 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
 
   Future<void> showUser(String id) async {
     try {
-      box.write('user_id_show', id);
-      change(null, status: RxStatus.loading());
+      isLoading.value = true;
       final response = await _getData.showUser(id);
 
       if (response.statusCode == 200) {
         user.value = UserModel.fromJson(response.body['data']);
+        Env.userAuth = UserModel.fromJson(response.body['data']);
         Get.toNamed(Routes.PROFILE_DETAIL);
-        change(user, status: RxStatus.success());
+        isLoading.value = false;
       } else {
-        change(null,
-            status: RxStatus.error(
-                "Une erreur s'est produite lors de la mise à jour des données"));
+        
+               error.value = "Une erreur s'est produite lors de la récuperation des données ${response.body['data']}";
+                isLoading.value = false;
       }
     } catch (e) {
-      change(null,
-          status: RxStatus.error(
-              "Une erreur s'est produite lors la mise à jour des données => $e"));
+      error.value =
+              "Une erreur s'est produite lors la récuperation des données  des données => $e";
+              isLoading.value = false;
+    }
+  }
+
+    Future<void> showUserOther(String id) async {
+    try {
+      isLoading.value = true;
+      final response = await _getData.showUser(id);
+
+      if (response.statusCode == 200) {
+        userOther.value = UserModel.fromJson(response.body['data']);
+        Env.userOther = UserModel.fromJson(response.body['data']);
+        Get.to(()=>Detailspageother());
+        isLoading.value = false;
+      } else {
+        
+               error.value = "Une erreur s'est produite lors de la récuperation des données ${response.body['data']}";
+                isLoading.value = false;
+      }
+    } catch (e) {
+      error.value =
+              "Une erreur s'est produite lors la récuperation des données  des données => $e";
+              isLoading.value = false;
     }
   }
 
   Future<void> showUserToEdit(String id) async {
     try {
-      box.write('user_id_show', id);
+      box.write('${Env.userAuth.id}', id);
       change(null, status: RxStatus.loading());
       final response = await _getData.showUser(id);
 
@@ -100,7 +226,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
-    showUser(user.value.id.toString());
+    // showUser(user.value.id.toString());
   }
 
   @override
