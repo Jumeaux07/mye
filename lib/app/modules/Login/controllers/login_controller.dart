@@ -1,12 +1,16 @@
 import 'dart:developer';
 
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
+import 'package:nom_du_projet/app/widgets/custom_alert_post.dart';
 
+import '../../../data/models/secteur_model.dart';
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
@@ -41,26 +45,12 @@ class LoginController extends GetxController {
       box.write("token", "${response.body["token"]}");
      Env.usertoken = response.body["token"];
       Env.userAuth = UserModel.fromJson(response.body["user"]);
-      log("$Env");
+      
       _authProvider.updateFcmToken("${box.read("fcm_token")}");
-      isLoginLaoding.value = false;
-      if (user.value.isActive == 0) {
-        showDialog(
-            context: Get.context!,
-            builder: (_) => CustomAlertDialog(
-                  message: response.body["message"].toString(),
-                  onPressed: () {
-                    Get.back();
-                    Get.offAllNamed(Routes.HOME);
-                  },
-                  showAlertIcon: false,
-                  success: true,
-                  btnLabel: "Continuer",
-                ));
-      } else {
+    
         isLoginLaoding.value = false;
         Get.offAllNamed(Routes.HOME);
-      }
+      
     } else {
       isLoginLaoding(false);
       showDialog(

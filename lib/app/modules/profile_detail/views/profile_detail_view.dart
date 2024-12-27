@@ -4,6 +4,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
@@ -28,7 +29,16 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
     // controller.showUser(Env.userAuth.id.toString());
       final profileRegisterController = Get.find<ProfileregisterController>();
       final homeController = Get.find<HomeController>();
-      print("${ Env.userAuth.getCompetence()}");
+      final _formKey = GlobalKey<FormState>();
+       final _formKeyExperience = GlobalKey<FormState>();
+        final _formKeyCompetence = GlobalKey<FormState>();
+         final _formKeyBio = GlobalKey<FormState>();
+      controller.bio.value.text = Env.userAuth.biographie??"";
+      profileRegisterController.nomController.value.text = Env.userAuth.nom??"";
+      profileRegisterController.prenomController.value.text = Env.userAuth.prenom??"";
+      profileRegisterController.secteurController.value.text = Env.userAuth.secteurActivite??"";
+      profileRegisterController.adresseController.value.text = Env.userAuth.adresseGeographique??"";
+    
     return RefreshIndicator(
       onRefresh: () async {
         homeController.getAuthUser();
@@ -115,131 +125,183 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                     // Nom et titre
                     GestureDetector(
                       onTap: () {
-                        // Env.userAuth.cleanImagebase64();
-                        // if (box.read("id").toString() ==
-                        //     controller.user.value.id.toString()) {
-                        //   controller.showUserToEdit(
-                        //       controller.user.value.id.toString());
-                        //   Get.toNamed(Routes.PROFILEREGISTER);
-                        // }
+                        
                         Get.bottomSheet(
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            height: Get.height/3,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25)
-                            ),
-                            child: ListView(
-                              children: [
-                                 SizedBox(height: 30),
-                                    //Champs du formulaire
-                                    Customtextfield(
-                                      textController: profileRegisterController.nomController.value,
-                                      label: 'Nom',
-                                    ),
-                                    SizedBox(height: 15),
-                                    //Champs prenoms
-                                    Customtextfield(
-                                      textController: profileRegisterController.prenomController.value,
-                                      label: 'Prénoms',
-                                    ),
-                                 SizedBox(height: 15),
-                                    //Champs Secteur
-                                    Text(
-                                      "Secteur d'activité",
-                                      style: TextStyle(
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w100,
-                                      ),
-                                    ),
-                                    CustomDropdown<SecteurModel>.search(
-                                      controller: SingleSelectController(
-                                          profileRegisterController.secteursList.first),
-                                      searchHintText: "Secteur d'activité",
-                                      headerBuilder: (context, selectedItem, enabled) {
-                                        return Text(
-                                          "${selectedItem.libelle ?? ""}",
-                                          style: TextStyle(color: Colors.black),
-                                        );
-                                      },
-                                      listItemBuilder:
-                                          (context, item, isSelected, onItemSelect) {
-                                        return Text("${item.libelle ?? ""}");
-                                      },
-                                      hintText: 'Secteur d\'activité',
-                                      noResultFoundText: "Aucun secteur d'activité",
-                                      decoration: CustomDropdownDecoration(
-                                          closedFillColor: !Get.isDarkMode
-                                              ? Colors.grey[300]
-                                              : Colors.white,
-                                          expandedFillColor: Get.isDarkMode
-                                              ? Colors.grey[300]
-                                              : Colors.white,
-                                          closedBorder: Border.all(),
-                                          closedBorderRadius: BorderRadius.circular(4)),
-                                      items: profileRegisterController.secteursList,
-                                      onChanged: (value) {
-                                        profileRegisterController.updateSecteur(value?.libelle ?? "");
-                        },
-                      ),
-                                           SizedBox(height: 15),
+                          isScrollControlled:true,
+                          Form(
+                            key: _formKey,
+                            child: Wrap(
+                              children:[ 
+                                Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25)
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(child: Text("Informations personnelles",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),)),
+                                     SizedBox(height: 30),
+                                        //Champs du formulaire
+                                        Customtextfield(
+                                          textController: profileRegisterController.nomController.value,
+                                          label: 'Nom',
+                                        ),
+                                        SizedBox(height: 15),
+                                        //Champs prenoms
+                                        Customtextfield(
+                                          textController: profileRegisterController.prenomController.value,
+                                          label: 'Prénoms',
+                                        ),
+                                     SizedBox(height: 15),
+                                        //Champs Secteur
+                                        Text(
+                                          "Secteur d'activité",
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                        CustomDropdown<SecteurModel>.search(
+                                          validateOnChange:true,
+                                          validator: (p0) {
+                                            if(profileRegisterController.secteurController.value.text.isEmpty){
+                                              return " Secteur d'activité obligatoire";
+                                            }
+                                          },
+                                          controller: SingleSelectController(
+                                              profileRegisterController.secteursList.first),
+                                          searchHintText: "Secteur d'activité",
+                                          headerBuilder: (context, selectedItem, enabled) {
+                                            return Text(
+                                              "${selectedItem.libelle ?? ""}",
+                                              style: TextStyle(color: Colors.black),
+                                            );
+                                          },
+                                          listItemBuilder:
+                                              (context, item, isSelected, onItemSelect) {
+                                            return Text("${item.libelle ?? ""}");
+                                          },
+                                          hintText: 'Secteur d\'activité',
+                                          noResultFoundText: "Aucun secteur d'activité",
+                                          decoration: CustomDropdownDecoration(
+                                              closedFillColor: !Get.isDarkMode
+                                                  ? Colors.grey[300]
+                                                  : Colors.white,
+                                              expandedFillColor: Get.isDarkMode
+                                                  ? Colors.grey[300]
+                                                  : Colors.white,
+                                              closedBorder: Border.all(),
+                                              closedBorderRadius: BorderRadius.circular(4)),
+                                          items: profileRegisterController.secteursList,
+                                          onChanged: (value) {
+                                            profileRegisterController.updateSecteur(value?.libelle ?? "");
+                                                      },
+                                                    ),
+                                               SizedBox(height: 15),
+                                        CustomDropdown<SecteurModel>.search(
+                                          validateOnChange:true,
+                                          validator: (p0) {
+                                            if(profileRegisterController.posteshouaiterController.value.text.isEmpty){
+                                              return "Poste shouaité obligatoire";
+                                            }
+                                          },
+                                          controller: SingleSelectController(
+                                              profileRegisterController.secteursList.first),
+                                          searchHintText: "Secteur d'activité",
+                                          headerBuilder: (context, selectedItem, enabled) {
+                                            return Text(
+                                              "${selectedItem.libelle ?? ""}",
+                                              style: TextStyle(color: Colors.black),
+                                            );
+                                          },
+                                          listItemBuilder:
+                                              (context, item, isSelected, onItemSelect) {
+                                            return Text("${item.libelle ?? ""}");
+                                          },
+                                          hintText: 'Secteur d\'activité',
+                                          noResultFoundText: "Aucun secteur d'activité",
+                                          decoration: CustomDropdownDecoration(
+                                              closedFillColor: !Get.isDarkMode
+                                                  ? Colors.grey[300]
+                                                  : Colors.white,
+                                              expandedFillColor: Get.isDarkMode
+                                                  ? Colors.grey[300]
+                                                  : Colors.white,
+                                              closedBorder: Border.all(),
+                                              closedBorderRadius: BorderRadius.circular(4)),
+                                          items: profileRegisterController.secteursList,
+                                          onChanged: (value) {
+                                            profileRegisterController.updatePosteshouaite(value?.libelle ?? "");
+                                                      },
+                                                    ),
+                                                 Text(
+                                                      "Adresse",
+                                                      style: TextStyle(
+                                                    fontSize: 17,
+                                                      ),
+                                                    ),
+                                                    CustomDropdown<PositionModel>.searchRequest(
+                                                      validateOnChange: true,
+                                                      validator: (p0) {
+                                                        if(profileRegisterController.ville.value.isEmpty){
+                                                          return "La ville est obligatoire";
+                                                        }
+                                                      },
+                                                      controller: SingleSelectController(PositionModel(
+                                displayName:
+                                    profileRegisterController.adresseController.value.text == ""
+                                        ? "Entrez votre adresse"
+                                        : profileRegisterController.adresseController.value.text)),
+                                                      searchHintText: "Entrez votre adresse",
+                                                      headerBuilder: (context, selectedItem, enabled) {
+                              return Text(
+                                "${selectedItem.displayName ?? ""}",
+                                style: TextStyle(color: Colors.black),
+                              );
+                                                      },
+                                                      listItemBuilder:
+                                (context, item, isSelected, onItemSelect) {
+                              return Text("${item.displayName ?? ""}");
+                                                      },
+                                                      futureRequest: (value) {
+                              return profileRegisterController.findPositionAddress(value);
+                                                      },
+                                                      futureRequestDelay: Duration(milliseconds: 1500),
+                                                      hintText: 'Adresse',
+                                                      noResultFoundText: "Aucune adresse",
+                                                      decoration: CustomDropdownDecoration(
+                                closedFillColor: !Get.isDarkMode
+                                    ? Colors.grey[300]
+                                    : Colors.white,
+                                expandedFillColor: Get.isDarkMode
+                                    ? Colors.grey[300]
+                                    : Colors.white,
+                                closedBorder: Border.all(),
+                                closedBorderRadius: BorderRadius.circular(4)),
+                                                      items: profileRegisterController.positionAddressList,
+                                                      onChanged: (value) {
+                              profileRegisterController.updateaddresse(value?.displayName ?? "");
+                                                      },
+                                                    ),
+                                                      SizedBox(height: 15),
 
-                                             Text(
-                        "Adresse",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                      CustomDropdown<PositionModel>.searchRequest(
-                        controller: SingleSelectController(PositionModel(
-                            displayName:
-                                profileRegisterController.adresseController.value.text == ""
-                                    ? "Entrez votre adresse"
-                                    : profileRegisterController.adresseController.value.text)),
-                        searchHintText: "Entrez votre adresse",
-                        headerBuilder: (context, selectedItem, enabled) {
-                          return Text(
-                            "${selectedItem.displayName ?? ""}",
-                            style: TextStyle(color: Colors.black),
-                          );
-                        },
-                        listItemBuilder:
-                            (context, item, isSelected, onItemSelect) {
-                          return Text("${item.displayName ?? ""}");
-                        },
-                        futureRequest: (value) {
-                          return profileRegisterController.findPositionAddress(value);
-                        },
-                        futureRequestDelay: Duration(milliseconds: 1500),
-                        hintText: 'Adresse',
-                        noResultFoundText: "Aucune adresse",
-                        decoration: CustomDropdownDecoration(
-                            closedFillColor: !Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            expandedFillColor: Get.isDarkMode
-                                ? Colors.grey[300]
-                                : Colors.white,
-                            closedBorder: Border.all(),
-                            closedBorderRadius: BorderRadius.circular(4)),
-                        items: profileRegisterController.positionAddressList,
-                        onChanged: (value) {
-                          profileRegisterController.updateaddresse(value?.displayName ?? "");
-                        },
-                      ),
-                        SizedBox(height: 15),
-                                           CustomButton(
-                                            onPressed: () {
-                                              controller.updateProfile(profileRegisterController.nomController.value.text, profileRegisterController.prenomController.value.text, profileRegisterController.secteurController.value.text, profileRegisterController.adresseController.value.text );
-                                                  Get.back();
-                                            },
-                                            enabled: true,
-                                            label: "Valider",
-                                          )
-                              ],
-                            ),
+                                               CustomButton(
+                                                onPressed: () {
+                                                  if(_formKey.currentState!.validate() && profileRegisterController.prenomController.value.text.isNotEmpty && profileRegisterController.secteurController.value.text.isNotEmpty && profileRegisterController.adresseController.value.text.isNotEmpty){
+                                                   
+                                                      controller.updateProfile(profileRegisterController.nomController.value.text, profileRegisterController.prenomController.value.text, profileRegisterController.secteurController.value.text, profileRegisterController.adresseController.value.text );
+                                                      Get.back();
+                                                  }
+                                                  
+                                                },
+                                                enabled: true,
+                                                label: "Valider",
+                                              )
+                                  ],
+                                ),
+                              ),
+                                              ]),
                           )
                         );
                       },
@@ -266,6 +328,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                             ],
                           ),
                           GoldIcons(
+                            size: 25,
                                   icon: Icons.edit,
                                 )
                         ],
@@ -290,36 +353,43 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                   Get.bottomSheet(
                                     isScrollControlled: true,
                                     backgroundColor: Colors.white,
-                                    Container(
-                                      padding: EdgeInsets.all(15),
-                                      height: Get.height / 4,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Expanded(child: Text("Biographie")),
-                                          Customtextfield(
-                                              textController:
-                                                  controller.bio.value,
-                                              label: "Bio"),
-                                          SizedBox(
-                                            height: 20,
+                                    Form(
+                                      key: _formKeyBio,
+                                      child: Wrap(
+                                       children :[ 
+                                        Container(
+                                          padding: EdgeInsets.all(15),
+                                        
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text("Biographie",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                                              Customtextfield(
+                                                  textController:
+                                                      controller.bio.value,
+                                                  label: "Bio"),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CustomButton(
+                                                onPressed: () {
+                                                   print("${controller.bio.value.text}");
+                                                  controller.updateBio();
+                                                   Get.back();
+                                                },
+                                                enabled: true,
+                                                label: "Valider",
+                                              )
+                                            ],
                                           ),
-                                          CustomButton(
-                                            onPressed: () {
-                                               print("${controller.bio.value.text}");
-                                              controller.updateBio();
-                                               Get.back();
-                                            },
-                                            enabled: true,
-                                            label: "Valider",
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                                            ]),
                                     ),
                                   );
                                 },
                                 child: GoldIcons(
+                                  size: 25,
                                   icon: Icons.add,
                                 )))
                       ],
@@ -364,68 +434,99 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                Get.bottomSheet(
                                     isScrollControlled: true,
                                     backgroundColor: Colors.white,
-                                    Container(
-                                      padding: EdgeInsets.all(15),
-                                      height: Get.height /1.5,
-                                      child: Column(
+                                    Form(
+                                      key: _formKeyExperience,
+                                      child: Wrap(
                                         children: [
-                                          Expanded(
-                                          child: Text("Ajouter une expérience")),
-                                          Customtextfield(
-                                              textController:
-                                                  controller.poste.value,
-                                              label: "Poste"),
-                                          SizedBox(
-                                            height: 20,
+                                          Container(
+                                          padding: EdgeInsets.all(15),
+                                          child: Column(
+                                            children: [
+                                              Text("Ajouter une expérience",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                                              Customtextfield(
+                                                  textController:
+                                                      controller.poste.value,
+                                                  label: "Poste"),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Customtextfield(
+                                                  textController:
+                                                      controller.entreprise.value,
+                                                  label: "Entrprise"),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                               CustomDateField(
+                                                controller: controller.debut.value,
+                                                label: 'Date de début',
+                                                hintText: 'Sélectionner une date',
+                                                firstDate: DateTime(1900),
+                                                lastDate: DateTime.now(),
+                                                onDateSelected: (date) {
+                                                  print('Date sélectionnée: $date');
+                                                },
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                                CustomDateField(
+                                                  isValidator: true,
+                                                validator: (value) {
+                                                  if (value?.isEmpty ?? false) {
+                                                    return "Date de fin est obligatoire";
+                                                  }
+                                                  
+                                                  try {
+                                                    // Création du format de date français
+                                                    final DateFormat formatFr = DateFormat('dd/MM/yyyy');
+                                                    
+                                                    // Parse les dates du format français vers DateTime
+                                                    DateTime dateFin = formatFr.parse(controller.fin.value.text);
+                                                    DateTime dateDebut = formatFr.parse(controller.debut.value.text);
+                                                    
+                                                    if (dateFin.isBefore(dateDebut) || dateFin.isAtSameMomentAs(dateDebut)) {
+                                                      return "Date de fin doit être supérieure à la date de début";
+                                                    }
+                                                    
+                                                    return null;
+                                                  } catch (e) {
+                                                    return "Format de date invalide (JJ/MM/AAAA)";
+                                                  }
+                                                },
+
+                                                  controller: controller.fin.value,
+                                                  label: 'Date de fin',
+                                                  hintText: 'Sélectionner une date',
+                                                  firstDate: DateTime(1900),
+                                                  lastDate: DateTime.now(),
+                                                  onDateSelected: (date) {
+                                                    print('Date sélectionnée: $date');
+                                                  },
+                                                ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CustomButton(
+                                                onPressed: () {
+                                                  if(_formKeyExperience.currentState!.validate()){
+                                                    print("object");
+                                                    controller.updateExperience(controller.poste.value.text,controller.entreprise.value.text, controller.debut.value.text, controller.debut.value.text);
+                                                   Get.back();
+                                                  }
+                                                },
+                                                enabled: true,
+                                                label: "Valider",
+                                              )
+                                            ],
                                           ),
-                                          Customtextfield(
-                                              textController:
-                                                  controller.entreprise.value,
-                                              label: "Entrprise"),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                           CustomDateField(
-                                            controller: controller.debut.value,
-                                            label: 'Date de début',
-                                            hintText: 'Sélectionner une date',
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                            onDateSelected: (date) {
-                                              print('Date sélectionnée: $date');
-                                            },
-                                          ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                            CustomDateField(
-                                              controller: controller.fin.value,
-                                              label: 'Date de fin',
-                                              hintText: 'Sélectionner une date',
-                                              firstDate: DateTime(1900),
-                                              lastDate: DateTime.now(),
-                                              onDateSelected: (date) {
-                                                print('Date sélectionnée: $date');
-                                              },
-                                            ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          CustomButton(
-                                            onPressed: () {
-                                               print("${controller.fin.value.text}");
-                                              controller.updateExperience(controller.poste.value.text,controller.entreprise.value.text, controller.debut.value.text, controller.debut.value.text);
-                                               Get.back();
-                                            },
-                                            enabled: true,
-                                            label: "Valider",
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                                            ]),
                                     ),
                                   );
                             },
                             child: GoldIcons(
+                               size: 25,
                               icon: Icons.add,
                             ),
                           ),
@@ -442,11 +543,11 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                           elevation: 0.0,
                           child: Column(  // Ajout d'un Column pour contenir la liste
                             children: List.generate(
-                              controller.user.value.experiences?.length ?? 0,
+                              Env.userAuth.experiences?.length ?? 0,
                               (index) => ExperienceItem(
-                                company: controller.user.value.experiences?[index].nomEntreprise ?? "",
-                                position: controller.user.value.experiences?[index].poste ?? "",
-                                period: "${controller.user.value.experiences?[index].dateDebut ?? ""} - ${controller.user.value.experiences?[index].dateFin ?? ""}", // Correction : dateDebut -> dateFin
+                                company:  Env.userAuth.experiences?[index].nomEntreprise ?? "",
+                                position: Env.userAuth.experiences?[index].poste ?? "",
+                                period: "${ Env.userAuth.experiences?[index].dateDebut ?? ""} - ${ Env.userAuth.experiences?[index].dateFin ?? ""}", // Correction : dateDebut -> dateFin
                               ),
                             ),
                           ),
@@ -477,42 +578,48 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                   Get.bottomSheet(
                                     isScrollControlled: true,
                                     backgroundColor: Colors.white,
-                                    Container(
-                                      padding: EdgeInsets.all(15),
-                                      height: Get.height / 4,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                    Form(
+                                      key: _formKeyCompetence,
+                                      child: Wrap(
                                         children: [
-                                          Expanded(child: Text("Compétences")),
-                                          TagTextField(
-                                            onTagsChanged: (tags) {
-                                              controller.update(tags);
-                                              // Faire quelque chose avec les tags
-                                              print('Tags actuels : $tags');
-                                            },
+                                          Container(
+                                          padding: EdgeInsets.all(15),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text("Compétences",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                                              TagTextField(
+                                                onTagsChanged: (tags) {
+                                                  controller.update(tags);
+                                                  // Faire quelque chose avec les tags
+                                                  print('Tags actuels : $tags');
+                                                },
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CustomButton(
+                                                onPressed: () {
+                                                  if(_formKeyCompetence.currentState!.validate()&&Env.skill.isNotEmpty){
+                                                    controller.updateSkill();
+                                                      Get.back();
+                                                  }
+                                                },
+                                                enabled: true,
+                                                label: "Valider",
+                                              )
+                                            ],
                                           ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          CustomButton(
-                                            onPressed: () {
-                                              if (Env.skill.isNotEmpty) {
-                                                controller.updateSkill();
-                                                  Get.back();
-                                              }
-                                            },
-                                            enabled: true,
-                                            label: "Valider",
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                                            ]),
                                     ),
                                   );
                                 },
                                 child: Visibility(
                                   visible: true,
                                   child: GoldIcons(
+                                     size: 25,
                                     icon: Icons.add,
                                   ),
                                 ),

@@ -14,7 +14,9 @@ class CustomDateField extends StatefulWidget {
     this.onDateSelected,
     this.decoration,
     this.errorStyle,
-    this.labelStyle,
+    this.labelStyle, 
+    this.isValidator, 
+    this.validator,
   });
 
   final TextEditingController controller;
@@ -28,6 +30,8 @@ class CustomDateField extends StatefulWidget {
   final InputDecoration? decoration;
   final TextStyle? errorStyle;
   final TextStyle? labelStyle;
+  final bool? isValidator;
+  final String? Function(String?)? validator;
 
   @override
   State<CustomDateField> createState() => _CustomDateFieldState();
@@ -134,6 +138,14 @@ class _CustomDateFieldState extends State<CustomDateField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          validator:widget.isValidator==true? widget.validator : (value) {
+            if (value?.isEmpty??false) {
+                    setState(() {
+                      _errorText = "${widget.label} est obligatoire";
+                    });
+                    return;
+                  }
+          },
           controller: widget.controller,
           focusNode: _focusNode,
           onChanged: _validateDate,

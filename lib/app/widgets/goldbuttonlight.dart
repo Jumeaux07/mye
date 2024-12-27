@@ -18,7 +18,7 @@ class GoldButtonLight extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 50,
+        height: 40,
         width: Get.width,
         child: Center(
             child: isLoading == false

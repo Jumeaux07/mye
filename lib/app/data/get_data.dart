@@ -69,7 +69,7 @@ class GetDataProvider extends GetConnect {
     Response response;
     try {
       response = await get(url,
-          headers: {"Authorization": "Bearer ${box.read("token")}"});
+          headers: {"Authorization": "Bearer ${await box.read("token")}"});
 
       if (response.isOk) {
         print("List of abonnement all profiles: ${response.body}");

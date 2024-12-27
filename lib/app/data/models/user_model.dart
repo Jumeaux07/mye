@@ -97,7 +97,7 @@ class UserModel {
         pseudo: json["pseudo"],
         secteurActivite: json["secteur_activite"]??"Aucun secteur d'activité",
         adresseGeographique: json["adresse_geographique"],
-        skill: json["skill"]??"",
+        skill: json["skill"],
         biographie: json["biographie"],
         phone: json["phone"]??"",
         email: json["email"]??"",

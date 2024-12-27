@@ -1,61 +1,33 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import '../controllers/messagerie_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:get/get.dart';
+import '../controllers/messagerie_controller.dart';
 
-// class MessagerieView extends GetView<MessagerieController> {
-//   const MessagerieView({super.key});
+class MessagerieView extends GetView<MessagerieController> {
+  const MessagerieView({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Messagerie'),
-//         centerTitle: true,
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: Obx(() {
-//               // Utilisation de Obx pour réagir aux changements de la liste de messages
-//               return ListView.builder(
-//                 itemCount: controller.messages.length,
-//                 itemBuilder: (context, index) {
-//                   final message = controller.messages[index];
-//                   return ListTile(
-//                     title: Text(message.sender),
-//                     subtitle: Text(message.content),
-//                     leading: CircleAvatar(
-//                       child: Text(message.sender[0]),
-//                     ),
-//                   );
-//                 },
-//               );
-//             }),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     controller: controller.messageController,
-//                     decoration: const InputDecoration(
-//                       hintText: 'Écrire un message...',
-//                       border: OutlineInputBorder(),
-//                     ),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   icon: const Icon(Icons.send),
-//                   onPressed: () {
-//                     controller.sendMessage();
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat'),
+      ),
+      body: Obx(() {
+        final controller = Get.find<MessagerieController>();
+        return Chat(
+          messages: controller.messages.value,
+          onSendPressed: (types.PartialText message) {
+            controller.sendMessage(message.text);
+          },
+          user: controller.user,
+          onMessageTap: (_, message) => controller.handleMessageTap(message),
+          theme: DefaultChatTheme(
+            primaryColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          ),
+        );
+      }),
+    );
+  }
+}

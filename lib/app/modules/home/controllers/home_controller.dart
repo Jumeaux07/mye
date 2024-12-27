@@ -24,7 +24,7 @@ class HomeController extends GetxController with StateMixin<dynamic> {
       } else {
         change(null,
             status: RxStatus.error(
-                "Une erreur s'produite lors du chargement des données"));
+                "Une erreur s'produite lors du chargement des données ${ response.body['data']}"));
       }
     } catch (e) {
       change(null,
@@ -43,13 +43,13 @@ class HomeController extends GetxController with StateMixin<dynamic> {
         Env.userAuth = UserModel.fromJson(response.body['data']);
         // Env.usertoken = response.body['token'];
         Env.skill = response.body['data']['skill'].toString().split(',');
-    
+
         log("${Env.userAuth.toJson()}");
         change(user, status: RxStatus.success());
       } else {
         change(null,
             status: RxStatus.error(
-                "Une erreur s'produite lors du chargement des données"));
+                "Une erreur s'produite lors du chargement des données ${response.body['message']}"));
       }
     } catch (e) {
       change(null,
@@ -59,10 +59,16 @@ class HomeController extends GetxController with StateMixin<dynamic> {
   }
 
   @override
-  void onInit() {
+  void onInit()  {
     super.onInit();
-    getAuthUser();
-    getAllUser();
+    // if(box.hasData("token")){
+    //    getAuthUser();
+    //    getAllUser();
+    // }
+  
+       getAuthUser();
+       getAllUser();
+    
   }
 
   @override

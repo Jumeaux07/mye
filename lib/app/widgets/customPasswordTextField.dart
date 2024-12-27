@@ -50,11 +50,14 @@ class _CustompasswordtextfieldState extends State<Custompasswordtextfield> {
         ),
         TextFormField(
           controller: widget.passwordController,
-          validator: widget.validator,
+          validator:(value) {
+            validatePassword(value??"");
+          },
           obscureText: widget._isObscure,
           onChanged: (value) {
             validatePassword(value);
           },
+          
           decoration: InputDecoration(
               errorText: _errorText,
               suffixIcon: GestureDetector(

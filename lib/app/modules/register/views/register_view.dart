@@ -84,12 +84,21 @@ class RegisterView extends GetView<RegisterController> {
                           isLoading: controller.loadingRegister.value,
                           label: "S'inscrire",
                           onTap: () {
-                            controller.sendOtpUser(
+                            if(
+                              controller.formKey.value.currentState!.validate()
+                              && controller.pseudoController.value.text.isNotEmpty
+                              &&  controller.emailController.value.text.isNotEmpty
+                               && controller.passwordController.value.text.isNotEmpty
+                               &&  controller.passwordConfirmationController.value.text.isNotEmpty
+                              ){
+                              controller.sendOtpUser(
                                 controller.pseudoController.value.text,
                                 controller.emailController.value.text,
                                 controller.passwordController.value.text,
                                 controller
                                     .passwordConfirmationController.value.text);
+                              }
+                           
                           },
                         ),
                         SizedBox(

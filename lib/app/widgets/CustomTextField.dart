@@ -45,6 +45,9 @@ class _CustomtextfieldState extends State<Customtextfield> {
           onChanged: (value) {
             validateText(value);
           },
+          validator: (value) {
+            validateText(value??"");
+          },
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             focusColor: Color(0xFFCBA948),

@@ -25,9 +25,11 @@ class ProfileregisterController extends GetxController
   final prenomController = TextEditingController().obs;
   final villeController = TextEditingController().obs;
   final ville = "".obs;
+   final otherpost = "".obs;
   final activite = "".obs;
   final adresseController = TextEditingController().obs;
   final secteurController = TextEditingController().obs;
+  final posteshouaiterController = TextEditingController().obs;
   final competenceController = TextEditingController().obs;
   final bioController = TextEditingController().obs;
   final query = TextEditingController().obs;
@@ -67,6 +69,11 @@ class ProfileregisterController extends GetxController
   void updateVille(String value) {
     ville.value = value;
     villeController.value.text = value;
+  }
+
+    void updatePosteshouaite(String value) {
+    otherpost.value = value;
+    posteshouaiterController.value.text = value;
   }
 
   void updateSecteur(String value) {

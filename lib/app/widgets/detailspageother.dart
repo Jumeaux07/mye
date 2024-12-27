@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
+import 'package:nom_du_projet/app/modules/messagerie/views/messagerie_view.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/CustomTextField.dart';
@@ -154,7 +155,7 @@ class Detailspageother extends GetView<ProfileDetailController> {
                         Expanded(
                           child: GestureDetector(
                                 onTap: () {
-                                Get.to(()=>NewConversationScreen());
+                                Get.to(()=>MessagerieView());
                                 },
                                 child: GoldIcons(
                                   icon: Icons.chat,

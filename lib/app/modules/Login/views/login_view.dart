@@ -67,8 +67,11 @@ class LoginView extends GetView<LoginController> {
               //button
               GoldButtonLight(
                 onTap: () {
-                  controller.login(controller.email.value.text,
+                  if(controller.formKey.value.currentState!.validate() && controller.email.value.text.isNotEmpty && controller.password.value.text.isNotEmpty ){
+                    controller.login(controller.email.value.text,
                       controller.password.value.text);
+                  }
+                 
                 },
                 isLoading: controller.isLoginLaoding.value,
                 label: 'Connexion',

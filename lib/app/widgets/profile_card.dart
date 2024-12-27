@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nom_du_projet/app/widgets/gold_icons.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../data/constant.dart';
 
@@ -20,7 +21,8 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      
+      margin: EdgeInsets.symmetric(vertical: 2 ),
       width: double.infinity,
       height: 100,
       decoration: BoxDecoration(
@@ -30,12 +32,18 @@ class ProfileCard extends StatelessWidget {
       child: Row(
         children: [
           //Avatar
-          CircleAvatar(
-            radius: 35.0,
-            backgroundImage: NetworkImage(image ??
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg"),
-            backgroundColor: Colors.transparent,
-          ),
+         CircleAvatar(
+  radius: 25.0,
+  child: ClipOval(
+    child: FadeInImage.memoryNetwork(
+      placeholder: kTransparentImage,
+      image: image ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg",
+      width: 50.0, // Double du radius
+      height: 50.0,
+      fit: BoxFit.cover,
+    ),
+  ),
+),
 
           SizedBox(
             width: 10,
@@ -57,7 +65,7 @@ class ProfileCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         username ?? "",
                         style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: Colors.black),
                       ),
@@ -65,7 +73,7 @@ class ProfileCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         secteur ?? "",
                         style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 15,
                             fontWeight: FontWeight.w100,
                             color: Colors.black),
                       ),
@@ -78,7 +86,7 @@ class ProfileCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     adresse ?? "",
                     style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: FontWeight.w100,
                         color: Colors.black),
                   ),
@@ -91,7 +99,7 @@ class ProfileCard extends StatelessWidget {
           Expanded(
             child: Container(
               child: GoldIcons(
-                size: 40,
+                size: 20,
                 icon: Icons.chat,
               ),
             ),

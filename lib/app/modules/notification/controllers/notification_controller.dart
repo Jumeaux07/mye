@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/notification_model.dart';
 
+import '../../../data/constant.dart';
+
 class NotificationController extends GetxController with StateMixin<dynamic> {
   final _getData = GetDataProvider();
   final listNotification = <NotificationModel>[].obs;
@@ -105,7 +107,9 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
-    getAllNotification();
+    if(box.hasData("token")){
+       getAllNotification();
+    }
   }
 
   @override

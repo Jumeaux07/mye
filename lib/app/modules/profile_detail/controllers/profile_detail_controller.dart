@@ -87,6 +87,10 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
         change(user, status: RxStatus.success());
         await showUser("${Env.userAuth.id}");
         update();
+        poste.value.clear();
+        entreprise.value.clear();
+        debut.value.clear();
+        fin.value.clear();
       } else {
         change(null,
             status: RxStatus.error(
@@ -110,7 +114,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       if (response.statusCode == 200) {
        Env.userAuth = UserModel.fromJson(response.body['data']);
         change(user, status: RxStatus.success());
-        await showUser("${box.read("${Env.userAuth.id}")}");
+        await showUser("${Env.userAuth.id}");
         update();
       } else {
         change(null,
@@ -132,7 +136,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       if (response.statusCode == 200) {
          Env.userAuth = UserModel.fromJson(response.body['data']);
         change(user, status: RxStatus.success());
-        await showUser("${box.read("${Env.userAuth.id}")}");
+        await showUser("${Env.userAuth.id}");
         update();
       } else {
         change(null,
@@ -226,6 +230,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
+    update();
     // showUser(user.value.id.toString());
   }
 

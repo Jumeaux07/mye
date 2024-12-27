@@ -9,6 +9,7 @@ import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 import '../../../services/image_picker_service.dart';
 import '../../../widgets/CustomTextField.dart';
 import '../../../widgets/customAppBar.dart';
+import '../../../widgets/custombuttonsimple.dart';
 import '../../../widgets/goldbuttonlight.dart';
 import '../../profile_detail/controllers/profile_detail_controller.dart';
 import '../controllers/profileregister_controller.dart';
@@ -70,13 +71,18 @@ class ProfileregisterView extends GetView<ProfileregisterController> {
                                     children: [
                                       //Titre
                                     
-                        //Bouton Suivant
-                        GoldButtonLight(
-                            isLoading: false,
-                            label: 'Suivant',
-                            onTap: () {
-                              profiledetailController.updateImageProfile(controller.imageEnBase64.value);
-                            })
+                                    CustomButton(
+                                      enabled: true,
+                                        isLoading: controller.isLoading.value,
+                                        label: 'Valider',
+                                        onPressed: () {
+                                          if(controller.imageEnBase64.isNotEmpty){
+                                             profiledetailController.updateImageProfile(controller.imageEnBase64.value);
+                                          }
+                                         
+                                        })
+                                      
+                        
                            
                       ],
                     ),

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 import 'package:nom_du_projet/setting.dart';
 
 import '../../../data/constant.dart';
 import '../../../routes/app_pages.dart';
 import '../../../widgets/accueil_page.dart';
+import '../../../widgets/duscusion.dart';
 import '../../../widgets/gold_icons.dart';
 import '../../../widgets/message.dart';
 import '../../../widgets/message/conversation_screen.dart';
 import '../../abonnement/views/abonnement_view.dart';
+import '../../messagerie/views/messagerie_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -78,7 +81,7 @@ class HomeView extends GetView<HomeController> {
               ? Accueil()
               : controller.selectedIndex.value == 1
                   ? AbonnementView()
-                  : ConversationsScreen()
+                  : DiscussionsView()
         ));
   }
 }
