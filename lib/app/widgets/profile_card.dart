@@ -11,6 +11,7 @@ class ProfileCard extends StatelessWidget {
     this.username,
     this.secteur,
     this.adresse,
+    // required user,
   });
 
   final String? image;
@@ -21,8 +22,7 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      
-      margin: EdgeInsets.symmetric(vertical: 2 ),
+      margin: EdgeInsets.symmetric(vertical: 2),
       width: double.infinity,
       height: 100,
       decoration: BoxDecoration(
@@ -32,18 +32,19 @@ class ProfileCard extends StatelessWidget {
       child: Row(
         children: [
           //Avatar
-         CircleAvatar(
-  radius: 25.0,
-  child: ClipOval(
-    child: FadeInImage.memoryNetwork(
-      placeholder: kTransparentImage,
-      image: image ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg",
-      width: 50.0, // Double du radius
-      height: 50.0,
-      fit: BoxFit.cover,
-    ),
-  ),
-),
+          CircleAvatar(
+            radius: 25.0,
+            child: ClipOval(
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: image ??
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outdoors-man-portrait_%28cropped%29.jpg/440px-Outdoors-man-portrait_%28cropped%29.jpg",
+                width: 50.0, // Double du radius
+                height: 50.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
 
           SizedBox(
             width: 10,

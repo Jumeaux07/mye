@@ -13,15 +13,12 @@ dependencies:
   cinetpay: ^1.0.7
   dio: ^5.7.0
   flutter_inappwebview: ^6.0.0
-  # firebase_core: ^2.32.0
-  # firebase_auth: ^4.15.0
   firebase_auth: ^5.3.3
   firebase_core: ^3.8.0
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   flutter_stripe: ^11.3.0
-  # get: ^4.6.6
   get_storage: ^2.1.1
   google_sign_in: ^6.2.1
   intl: ^0.20.1
@@ -38,6 +35,9 @@ dependencies:
   flutter_chat_ui: ^1.6.15
   flutter_chat_types: ^3.6.2
   timeago: ^3.2.2
+  google_maps_flutter: ^2.10.0
+  geolocator: ^13.0.2
+  cloud_firestore: ^5.6.0
   # smart_auth: ^2.0.0
 
 dev_dependencies:

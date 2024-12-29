@@ -9,6 +9,8 @@
 <string>To scan cards</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>In order to access your photo library</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Cette application nécessite l'accès à la localisation pour trouver les utilisateurs à proximité.</string>
 		<key>GIDClientID</key>
 		<string>525902566155-i2pi0m6e8cf25ki7rc01l6abtc8dbne4.apps.googleusercontent.com</string>
 		<key>CFBundleDevelopmentRegion</key>

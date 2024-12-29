@@ -11,6 +11,8 @@ class UserModel {
   final String? biographie;
   final String? phone;
   final String? email;
+  final double? latitude;
+  final double? longitude;
   final dynamic emailVerifiedAt;
   final int? isPremium;
   final String? profileImage;
@@ -33,6 +35,8 @@ class UserModel {
     this.biographie,
     this.phone,
     this.email,
+    this.latitude,
+    this.longitude,
     this.emailVerifiedAt,
     this.isPremium,
     this.profileImage,
@@ -56,6 +60,8 @@ class UserModel {
     String? biographie,
     String? phone,
     String? email,
+    double? latitude,
+    double? longitude,
     dynamic emailVerifiedAt,
     int? isPremium,
     String? profileImage,
@@ -78,6 +84,8 @@ class UserModel {
         biographie: biographie ?? this.biographie,
         phone: phone ?? this.phone,
         email: email ?? this.email,
+        latitude: latitude ?? this.latitude,
+        longitude: longitude ?? this.longitude,
         emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
         isPremium: isPremium ?? this.isPremium,
         profileImage: profileImage ?? this.profileImage,
@@ -95,12 +103,14 @@ class UserModel {
         nom: json["nom"] ?? "",
         prenom: json["prenom"],
         pseudo: json["pseudo"],
-        secteurActivite: json["secteur_activite"]??"Aucun secteur d'activité",
+        secteurActivite: json["secteur_activite"] ?? "Aucun secteur d'activité",
         adresseGeographique: json["adresse_geographique"],
         skill: json["skill"],
         biographie: json["biographie"],
-        phone: json["phone"]??"",
-        email: json["email"]??"",
+        phone: json["phone"] ?? "",
+        email: json["email"] ?? "",
+        latitude: json["latitude"] ?? 0.00,
+        longitude: json["longitude"] ?? 0.00,
         emailVerifiedAt: json["email_verified_at"],
         isPremium: json["is_premium"],
         profileImage: json["profileImage"],
@@ -131,6 +141,8 @@ class UserModel {
         "biographie": biographie,
         "phone": phone,
         "email": email,
+        "latitude": latitude,
+        "longitude": longitude,
         "email_verified_at": emailVerifiedAt,
         "is_premium": isPremium,
         "profileImage": profileImage,

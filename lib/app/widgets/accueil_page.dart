@@ -21,68 +21,74 @@ class Accueil extends GetView<HomeController> {
         controller.getAuthUser();
         controller.getAllUser();
       },
-      child: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Customtextfield(
-                textController: searchController,
-                label: '',
-                hintText: "Rechercher des contacts, entreprises...",
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Row(
-                children: [
-                  Text(
-                    "SuggestionS",
-                    style: TextStyle(fontSize: 17),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
-                      height: 5.0,
-                      thickness: 2.0,
-                      indent: 10.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            controller.obx(
-              (data) => ListView.builder(
-                itemCount: controller.userList.length,
-                shrinkWrap: true,
+      child: SingleChildScrollView(
+        child: Center(
+          child: Wrap(
+            children: [
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      profiledetailController
-                          .showUserOther(controller.userList[index].id.toString());
-                    },
-                    child: ProfileCard(
-                      image: controller.userList[index].profileImage,
-                      secteur: controller.userList[index].secteurActivite,
-                      username: controller.userList[index].pseudo,
-                      adresse: controller.userList[index].adresseGeographique,
+                child: Customtextfield(
+                  textController: searchController,
+                  label: '',
+                  hintText: "Rechercher des contacts, entreprises...",
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Row(
+                  children: [
+                    Text(
+                      "SuggestionS",
+                      style: TextStyle(fontSize: 17),
                     ),
-                  );
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                        height: 5.0,
+                        thickness: 2.0,
+                        indent: 10.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              controller.obx(
+                (data) => Container(
+                  child: ListView.builder(
+                    itemCount: controller.userList.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          profiledetailController.showUserOther(
+                              controller.userList[index].id.toString());
+                        },
+                        child: ProfileCard(
+                          image: controller.userList[index].profileImage,
+                          secteur: controller.userList[index].secteurActivite,
+                          username: controller.userList[index].pseudo,
+                          adresse:
+                              controller.userList[index].adresseGeographique,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                onLoading: Center(child: CircularProgressIndicator()),
+                onError: (error) {
+                  return CustomAlertDialog(
+                      message: "$error",
+                      onPressed: () {
+                        controller.getAllUser();
+                        controller.getAuthUser();
+                      },
+                      showAlertIcon: true);
                 },
               ),
-              onLoading: Center(child: CircularProgressIndicator()),
-              onError: (error) {
-                return CustomAlertDialog(
-                    message: "$error",
-                    onPressed: () {
-                      controller.getAllUser();
-                      controller.getAuthUser();
-                    },
-                    showAlertIcon: true);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
