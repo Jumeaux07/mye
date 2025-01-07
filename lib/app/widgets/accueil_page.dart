@@ -16,6 +16,8 @@ class Accueil extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
     final profiledetailController = Get.find<ProfileDetailController>();
+    controller.getAuthUser();
+    controller.getAllUser();
     return RefreshIndicator(
       onRefresh: () async {
         controller.getAuthUser();
@@ -38,7 +40,7 @@ class Accueil extends GetView<HomeController> {
                 child: Row(
                   children: [
                     Text(
-                      "SuggestionS",
+                      "Suggestions",
                       style: TextStyle(fontSize: 17),
                     ),
                     Expanded(

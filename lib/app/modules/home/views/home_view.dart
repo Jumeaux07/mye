@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/Conversation/views/conversation_view.dart';
 
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 
@@ -9,7 +10,7 @@ import '../../../routes/app_pages.dart';
 import '../../../widgets/accueil_page.dart';
 import '../../../widgets/duscusion.dart';
 import '../../../widgets/gold_icons.dart';
-import '../../abonnement/views/abonnement_view.dart';
+import '../../../widgets/searchuser.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -17,7 +18,6 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final profileDetailController = Get.find<ProfileDetailController>();
-    // profileDetailController.showUser(Env.userAuth.id.toString());
     return Obx(() => Scaffold(
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
@@ -29,8 +29,8 @@ class HomeView extends GetView<HomeController> {
               label: "Accueil",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.payment),
-              label: "Abonnement",
+              icon: Icon(Icons.share_location_rounded),
+              label: "Rechercher",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.message),
@@ -45,7 +45,7 @@ class HomeView extends GetView<HomeController> {
             },
             child: CircleAvatar(
               backgroundImage: NetworkImage(
-                controller.user.value.profileImage ??
+                Env.userAuth.profileImage ??
                     "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996",
               ),
             ),
@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
         body: controller.selectedIndex.value == 0
             ? Accueil()
             : controller.selectedIndex.value == 1
-                ? AbonnementView()
-                : DiscussionsView()));
+                ? NearbyUsersMap()
+                : ConversationView()));
   }
 }

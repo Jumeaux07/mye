@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nom_du_projet/app/data/models/message_model.dart';
 import 'package:nom_du_projet/app/widgets/message/message_bubble.dart';
 
 import '../../data/models/conversation_model.dart';
@@ -6,7 +7,7 @@ import '../../services/chat_service.dart';
 import '../message_classe.dart';
 
 class ChatScreen extends StatefulWidget {
-  final Conversation conversation;
+  final ConversationModel conversation;
 
   const ChatScreen({required this.conversation});
 
@@ -17,7 +18,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Message> messages = [];
+  List<MessageModel> messages = [];
   bool isLoading = false;
   final _chatService = ChatService();
 
@@ -30,9 +31,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _loadMessages() async {
     setState(() => isLoading = true);
     try {
-      final newMessages = await  _chatService.getMessages(widget.conversation.id);
+      final newMessages =
+          await _chatService.getMessages(widget.conversation.id ?? 0);
       setState(() {
-        messages = newMessages;
         isLoading = false;
       });
     } catch (e) {
@@ -50,10 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
     _messageController.clear();
 
     try {
-      final message = await _chatService.sendMessage(widget.conversation.id, content);
-      setState(() {
-        messages.insert(0, message);
-      });
+      final message =
+          await _chatService.sendMessage(widget.conversation.id ?? 0, content);
+      setState(() {});
       _scrollController.animateTo(
         0,
         duration: Duration(milliseconds: 300),
@@ -70,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.conversation.otherUser.nom??""),
+        title: Text(widget.conversation.nom ?? ""),
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
@@ -110,7 +110,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       final message = messages[index];
-                      return MessageBubble(message: message,isMe: true,);
+                      return MessageBubble(
+                        message: message,
+                        isMe: true,
+                      );
                     },
                   ),
           ),

@@ -167,6 +167,10 @@ class UserModel {
     }
     return competences;
   }
+
+  String getFullName() {
+    return '$nom $prenom';
+  }
 }
 
 class Experience {

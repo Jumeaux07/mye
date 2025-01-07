@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:nom_du_projet/app/data/models/message_model.dart';
 
 import '../message_classe.dart';
 
 class MessageBubble extends StatelessWidget {
-  final Message message;
+  final MessageModel message;
   final bool isMe;
 
   const MessageBubble({
@@ -29,7 +30,7 @@ class MessageBubble extends StatelessWidget {
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(
-              message.content,
+              message.contenu ?? "",
               style: TextStyle(
                 color: isMe ? Colors.white : Colors.black,
                 fontSize: 16,
@@ -37,7 +38,7 @@ class MessageBubble extends StatelessWidget {
             ),
             SizedBox(height: 4),
             Text(
-              DateFormat.Hm().format(message.createdAt),
+              DateFormat.Hm().format(message.createdAt ?? DateTime.now()),
               style: TextStyle(
                 color: isMe ? Colors.white70 : Colors.black54,
                 fontSize: 12,

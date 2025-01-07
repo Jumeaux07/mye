@@ -37,7 +37,12 @@ dependencies:
   timeago: ^3.2.2
   google_maps_flutter: ^2.10.0
   geolocator: ^13.0.2
-  cloud_firestore: ^5.6.0
+  widget_to_marker: ^1.0.6
+  loader_overlay: ^4.0.4+1
+  file_picker: ^8.1.7
+  mime: ^2.0.0
+  open_filex: ^4.6.0
+  bubble: ^1.2.1
   # smart_auth: ^2.0.0
 
 dev_dependencies:

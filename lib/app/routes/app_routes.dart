@@ -18,6 +18,8 @@ abstract class Routes {
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const REGISTER_MAIN = _Paths.REGISTER_MAIN;
   static const MESSAGERIE = _Paths.MESSAGERIE;
+  static const MESSAGE = _Paths.MESSAGE;
+  static const CONVERSATION = _Paths.CONVERSATION;
 }
 
 abstract class _Paths {
@@ -37,4 +39,6 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const REGISTER_MAIN = '/register-main';
   static const MESSAGERIE = '/messagerie';
+  static const MESSAGE = '/message';
+  static const CONVERSATION = '/conversation';
 }

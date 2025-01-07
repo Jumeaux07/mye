@@ -36,16 +36,14 @@ class SettingView extends GetView<SettingController> {
                       radius: 25,
                     ),
                     title: Env.userAuth.prenom == null
-                        ? Text(
-                            "${Env.userAuth.pseudo  ?? ""}")
+                        ? Text("${Env.userAuth.pseudo ?? ""}")
                         : Text(
                             "${Env.userAuth.prenom ?? Env.userAuth.pseudo} ${Env.userAuth.nom ?? ""}"),
-                    subtitle:
-                        Text(Env.userAuth.email ?? ""),
+                    subtitle: Text(Env.userAuth.email ?? ""),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
                       // TODO: Navigation vers édition du profil
-                    Get.toNamed(Routes.PROFILE_DETAIL);
+                      Get.toNamed(Routes.PROFILE_DETAIL);
                     },
                   ),
                 ],
@@ -212,9 +210,10 @@ class SettingView extends GetView<SettingController> {
                     title: Text('Abonnement'),
                     leading: Icon(Icons.card_membership),
                     subtitle: Text(
-                        "${profiledetailController.user.value.isPremium == 1 ? "Preminum" : "Gratuit"}"),
+                        "${Env.userAuth.isPremium == 1 ? "Preminum" : "Gratuit"}"),
                     onTap: () {
                       // TODO: Navigation vers gestion de l'abonnement
+                      Get.toNamed(Routes.ABONNEMENT);
                     },
                   ),
                   ListTile(
@@ -356,7 +355,6 @@ class SettingView extends GetView<SettingController> {
             TextButton(
               child: Text('Se déconnecter'),
               onPressed: () {
-                
                 box.erase();
                 Get.offAllNamed(Routes.LOGIN);
               },

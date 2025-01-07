@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
 
+import '../modules/Conversation/bindings/conversation_binding.dart';
+import '../modules/Conversation/views/conversation_view.dart';
 import '../modules/Login/bindings/login_binding.dart';
 import '../modules/Login/views/login_view.dart';
 import '../modules/MainIntro/bindings/main_intro_binding.dart';
 import '../modules/MainIntro/views/main_intro_view.dart';
+import '../modules/Message/bindings/message_binding.dart';
+import '../modules/Message/views/message_view.dart';
 import '../modules/Profileregister/bindings/profileregister_binding.dart';
 import '../modules/Profileregister/views/profileregister_view.dart';
 import '../modules/abonnement/bindings/abonnement_binding.dart';
@@ -14,8 +18,6 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
-import '../modules/messagerie/bindings/messagerie_binding.dart';
-import '../modules/messagerie/views/messagerie_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/profile_detail/bindings/profile_detail_binding.dart';
@@ -112,5 +114,15 @@ class AppPages {
     //   page: () => const MessagerieView(),
     //   binding: MessagerieBinding(),
     // ),
+    GetPage(
+      name: _Paths.MESSAGE,
+      page: () => MessageView(),
+      binding: MessageBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONVERSATION,
+      page: () => const ConversationView(),
+      binding: ConversationBinding(),
+    ),
   ];
 }

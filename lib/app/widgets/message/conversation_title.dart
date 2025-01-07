@@ -5,7 +5,7 @@ import '../../data/models/conversation_model.dart';
 import 'chat_screen.dart';
 
 class ConversationTile extends StatelessWidget {
-  final Conversation conversation;
+  final ConversationModel conversation;
 
   const ConversationTile({required this.conversation});
 
@@ -13,26 +13,29 @@ class ConversationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: conversation.otherUser.profileImage != null
-            ? NetworkImage(conversation.otherUser.profileImage!)
+        backgroundImage: conversation.image != null
+            ? NetworkImage(conversation.image!)
             : null,
-        child: conversation.otherUser.profileImage == null
-            ? Text(conversation.otherUser.nom??""[0])
-            : null,
+        child: conversation.nom != "" ? Text(conversation.nom ?? ""[0]) : null,
       ),
       title: Text(
-        conversation.otherUser.nom??"",
+        conversation.nom ?? "",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Row(
         children: [
           Expanded(
             child: Text(
-              DateFormat.yMMMd().add_Hm().format(conversation.lastMessageAt),
+              DateFormat.yMMMd().add_Hm().format(
+                  conversation.messages?.last.createdAt ?? DateTime.now()),
               style: TextStyle(color: Colors.grey),
             ),
           ),
-          if (conversation.unreadCount > 0)
+          if (conversation.messages!
+                  .where((e) => e.isRead == 0)
+                  .toList()
+                  .length >
+              0)
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
@@ -40,7 +43,11 @@ class ConversationTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                conversation.unreadCount.toString(),
+                conversation.messages!
+                    .where((e) => e.isRead == 0)
+                    .toList()
+                    .length
+                    .toString(),
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),

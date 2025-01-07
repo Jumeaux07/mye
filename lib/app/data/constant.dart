@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:pinput/pinput.dart';
+import 'dart:ui' as ui;
+
+import '../widgets/custom_marcker.dart';
 
 const baseUrl = "https://api.franckprod.com/api";
 const registerUrl = "/user/register/step1";
@@ -16,10 +21,12 @@ const loginUrl = "/login";
 const getUserUrl = "/me";
 const startconversationUrl = "/startConversation";
 const updatePswdUrl = "/update-password";
+const sendMessageUrlUrl = "/send-message";
+const sendFileUrl = "/send-file";
 const updateSkilUrl = "/update-skill";
 const updateImageUrl = "/update-imageprofile";
 const updateBioUrl = "/update-bio";
-const getConversation = "get-conversation";
+const getConversationUrl = "/get-conversation";
 const getmessageUrl = "/get-message/";
 const updateExperienceUrl = "/update-experience";
 const sendMessageUrl = "send-message";
@@ -84,10 +91,10 @@ String formatTimestamp(DateTime timestamp) {
 }
 
 class Env {
- static UserModel userAuth = UserModel();
+  static UserModel userAuth = UserModel();
   static UserModel userOther = UserModel();
- static String usertoken = "";
-static List<String> skill = [];
+  static String usertoken = "";
+  static List<String> skill = [];
 }
 
-final dateFormatter = DateFormat('yyyy-MM-dd'); 
+final dateFormatter = DateFormat('yyyy-MM-dd');

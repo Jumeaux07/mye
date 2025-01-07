@@ -49,7 +49,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
 
   Future<void> _searchUsers(String query) async {
     setState(() => _isLoading = true);
-    
+
     try {
       final response = await http.get(
         Uri.parse('${baseUrl}/users/search?q=$query'),
@@ -75,7 +75,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
 
   Future<void> _startConversation(UserModel user) async {
     setState(() => _isLoading = true);
-    
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl${startconversationUrl}'),
@@ -87,8 +87,9 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
       );
 
       if (response.statusCode == 200) {
-         print("SUCCESS ${response.body}");
-        final conversation = Conversation.fromJson(json.decode(response.body));
+        print("SUCCESS ${response.body}");
+        final conversation =
+            ConversationModel.fromJson(json.decode(response.body));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -97,7 +98,8 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
         );
       } else {
         print("ERROR ${response.body}");
-        throw Exception('Erreur lors de la création de la conversation ${response.body}');
+        throw Exception(
+            'Erreur lors de la création de la conversation ${response.body}');
       }
     } catch (e) {
       print(e);
@@ -128,7 +130,8 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
             ),
           ),
@@ -170,10 +173,10 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                             ? NetworkImage(user.profileImage!)
                             : null,
                         child: user.profileImage == null
-                            ? Text(user.nom??""[0])
+                            ? Text(user.nom ?? ""[0])
                             : null,
                       ),
-                      title: Text(user.nom??""),
+                      title: Text(user.nom ?? ""),
                       onTap: () => _startConversation(user),
                     );
                   },
@@ -218,7 +221,7 @@ class UserSearchDelegate extends SearchDelegate<UserModel?> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
           return Center(
             child: Text('Erreur de recherche'),
@@ -226,7 +229,7 @@ class UserSearchDelegate extends SearchDelegate<UserModel?> {
         }
 
         final users = snapshot.data ?? [];
-        
+
         if (users.isEmpty) {
           return Center(
             child: Text('Aucun utilisateur trouvé'),
@@ -242,9 +245,10 @@ class UserSearchDelegate extends SearchDelegate<UserModel?> {
                 backgroundImage: user.profileImage != null
                     ? NetworkImage(user.profileImage!)
                     : null,
-                child: user.profileImage == null ? Text(user.nom??""[0]) : null,
+                child:
+                    user.profileImage == null ? Text(user.nom ?? ""[0]) : null,
               ),
-              title: Text(user.nom??""),
+              title: Text(user.nom ?? ""),
               onTap: () {
                 close(context, user);
               },

@@ -42,15 +42,14 @@ class LoginController extends GetxController {
     final response = await _authProvider.login(data);
 
     if (response.statusCode == 200) {
-      box.write("token", "${response.body["token"]}");
-     Env.usertoken = response.body["token"];
+      await box.write("token", "${response.body["token"]}");
+      Env.usertoken = response.body["token"];
       Env.userAuth = UserModel.fromJson(response.body["user"]);
-      
+
       _authProvider.updateFcmToken("${box.read("fcm_token")}");
-    
-        isLoginLaoding.value = false;
-        Get.offAllNamed(Routes.HOME);
-      
+
+      isLoginLaoding.value = false;
+      Get.offAllNamed(Routes.HOME);
     } else {
       isLoginLaoding(false);
       showDialog(

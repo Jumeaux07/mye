@@ -25,8 +25,10 @@ class ProfileregisterController extends GetxController
   final prenomController = TextEditingController().obs;
   final villeController = TextEditingController().obs;
   final ville = "".obs;
-   final otherpost = "".obs;
+  final otherpost = "".obs;
   final activite = "".obs;
+  final latitude = "".obs;
+  final longitude = "".obs;
   final adresseController = TextEditingController().obs;
   final secteurController = TextEditingController().obs;
   final posteshouaiterController = TextEditingController().obs;
@@ -71,7 +73,7 @@ class ProfileregisterController extends GetxController
     villeController.value.text = value;
   }
 
-    void updatePosteshouaite(String value) {
+  void updatePosteshouaite(String value) {
     otherpost.value = value;
     posteshouaiterController.value.text = value;
   }
@@ -84,6 +86,11 @@ class ProfileregisterController extends GetxController
   void updateaddresse(String value) {
     ville.value = value;
     adresseController.value.text = value;
+  }
+
+  void updatePosition(PositionModel value) {
+    longitude.value = value.lon ?? "";
+    latitude.value = value.lat ?? "";
   }
 
   Future<void> pickImage() async {
@@ -123,24 +130,23 @@ class ProfileregisterController extends GetxController
     }
   }
 
-    Future<void> updateImage() async {
-        // return log("$nom $prenom $secteur_activite $adresse_geographique $biographie"); 
+  Future<void> updateImage() async {
+    // return log("$nom $prenom $secteur_activite $adresse_geographique $biographie");
     try {
       change(null, status: RxStatus.loading());
 
-      final response = await _dataProvider.updateImageProfile(
-          imageEnBase64.value);
+      final response =
+          await _dataProvider.updateImageProfile(imageEnBase64.value);
 
       if (response.statusCode == 200) {
         Env.userAuth = UserModel.fromJson(response.body['data']);
         change(null, status: RxStatus.success());
-          await ProfileDetailController().showUser("${Env.userAuth.id}}");
+        await ProfileDetailController().showUser("${Env.userAuth.id}}");
         update();
         cleanImagebase64();
         query.value.clear();
-      
-        await ProfileDetailController()
-            .showUser("${Env.userAuth.id}");
+
+        await ProfileDetailController().showUser("${Env.userAuth.id}");
         Get.offAllNamed(Routes.HOME);
       } else {
         change(null,
@@ -151,8 +157,6 @@ class ProfileregisterController extends GetxController
       change(null, status: RxStatus.error("Une erreur s'est produitee $e"));
     }
   }
-
-  
 
   Future<List<PositionModel>> findPositionAddress(String query) async {
     try {

@@ -5,12 +5,13 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
-import 'package:nom_du_projet/app/data/discussioncontroller.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
-import 'package:nom_du_projet/app/modules/messagerie/controllers/messagerie_controller.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
+import 'package:nom_du_projet/app/services/firebase_service.dart';
 
+import 'app/modules/Message/controllers/message_controller.dart';
 import 'app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'app/modules/abonnement/controllers/abonnement_controller.dart';
 import 'app/modules/otp/controllers/otp_controller.dart';
@@ -31,6 +32,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final firebaseService = FirebaseService();
+  await firebaseService.initLocalNotifications(); // Important !
+  await firebaseService.setupFirebaseMessaging();
   await GetStorage.init();
   runApp(
     GetMaterialApp(
@@ -43,13 +47,13 @@ Future<void> main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
-         Get.put(HomeController());
+        Get.put(HomeController());
         Get.put(SplashscreenController());
         Get.put(ProfileregisterController());
         Get.put(AbonnementController());
         Get.put(ProfileDetailController());
-        Get.put(DiscussionsController());
-         Get.put(MessagerieController());
+        Get.put(ConversationController());
+        Get.put(MessageController());
         Get.lazyPut(() => OtpController());
         Get.put(FirebaseController());
       }),

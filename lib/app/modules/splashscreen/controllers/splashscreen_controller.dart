@@ -13,7 +13,7 @@ class SplashscreenController extends GetxController {
   void onInit() {
     super.onInit();
 
-    log('Initialisation du SplashscreenController');
+    log('token => ${box.read("token")}');
 
     // Assurez-vous que la clé "is_first" existe et attribuez-la si nécessaire
     bool isFirst = box.read("is_first") ?? true;
@@ -28,7 +28,7 @@ class SplashscreenController extends GetxController {
       if (box.read("token") != "") {
         // Si le token existe
         log('Token trouvé');
-        if(Env.userAuth.isActive == 1) {
+        if (Env.userAuth.isActive == 1) {
           // Si l'utilisateur est actif (profil complété)
           log('Utilisateur actif');
           Future.delayed(const Duration(seconds: 5)).then((_) {

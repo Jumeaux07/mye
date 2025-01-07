@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 import 'package:nom_du_projet/app/data/constant.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/notification/controllers/notification_controller.dart';
 
 import '../data/auth_provider.dart';
@@ -18,32 +19,36 @@ import 'package:timezone/timezone.dart' as tz;
 class FirebaseService extends GetxController {
   final AuthProvider _authProvider = AuthProvider();
   final _notificationController = Get.put(NotificationController());
+  final _conversationController = Get.put(ConversationController());
   static final FirebaseService _instance = FirebaseService._internal();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   factory FirebaseService() => _instance;
   FirebaseService._internal();
+
   // Afficher une notification immédiate
-  Future<void> showNotification(RemoteMessage message) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      channelDescription: 'your channel description',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+  // Future<void> showNotification(RemoteMessage message) async {
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     'your channel id',
+  //     'your channel name',
+  //     channelDescription: 'your channel description',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //   );
 
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
+  //   const NotificationDetails platformChannelSpecifics = NotificationDetails(
+  //     android: androidPlatformChannelSpecifics,
+  //   );
 
-    await flutterLocalNotificationsPlugin.show(
-      0, // ID de notification
-      message.data['title'],
-      message.data['body'],
-      platformChannelSpecifics,
-    );
-  }
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0, // ID de notification
+  //     message.data['title'],
+  //     message.data['body'],
+  //     platformChannelSpecifics,
+  //   );
+  // }
 
   Future<void> setupFirebaseMessaging() async {
     // Notification en premier plan
@@ -94,6 +99,15 @@ class FirebaseService extends GetxController {
           refresh();
           log("NOTIFIY EVENT");
           break;
+        case "MESSAGE":
+          _conversationController.openDiscussion(_conversationController
+              .conversations
+              .where((el) =>
+                  el.id.toString() == event.data['id_conversation'].toString())
+              .toList()
+              .first);
+          log("MESSAGE EVENT");
+          break;
       }
     });
   }
@@ -102,114 +116,66 @@ class FirebaseService extends GetxController {
  * Implementation et configuration de notification push local
  */
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  // Initialisation des notifications locales
+  Future<void> initLocalNotifications() async {
+    // Initialisation des fuseaux horaires
+    tz.initializeTimeZones();
 
-  void initLocalNotifications() {
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+    // Configuration pour Android
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
-    // Initialisation du service de notifications
-    Future<void> init() async {
-      // Initialisation des fuseaux horaires
-      tz.initializeTimeZones();
+    // Configuration pour iOS/macOS
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
 
-      // Configuration pour Android
-      const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+    // Configuration finale
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
 
-      // Configuration pour iOS/macOS
-      final DarwinInitializationSettings initializationSettingsIOS =
-          DarwinInitializationSettings(
-        requestSoundPermission: false,
-        requestBadgePermission: false,
-        requestAlertPermission: false,
-      );
+    // Initialisation du plugin
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
+  }
 
-      // Configuration finale
-      final InitializationSettings initializationSettings =
-          InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS,
-      );
+  // Afficher une notification immédiate pour un message Firebase
+  Future<void> showNotification(RemoteMessage message) async {
+    log(message.notification?.title.toString() ?? 'No Title');
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      channelDescription: 'your channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
 
-      // Initialisation du plugin
-      await flutterLocalNotificationsPlugin.initialize(
-        initializationSettings,
-      );
-    }
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
 
-    // Gestion des notifications sur iOS
-    void onDidReceiveLocalNotification(
-        int id, String? title, String? body, String? payload) async {
-      // Logique personnalisée pour iOS
-      print('Notification reçue sur iOS');
-    }
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification?.title.toString() ?? 'No Title',
+      message.notification?.body.toString() ?? 'No Body',
+      platformChannelSpecifics,
+    );
+  }
 
-    // Gestion de la réponse à une notification
-    void onDidReceiveNotificationResponse(
-        NotificationResponse notificationResponse) async {
-      final String? payload = notificationResponse.payload;
-      if (payload != null) {
-        debugPrint('Notification payload: $payload');
-      }
-    }
-
-    // Afficher une notification immédiate
-    Future<void> showNotification(
-        {required String title, required String body}) async {
-      const AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
-        'your channel id',
-        'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-      );
-
-      const NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-      );
-
-      await flutterLocalNotificationsPlugin.show(
-        0, // ID de notification
-        title,
-        body,
-        platformChannelSpecifics,
-      );
-    }
-
-    // Planifier une notification à une date/heure spécifique
-    Future<void> scheduledNotification(
-        {required String title,
-        required String body,
-        required DateTime scheduledDate}) async {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        title,
-        body,
-        tz.TZDateTime.from(scheduledDate, tz.local),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'scheduled channel id',
-            'scheduled channel name',
-            channelDescription: 'scheduled notification description',
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
-    }
-
-    // Annuler une notification spécifique
-    Future<void> cancelNotification(int id) async {
-      await flutterLocalNotificationsPlugin.cancel(id);
-    }
-
-    // Annuler toutes les notifications
-    Future<void> cancelAllNotifications() async {
-      await flutterLocalNotificationsPlugin.cancelAll();
+  void onDidReceiveNotificationResponse(
+      NotificationResponse notificationResponse) async {
+    final String? payload = notificationResponse.payload;
+    if (payload != null) {
+      debugPrint('Notification payload: $payload');
     }
   }
 }
