@@ -8,6 +8,14 @@
                     "fileOutput": "android/app/google-services.json"
                 }
             },
+            "ios": {
+                "default": {
+                    "projectId": "myeapp-chrysalidedev",
+                    "appId": "1:525902566155:ios:381ca385eee1707a20480e",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
             "dart": {
                 "lib/firebase_options.dart": {
                     "projectId": "myeapp-chrysalidedev",

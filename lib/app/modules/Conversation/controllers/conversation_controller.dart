@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
@@ -15,7 +17,10 @@ class ConversationController extends GetxController with StateMixin<dynamic> {
     change(null, status: RxStatus.loading());
     try {
       final response = await _getData.getConversation();
-      if (response.statusCode == 200) {
+      log("${response.statusCode}");
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         conversations.value = (response.body['data'] as List)
             .map((e) => ConversationModel.fromJson(e))
             .toList();
@@ -41,7 +46,7 @@ class ConversationController extends GetxController with StateMixin<dynamic> {
         'receiverName': discussion.destinataire?.getFullName(),
         'receiverPhoto': discussion.destinataire?.profileImage,
         'currentUserId':
-            Env.userAuth.id, // Ajoutez l'ID de l'utilisateur connecté
+            Env.userAuth.id, // Ajoutez l'ID de l'utilisateur connecté1
       },
     );
   }

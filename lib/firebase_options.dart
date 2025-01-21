@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:525902566155:android:f48c97764613a6c920480e',
     messagingSenderId: '525902566155',
     projectId: 'myeapp-chrysalidedev',
-    storageBucket: 'myeapp-chrysalidedev.appspot.com',
+    storageBucket: 'myeapp-chrysalidedev.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -62,7 +62,9 @@ class DefaultFirebaseOptions {
     appId: '1:525902566155:ios:381ca385eee1707a20480e',
     messagingSenderId: '525902566155',
     projectId: 'myeapp-chrysalidedev',
-    storageBucket: 'myeapp-chrysalidedev.appspot.com',
+    storageBucket: 'myeapp-chrysalidedev.firebasestorage.app',
+    androidClientId: '525902566155-s12lr621vq4eni16769hb3cpol13aul6.apps.googleusercontent.com',
+    iosClientId: '525902566155-c1721k0n1k4sjcsvdhmhbgmen333hsl2.apps.googleusercontent.com',
     iosBundleId: 'com.chrysalidedev.mye',
   );
 }

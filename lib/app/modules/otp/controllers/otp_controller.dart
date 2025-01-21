@@ -36,14 +36,15 @@ class OtpController extends GetxController {
   }
 
   Future<void> verifyOtpCode(String email, String otp, String password,
-      String passwordConfirmation, String secteur_activite) async {
+      String passwordConfirmation, String type) async {
     isLoadingOtp(true);
     try {
       var data = {
         "email": email,
         "otp": otp,
         "password": password,
-        "password_confirmation": passwordConfirmation
+        "password_confirmation": passwordConfirmation,
+        "type": type
       };
       final response = await _authProvider.verifyOtpCode(data);
       var json = response.body;
@@ -52,7 +53,8 @@ class OtpController extends GetxController {
         print("${json["user"]}");
         Env.userAuth = UserModel.fromJson(json["user"]);
         Env.usertoken = json["token"];
-        box.write("token",json["token"] );
+        box.write("token", json["token"]);
+        await _authProvider.updateFcmToken("${box.read("fcm_token")}");
         showDialog(
             context: Get.context!,
             builder: (_) => CustomAlertDialog(

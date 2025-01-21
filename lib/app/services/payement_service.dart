@@ -53,7 +53,7 @@ class PaymentService {
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {
-            "Authorization": "Bearer $STRIPEKEY",
+            "Authorization": "Bearer ${Env.STRIPEKEY}",
             "Content-Type": "application/x-www-form-urlencoded"
           },
           validateStatus: (status) => status! < 500,

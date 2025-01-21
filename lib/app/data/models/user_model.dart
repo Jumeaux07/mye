@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserModel {
@@ -10,6 +11,8 @@ class UserModel {
   final String? skill;
   final String? biographie;
   final String? phone;
+  final String? type;
+  final String? entreprise;
   final String? email;
   final double? latitude;
   final double? longitude;
@@ -34,6 +37,8 @@ class UserModel {
     this.skill,
     this.biographie,
     this.phone,
+    this.type,
+    this.entreprise,
     this.email,
     this.latitude,
     this.longitude,
@@ -59,6 +64,8 @@ class UserModel {
     String? skill,
     String? biographie,
     String? phone,
+    String? type,
+    String? entreprise,
     String? email,
     double? latitude,
     double? longitude,
@@ -83,6 +90,8 @@ class UserModel {
         skill: skill ?? this.skill,
         biographie: biographie ?? this.biographie,
         phone: phone ?? this.phone,
+        type: type ?? this.type,
+        entreprise: entreprise ?? this.entreprise,
         email: email ?? this.email,
         latitude: latitude ?? this.latitude,
         longitude: longitude ?? this.longitude,
@@ -108,6 +117,8 @@ class UserModel {
         skill: json["skill"],
         biographie: json["biographie"],
         phone: json["phone"] ?? "",
+        type: json["type"],
+        entreprise: json["entreprise"],
         email: json["email"] ?? "",
         latitude: json["latitude"] ?? 0.00,
         longitude: json["longitude"] ?? 0.00,
@@ -140,6 +151,8 @@ class UserModel {
         "skill": skill,
         "biographie": biographie,
         "phone": phone,
+        "type": type,
+        "entreprise": entreprise,
         "email": email,
         "latitude": latitude,
         "longitude": longitude,
@@ -170,6 +183,32 @@ class UserModel {
 
   String getFullName() {
     return '$nom $prenom';
+  }
+
+  Color getUserTypeColor() {
+    switch (type?.toLowerCase()) {
+      case 'entreprise':
+        return Colors.blue;
+      case 'particulier':
+        return Colors.green;
+      case 'employé':
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData getUserTypeIcon() {
+    switch (type?.toLowerCase()) {
+      case 'entreprise':
+        return Icons.business;
+      case 'particulier':
+        return Icons.person;
+      case 'employé':
+        return Icons.work;
+      default:
+        return Icons.person_outline;
+    }
   }
 }
 

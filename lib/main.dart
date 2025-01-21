@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
+import 'package:nom_du_projet/app/modules/Login/controllers/login_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
-import 'package:nom_du_projet/app/services/firebase_service.dart';
 
 import 'app/modules/Message/controllers/message_controller.dart';
 import 'app/modules/Profileregister/controllers/profileregister_controller.dart';
@@ -25,16 +25,16 @@ Future<void> main() async {
   initializeDateFormatting('fr_FR', null);
   // Assurez-vous que les widgets Flutter sont initialisés
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = PUBLISHABLEKEY;
+  Stripe.publishableKey = Env.PUBLISHABLEKEY;
   await Stripe.instance.applySettings();
 
   // Initialiser Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final firebaseService = FirebaseService();
-  await firebaseService.initLocalNotifications(); // Important !
-  await firebaseService.setupFirebaseMessaging();
+  // final firebaseService = FirebaseService();
+  // await firebaseService.setupFirebaseMessaging();
+  // await firebaseService.initLocalNotifications(); // Important !
   await GetStorage.init();
   runApp(
     GetMaterialApp(
@@ -47,6 +47,7 @@ Future<void> main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
+        Get.put(LoginController());
         Get.put(HomeController());
         Get.put(SplashscreenController());
         Get.put(ProfileregisterController());

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
@@ -71,22 +74,69 @@ class PermissionService {
     return await checkAndRequestPermission(Permission.contacts);
   }
 
-  /// Gestionnaire de permissions pour les notifications
   Future<bool> handleNotificationPermission() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: true
-    );
+    try {
+      // Demande des permissions Firebase
+      NotificationSettings settings = await messaging.requestPermission(
+          alert: true, badge: true, sound: true, provisional: false);
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('Notifications autorisées');
-      return await checkAndRequestPermission(Permission.notification);
-    } else {
-      print('Notifications réfusée');
+      print('Status des permissions Firebase: ${settings.authorizationStatus}');
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional) {
+        // Pour iOS, vérifier d'abord le token APNS
+        if (Platform.isIOS) {
+          print('Attente du token APNS...');
+          String? apnsToken;
+
+          for (int i = 0; i < 5; i++) {
+            apnsToken = await messaging.getToken();
+            if (apnsToken != null) {
+              box.write("fcm_token", apnsToken);
+              print('APNS Token obtenu: $apnsToken');
+              break;
+            }
+            await Future.delayed(Duration(seconds: 1));
+          }
+
+          if (apnsToken == null) {
+            print(
+                'Impossible d\'obtenir le token APNS après plusieurs tentatives');
+            return false;
+          }
+        }
+
+        // Récupération du token FCM dans une boucle séparée
+        String? fcmToken;
+        for (int i = 0; i < 5; i++) {
+          fcmToken = await messaging.getToken();
+          if (fcmToken != null) {
+            print('FCM Token obtenu: $fcmToken');
+            box.write("fcm_token", fcmToken);
+            break;
+          }
+          await Future.delayed(Duration(seconds: 1));
+        }
+
+        if (fcmToken == null) {
+          print(
+              'Impossible d\'obtenir le token FCM après plusieurs tentatives');
+          return false;
+        }
+
+        // Vérification des permissions système
+        if (await checkAndRequestPermission(Permission.notification)) {
+          print('Toutes les permissions sont accordées');
+          return true;
+        }
+      }
+
+      print('Permissions refusées ou incomplètes');
+      return false;
+    } catch (e) {
+      print('Erreur lors de la demande de permissions: $e');
       return false;
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:ui' as ui;
 
+import '../modules/Conversation/controllers/conversation_controller.dart';
 import '../widgets/custom_marcker.dart';
 
 const baseUrl = "https://api.franckprod.com/api";
@@ -38,6 +40,8 @@ const deleteNotificationUrl = "/delete-notification/";
 const deleteAllNotificationUrl = "/delete-all-notification/";
 
 const getSecteurUrl = "/get-all-secteurs";
+const getPubUrl = "/get-pub";
+const searchUrl = "/search";
 
 const focusedBorderColor = Color(0xFFCBA948);
 const yellowColor = Color(0xFFCBA948);
@@ -58,14 +62,6 @@ final defaultPinTheme = PinTheme(
     border: Border.all(color: borderColor),
   ),
 );
-
-const mapsToken = "pk.22cea6c61d7cd26bad1424434572ed85";
-const API_KEY = "184127098565f9bc14b9ab28.07603673";
-const SITE_ID = "5866720";
-const PUBLISHABLEKEY =
-    "pk_test_51Nae9OCTPwtZUmrOoAgs4oIBecNZIAYQUkiMt25puI0o8auPaDAgQ2rY93HxFxLzCXdqksnisdye3xXzz2lZZZAH00GK0MIV2j";
-const STRIPEKEY =
-    "sk_test_51Nae9OCTPwtZUmrOCTHr2SHw8ydiYwxU6nURgqRJalX1eWf1A471d9qFRy3zotnvSXCmdow4IpwFXKF5fIMmD7U300B51fuqou";
 
 final permissionService = PermissionService();
 
@@ -95,6 +91,16 @@ class Env {
   static UserModel userOther = UserModel();
   static String usertoken = "";
   static List<String> skill = [];
+  static String mapsToken = "pk.22cea6c61d7cd26bad1424434572ed85";
+  static String API_KEY = "184127098565f9bc14b9ab28.07603673";
+  static String SITE_ID = "5866720";
+  static String PUBLISHABLEKEY =
+      "pk_test_51Nae9OCTPwtZUmrOoAgs4oIBecNZIAYQUkiMt25puI0o8auPaDAgQ2rY93HxFxLzCXdqksnisdye3xXzz2lZZZAH00GK0MIV2j";
+  static String STRIPEKEY =
+      "sk_test_51Nae9OCTPwtZUmrOCTHr2SHw8ydiYwxU6nURgqRJalX1eWf1A471d9qFRy3zotnvSXCmdow4IpwFXKF5fIMmD7U300B51fuqou";
+  static String NOTIFY_URL = "";
 }
+
+final conversationController = Get.find<ConversationController>();
 
 final dateFormatter = DateFormat('yyyy-MM-dd');

@@ -9,14 +9,13 @@ class SplashscreenView extends GetView<SplashscreenController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
+          backgroundColor: Get.isDarkMode ? Colors.black38 : Colors.white,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                    width: 180,
-                    height: 187,
-                    "assets/images/LOGO-MYE-Ligth.png"),
+                    width: 180, height: 187, "assets/images/LOGO-MYE-Dark.png"),
                 SizedBox(
                   height: 70,
                 ),

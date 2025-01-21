@@ -355,7 +355,9 @@ class SettingView extends GetView<SettingController> {
             TextButton(
               child: Text('Se déconnecter'),
               onPressed: () {
+                final fcmtoken = box.read("fcm_token");
                 box.erase();
+                box.write("fcmtoken", fcmtoken);
                 Get.offAllNamed(Routes.LOGIN);
               },
             ),

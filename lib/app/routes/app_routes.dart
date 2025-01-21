@@ -20,6 +20,8 @@ abstract class Routes {
   static const MESSAGERIE = _Paths.MESSAGERIE;
   static const MESSAGE = _Paths.MESSAGE;
   static const CONVERSATION = _Paths.CONVERSATION;
+  static const OFFLINE = _Paths.OFFLINE;
+  static const RELATION_REQUEST = _Paths.RELATION_REQUEST;
 }
 
 abstract class _Paths {
@@ -41,4 +43,6 @@ abstract class _Paths {
   static const MESSAGERIE = '/messagerie';
   static const MESSAGE = '/message';
   static const CONVERSATION = '/conversation';
+  static const OFFLINE = '/offline';
+  static const RELATION_REQUEST = '/relation-request';
 }

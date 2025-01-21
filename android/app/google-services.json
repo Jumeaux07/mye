@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "525902566155",
     "project_id": "myeapp-chrysalidedev",
-    "storage_bucket": "myeapp-chrysalidedev.appspot.com"
+    "storage_bucket": "myeapp-chrysalidedev.firebasestorage.app"
   },
   "client": [
     {
@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "525902566155-c1721k0n1k4sjcsvdhmhbgmen333hsl2.apps.googleusercontent.com",
+              "client_id": "525902566155-41jmjena324cst8inv5958l2f3l2lj2l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.chrysalidedev.mye"
+                "bundle_id": "com.example.mye"
               }
             }
           ]

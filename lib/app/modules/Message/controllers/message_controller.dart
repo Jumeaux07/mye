@@ -22,7 +22,9 @@ class MessageController extends GetxController with StateMixin<dynamic> {
     change(null, status: RxStatus.loading());
     try {
       final response = await _getData.getMessage(conversationId);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         messages.value = (response.body['data'] as List)
             .map((e) => MessageModel.fromJson(e))
             .toList();
@@ -55,7 +57,9 @@ class MessageController extends GetxController with StateMixin<dynamic> {
         messageController.value.text,
         conversationId,
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 201) {
         messageController.value.clear();
 
         messages.insert(0, MessageModel.fromJson(response.body['data']));
@@ -84,7 +88,9 @@ class MessageController extends GetxController with StateMixin<dynamic> {
       );
       log(response.body['data'].toString());
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 201) {
         messages.insert(0, MessageModel.fromJson(response.body['data']));
         _conversationController.getConversation();
         change(messages, status: RxStatus.success());

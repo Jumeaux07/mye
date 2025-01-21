@@ -31,6 +31,15 @@ class LoginView extends GetView<LoginController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      //Image
+                      Image.asset(
+                        "${!Get.isDarkMode ? "assets/images/LOGO-MYE-Dark.png" : "assets/images/LOGO-MYE-Ligth.png"}",
+                        height: 70,
+                        width: 70,
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
                       //Title Form
                       Text(
                         "Connexion",
@@ -41,7 +50,7 @@ class LoginView extends GetView<LoginController> {
                       ),
 
                       SizedBox(
-                        height: 30,
+                        height: 15,
                       ),
                       //Input Email
                       Customemailtextfield(
@@ -67,11 +76,12 @@ class LoginView extends GetView<LoginController> {
               //button
               GoldButtonLight(
                 onTap: () {
-                  if(controller.formKey.value.currentState!.validate() && controller.email.value.text.isNotEmpty && controller.password.value.text.isNotEmpty ){
+                  if (controller.formKey.value.currentState!.validate() &&
+                      controller.email.value.text.isNotEmpty &&
+                      controller.password.value.text.isNotEmpty) {
                     controller.login(controller.email.value.text,
-                      controller.password.value.text);
+                        controller.password.value.text);
                   }
-                 
                 },
                 isLoading: controller.isLoginLaoding.value,
                 label: 'Connexion',

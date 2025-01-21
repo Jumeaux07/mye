@@ -11,11 +11,13 @@ import '../../register/controllers/register_controller.dart';
 import '../controllers/otp_controller.dart';
 
 class OtpView extends GetView<OtpController> {
-  OtpView(this.email, this.password, this.passwordConfirmation, {super.key});
+  OtpView(this.email, this.password, this.passwordConfirmation, this.type,
+      {super.key});
 
   final String? email;
   final String? password;
   final String? passwordConfirmation;
+  final String? type;
 
   final registerController = Get.find<RegisterController>();
   final profileRegisterController = Get.find<ProfileregisterController>();
@@ -41,9 +43,9 @@ class OtpView extends GetView<OtpController> {
                       height: 60,
                     ),
                     Text(
-                      "Nous vous avons envoyé le code OTP par email ",
+                      "Votre code OTP a été envoyé à l'adresse email suivante : ${registerController.emailController.value.text}",
                       style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.black),
                     ),
@@ -69,7 +71,7 @@ class OtpView extends GetView<OtpController> {
                           children: [
                             Container(
                               margin: const EdgeInsets.only(bottom: 9),
-                              width: 22,
+                              width: 20,
                               height: 1,
                               color: focusedBorderColor,
                             ),
@@ -111,8 +113,7 @@ class OtpView extends GetView<OtpController> {
                                 controller.pinController.value.text,
                                 password ?? "",
                                 passwordConfirmation ?? "",
-                                profileRegisterController
-                                    .secteurController.value.text);
+                                type ?? "");
                           }),
                     ),
                     InkWell(

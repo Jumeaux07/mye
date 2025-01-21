@@ -35,7 +35,7 @@ class AbonnementModel {
   factory AbonnementModel.fromJson(Map<String, dynamic> json) =>
       AbonnementModel(
         id: json["id"],
-        libelle: json["libelle"],
+        libelle: json["labelle"],
         price: json["price"],
         items: json["items"],
         status: json["status"],
@@ -43,7 +43,7 @@ class AbonnementModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "libelle": libelle,
+        "labelle": libelle,
         "price": price,
         "items": items,
         "status": status,

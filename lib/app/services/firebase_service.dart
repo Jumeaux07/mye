@@ -27,28 +27,8 @@ class FirebaseService extends GetxController {
   factory FirebaseService() => _instance;
   FirebaseService._internal();
 
-  // Afficher une notification immédiate
-  // Future<void> showNotification(RemoteMessage message) async {
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //       AndroidNotificationDetails(
-  //     'your channel id',
-  //     'your channel name',
-  //     channelDescription: 'your channel description',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //   );
-
-  //   const NotificationDetails platformChannelSpecifics = NotificationDetails(
-  //     android: androidPlatformChannelSpecifics,
-  //   );
-
-  //   await flutterLocalNotificationsPlugin.show(
-  //     0, // ID de notification
-  //     message.data['title'],
-  //     message.data['body'],
-  //     platformChannelSpecifics,
-  //   );
-  // }
+  @override
+// Dans votre FirebaseMessagingService
 
   Future<void> setupFirebaseMessaging() async {
     // Notification en premier plan
@@ -71,20 +51,24 @@ class FirebaseService extends GetxController {
     });
 
     // Token de notification
-    String? token = Platform.isAndroid
-        ? await FirebaseMessaging.instance.getToken()
-        : await FirebaseMessaging.instance.getAPNSToken();
+    String? token;
 
-    box.write("fcm_token", token.toString());
-    if (token != null && token != "" && box.hasData("token")) {
-      _authProvider.updateFcmToken(token);
+    token = await FirebaseMessaging.instance.getToken();
+
+    await box.write("fcm_token", token);
+
+    if (token != null &&
+        token != "" &&
+        token == "null" &&
+        box.hasData("token")) {
+      await _authProvider.updateFcmToken(token);
     }
     print('Token Firebase : ${token}');
     //Lorsque firebase met a jour le token
-    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
       box.write("fcm_token", token.toString());
-      if (token != "" && box.hasData("token")) {
-        _authProvider.updateFcmToken(token);
+      if (token != "" && token != "null" && box.hasData("token")) {
+        await _authProvider.updateFcmToken(token);
       }
     });
 

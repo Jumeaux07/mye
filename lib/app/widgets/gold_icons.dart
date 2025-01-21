@@ -6,9 +6,11 @@ class GoldIcons extends StatelessWidget {
     super.key,
     this.size,
     this.icon,
+    this.color,
   });
   final double? size;
   final IconData? icon;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     return Get.isDarkMode
@@ -54,6 +56,7 @@ class GoldIcons extends StatelessWidget {
             child: Icon(
               icon,
               size: size ?? 35,
+              color: color ?? Colors.white,
             ),
           );
   }

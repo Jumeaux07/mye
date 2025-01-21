@@ -7,14 +7,18 @@ import '../../../data/constant.dart';
 class NotificationController extends GetxController with StateMixin<dynamic> {
   final _getData = GetDataProvider();
   final listNotification = <NotificationModel>[].obs;
+  final totalNotifcation = 0.obs;
 
   Future<void> getAllNotification() async {
     change(null, status: RxStatus.loading());
     try {
       final response = await _getData.getAllNotification();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         List list = response.body['notifications'];
+        totalNotifcation.value = response.body['total'];
         listNotification.value =
             list.map((e) => NotificationModel.fromJson(e)).toList();
         update();
@@ -37,7 +41,9 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
     try {
       final response = await _getData.readNotification(id);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         // change(null, status: RxStatus.success());
         await getAllNotification();
         update();
@@ -55,7 +61,9 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
     try {
       final response = await _getData.readAllNotification();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         // change(null, status: RxStatus.success());
         await getAllNotification();
         update();
@@ -73,7 +81,9 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
     try {
       final response = await _getData.deleteNotification(id);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         // change(null, status: RxStatus.success());
         await getAllNotification();
         update();
@@ -91,7 +101,9 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
     try {
       final response = await _getData.deleteAllNotification();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        change(null, status: RxStatus.error(" ${response.statusText}"));
+      } else if (response.statusCode == 200) {
         // change(null, status: RxStatus.success());
         await getAllNotification();
         update();
@@ -107,8 +119,8 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
-    if(box.hasData("token")){
-       getAllNotification();
+    if (box.hasData("token")) {
+      getAllNotification();
     }
   }
 

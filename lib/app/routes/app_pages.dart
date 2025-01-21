@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../middleware/auth_middleware.dart';
+import '../middleware/connectivity_middleware.dart';
 import '../modules/Conversation/bindings/conversation_binding.dart';
 import '../modules/Conversation/views/conversation_view.dart';
 import '../modules/Login/bindings/login_binding.dart';
@@ -20,12 +22,16 @@ import '../modules/interrestprofil/bindings/interrestprofil_binding.dart';
 import '../modules/interrestprofil/views/interrestprofil_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
+import '../modules/offline/bindings/offline_binding.dart';
+import '../modules/offline/views/offline_view.dart';
 import '../modules/profile_detail/bindings/profile_detail_binding.dart';
 import '../modules/profile_detail/views/profile_detail_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/register_main/bindings/register_main_binding.dart';
 import '../modules/register_main/views/register_main_view.dart';
+import '../modules/relation_request/bindings/relation_request_binding.dart';
+import '../modules/relation_request/views/relation_request_view.dart';
 import '../modules/setting/bindings/setting_binding.dart';
 import '../modules/setting/views/setting_view.dart';
 import '../modules/splashscreen/bindings/splashscreen_binding.dart';
@@ -40,10 +46,12 @@ class AppPages {
 
   static final routes = [
     GetPage(
-      name: _Paths.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
-    ),
+        name: _Paths.HOME,
+        page: () => const HomeView(),
+        binding: HomeBinding(),
+        middlewares: [
+          AuthMiddleware(),
+        ]),
     GetPage(
       name: _Paths.MAIN_INTRO,
       page: () => const MainIntroView(),
@@ -82,28 +90,37 @@ class AppPages {
     GetPage(
       name: _Paths.ABONNEMENT,
       page: () => AbonnementView(),
+      middlewares: [
+        AuthMiddleware(),
+      ],
       binding: AbonnementBinding(),
     ),
+    // GetPage(
+    //     name: _Paths.CINETPAY,
+    //     page: () =>  CinetpayView(),
+    //     binding: CinetpayBinding(),
+    //     middlewares: [
+    //       AuthMiddleware(),
+    //     ]),
     GetPage(
-      name: _Paths.CINETPAY,
-      page: () => const CinetpayView(),
-      binding: CinetpayBinding(),
-    ),
-    GetPage(
-      name: _Paths.PROFILE_DETAIL,
-      page: () => const ProfileDetailView(),
-      binding: ProfileDetailBinding(),
-    ),
+        name: _Paths.PROFILE_DETAIL,
+        page: () => const ProfileDetailView(),
+        binding: ProfileDetailBinding(),
+        middlewares: [
+          AuthMiddleware(),
+        ]),
     GetPage(
       name: _Paths.SETTING,
       page: () => const SettingView(),
       binding: SettingBinding(),
     ),
     GetPage(
-      name: _Paths.NOTIFICATION,
-      page: () => const NotificationView(),
-      binding: NotificationBinding(),
-    ),
+        name: _Paths.NOTIFICATION,
+        page: () => const NotificationView(),
+        binding: NotificationBinding(),
+        middlewares: [
+          AuthMiddleware(),
+        ]),
     GetPage(
       name: _Paths.REGISTER_MAIN,
       page: () => const RegisterMainView(),
@@ -115,14 +132,28 @@ class AppPages {
     //   binding: MessagerieBinding(),
     // ),
     GetPage(
-      name: _Paths.MESSAGE,
-      page: () => MessageView(),
-      binding: MessageBinding(),
+        name: _Paths.MESSAGE,
+        page: () => MessageView(),
+        binding: MessageBinding(),
+        middlewares: [
+          AuthMiddleware(),
+        ]),
+    GetPage(
+        name: _Paths.CONVERSATION,
+        page: () => const ConversationView(),
+        binding: ConversationBinding(),
+        middlewares: [
+          AuthMiddleware(),
+        ]),
+    GetPage(
+      name: _Paths.OFFLINE,
+      page: () => const OfflineView(),
+      binding: OfflineBinding(),
     ),
     GetPage(
-      name: _Paths.CONVERSATION,
-      page: () => const ConversationView(),
-      binding: ConversationBinding(),
+      name: _Paths.RELATION_REQUEST,
+      page: () => const RelationRequestView(),
+      binding: RelationRequestBinding(),
     ),
   ];
 }

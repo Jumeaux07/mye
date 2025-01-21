@@ -13,6 +13,7 @@ class RegisterController extends GetxController with StateMixin {
   final passwordController = TextEditingController().obs;
   final passwordConfirmationController = TextEditingController().obs;
   final formKey = GlobalKey<FormState>().obs;
+  final userType = 'particulier'.obs;
 
   final RxBool loadingRegister = false.obs;
 
@@ -35,12 +36,8 @@ class RegisterController extends GetxController with StateMixin {
     super.onClose();
   }
 
-  Future<void> sendOtpUser(
-    String pseudo,
-    String email,
-    String password,
-    String passwordConfirmation,
-  ) async {
+  Future<void> sendOtpUser(String pseudo, String email, String password,
+      String passwordConfirmation, String userType) async {
     loadingRegister(true);
     try {
       var data = {
@@ -57,7 +54,8 @@ class RegisterController extends GetxController with StateMixin {
             message: response.body["message"].toString(),
             onPressed: () {
               Get.back();
-              Get.to(() => OtpView(email, password, passwordConfirmation));
+              Get.to(() =>
+                  OtpView(email, password, passwordConfirmation, userType));
             },
             showAlertIcon: true));
         loadingRegister(false);

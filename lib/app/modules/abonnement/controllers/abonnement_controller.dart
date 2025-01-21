@@ -9,6 +9,20 @@ import '../../../data/get_data.dart';
 import '../../../widgets/custom_alert.dart';
 import '../../../widgets/soucription_plan.dart';
 
+class PaymentMethod {
+  final String id;
+  final String name;
+  final String icon;
+  final String lastDigits;
+
+  PaymentMethod({
+    required this.id,
+    required this.name,
+    required this.icon,
+    this.lastDigits = '',
+  });
+}
+
 class AbonnementController extends GetxController {
   //TODO: Implement AbonnementController
 
@@ -26,6 +40,56 @@ class AbonnementController extends GetxController {
   final Rx<AbonnementModel> abonnement = AbonnementModel().obs;
 
   final GetDataProvider _dataProvider = GetDataProvider();
+
+  var selectedMethod = Rxn<PaymentMethod>();
+  var isLoading = false.obs;
+
+  // Simuler des méthodes de paiement sauvegardées
+  final savedPaymentMethods = [
+    PaymentMethod(
+      id: '1',
+      name: 'Mobile Money',
+      icon: '💲',
+      lastDigits: '',
+    ),
+    PaymentMethod(
+      id: '2',
+      name: 'Carte de crédit',
+      icon: '💳',
+      lastDigits: '',
+    ),
+  ].obs;
+
+  void selectMethod(PaymentMethod method) {
+    selectedMethod.value = method;
+    log(method.id);
+  }
+
+  Future<void> confirmPaymentMethod() async {
+    if (selectedMethod.value == null) return;
+
+    isLoading.value = true;
+    try {
+      // Simuler un appel API
+      await Future.delayed(Duration(seconds: 1));
+      Get.back(result: selectedMethod.value);
+      Get.snackbar(
+        'Succès',
+        'Moyen de paiement sélectionné',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erreur',
+        'Échec de la sélection',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   Future<void> processPayment() async {
     try {
