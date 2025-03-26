@@ -1,8 +1,6 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
@@ -14,8 +12,8 @@ import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Accueil extends GetView<HomeController> {
-  Accueil({super.key});
+class Connections extends GetView<RelationRequestController> {
+  const Connections({super.key});
 
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
@@ -24,166 +22,72 @@ class Accueil extends GetView<HomeController> {
     }
   }
 
-  final _authProvider = AuthProvider();
-
   @override
   Widget build(BuildContext context) {
-    final searchController = TextEditingController();
     final profiledetailController = Get.find<ProfileDetailController>();
-    final profileRegisterController = Get.find<ProfileregisterController>();
-    final relationController = Get.find<RelationRequestController>();
 
-    if (box.read("fcm_token") != "null" || box.read("fcm_token") != null) {
-      FirebaseMessaging.instance.getToken().then((value) {
-        box.write("fcm_token", value);
-        _authProvider.updateFcmToken(value ?? "");
-      });
-    }
-
-    Future.delayed(Duration(seconds: 1), () {
-      relationController..getRequestSend();
-      controller.getAuthUser();
-      controller.getAllUser();
-      controller.getPub();
-    });
-    // relationController.getRequest();
+    // controller.getRelation();
 
     return RefreshIndicator(
-        onRefresh: () async {
-          await relationController
-            ..getRequestSend();
-          await controller.getAuthUser();
-          await controller.getAllUser();
-          controller.getPub();
-        },
-        child: Obx(
-          () => ListView(
-            children: [
-              //Si user n est pas encore actif, on affiche un messaage d appel a l action
-              Env.userAuth.isActive == 1
-                  ? Container()
-                  : InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.PROFILE_DETAIL);
-                      },
-                      child: FadeTransition(
-                        opacity: controller.animation,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 40,
-                            child: Center(
-                              child: Text(
-                                "Veuillez complèter vos informations svp",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.red,
-                            ),
+      onRefresh: () async {
+        controller.getRelation();
+        controller.getRequest();
+      },
+      child: ListView(
+        children: [
+          // Section de recherche améliorée
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              children: [
+                // Suggestions de recherche rapide
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+
+          // Section "Découvrir"
+          // _buildDiscoverSection(),
+
+          // Liste des profils améliorée
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionHeader("Relations"),
+                controller.obx(
+                  onEmpty: Center(
+                    child: Text("Aucun resultat"),
+                  ),
+                  onError: (error) => Center(
+                    child: Text(error.toString()),
+                  ),
+                  onLoading: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  (data) => controller.connectionUsers.isEmpty
+                      ? Center(
+                          child: Text("Aucune donnée"),
+                        )
+                      : ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: controller.connectionUsers.length,
+                          itemBuilder: (context, index) =>
+                              _buildEnhancedProfileCard(
+                            controller.connectionUsers[index].connectedUser ??
+                                UserModel(),
+                            profiledetailController,
                           ),
                         ),
-                      ),
-                    ),
-
-              // Bannière d'événements/actualités
-              Visibility(
-                visible: controller.pubList.isNotEmpty,
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: 150,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                  ),
-                  items: controller.pubList
-                      .map((pub) => _buildCarouselItem(
-                          pub.titre ?? "",
-                          pub.description ?? "",
-                          pub.url ?? "",
-                          pub.urlimage ?? ""))
-                      .toList(),
                 ),
-              ),
-
-              // Section de recherche améliorée
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  children: [
-                    // Barre de recherche existante
-                    _buildSearchBar(searchController, controller),
-
-                    // Suggestions de recherche rapide
-                    const SizedBox(height: 8),
-                    Visibility(
-                      visible:
-                          profileRegisterController.secteursList.isNotEmpty,
-                      child: SizedBox(
-                        height: 50,
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: () {
-                            profileRegisterController.secteursList.shuffle();
-                            return profileRegisterController.secteursList
-                                .take(4)
-                                .map((secteur) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: _buildQuickSearchChip(
-                                          secteur.libelle ?? ""),
-                                    ))
-                                .toList();
-                          }(),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-
-              // Section "Découvrir"
-              // _buildDiscoverSection(),
-
-              // Liste des profils améliorée
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader("Suggestions"),
-                    controller.obx(
-                      onEmpty: Center(
-                        child: Text("Aucun resultat"),
-                      ),
-                      onError: (error) => Center(
-                        child: Text(error.toString()),
-                      ),
-                      onLoading: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      (data) => controller.userList.isEmpty
-                          ? Center(
-                              child: Text("Aucune donnée"),
-                            )
-                          : ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: controller.userList.length,
-                              itemBuilder: (context, index) =>
-                                  _buildEnhancedProfileCard(
-                                      controller.userList[index],
-                                      profiledetailController,
-                                      relationController),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 
   Widget _buildCarouselItem(
@@ -397,9 +301,7 @@ class Accueil extends GetView<HomeController> {
   }
 
   Widget _buildEnhancedProfileCard(
-      UserModel user,
-      ProfileDetailController controller,
-      RelationRequestController relationRequestController) {
+      UserModel user, ProfileDetailController controller) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -467,12 +369,8 @@ class Accueil extends GetView<HomeController> {
                                 ),
                               ),
                             ),
-                            Obx(
-                              () => _buildConnectionButton(
-                                  conversationController,
-                                  user,
-                                  relationRequestController),
-                            )
+                            _buildConnectionButton(
+                                conversationController, user),
                           ],
                         ),
                         const SizedBox(height: 4),
@@ -506,51 +404,19 @@ class Accueil extends GetView<HomeController> {
     );
   }
 
-  Widget _buildConnectionButton(ConversationController controller,
-      UserModel user, RelationRequestController relationController) {
-    return (relationController.isLoading.value &&
-            relationController.currentLoadingUserId.value == user.id)
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : OutlinedButton.icon(
-            onPressed: () {
-              if ((relationController.requestUser
-                      .where((el) => (el.receiver?.id == user.id ||
-                          el.sender?.id == user.id))
-                      .isNotEmpty ||
-                  relationController.connectionUsers
-                      .where((el) => el.connectedUser?.id == user.id)
-                      .isNotEmpty ||
-                  relationController.requestUserSend
-                      .where((el) => (el.receiver?.id == user.id ||
-                          el.sender?.id == user.id))
-                      .isNotEmpty)) {
-                if (Env.userAuth.isPremium == 0) {
-                  Get.toNamed(Routes.ABONNEMENT);
-                } else {
-                  controller.openNewDiscussion(user);
-                }
-              } else {
-                relationController.sendRequest(user.id.toString());
-              }
-            },
-            icon: (relationController.requestUser
-                        .where((el) => (el.receiver?.id == user.id ||
-                            el.sender?.id == user.id))
-                        .isNotEmpty ||
-                    relationController.connectionUsers
-                        .where((el) => el.connectedUser?.id == user.id)
-                        .isNotEmpty ||
-                    relationController.requestUserSend
-                        .where((el) => (el.receiver?.id == user.id ||
-                            el.sender?.id == user.id))
-                        .isNotEmpty)
-                ? const Icon(Icons.send)
-                : const Icon(Icons.person_add),
-            label: Text(
-                "${relationController.requestUser.where((el) => (el.receiver?.id == user.id || el.sender?.id == user.id)).isNotEmpty || relationController.connectionUsers.where((el) => el.connectedUser?.id == user.id).isNotEmpty || relationController.requestUserSend.where((el) => (el.receiver?.id == user.id || el.sender?.id == user.id)).isNotEmpty ? "Message" : "Ajouter"} "),
-          );
+  Widget _buildConnectionButton(
+      ConversationController controller, UserModel user) {
+    return OutlinedButton.icon(
+      onPressed: () {
+        if (Env.userAuth.isPremium == 0) {
+          Get.toNamed(Routes.ABONNEMENT);
+        } else {
+          controller.openNewDiscussion(user);
+        }
+      },
+      icon: const Icon(Icons.send),
+      label: const Text("Message"),
+    );
   }
 
   Widget _buildUserTags(UserModel user) {
@@ -618,26 +484,6 @@ class Accueil extends GetView<HomeController> {
           ),
         ],
       ),
-    );
-  }
-
-  // Ajout de la méthode _buildQuickSearchChip
-  Widget _buildQuickSearchChip(String label) {
-    return ActionChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: Get.isDarkMode ? Colors.white : Colors.black87,
-          fontSize: 12,
-        ),
-      ),
-      backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.grey[200],
-      onPressed: () {
-        controller.search(label);
-        // Implémentez ici la logique de recherche rapide
-      },
-      elevation: 0,
-      pressElevation: 2,
     );
   }
 }

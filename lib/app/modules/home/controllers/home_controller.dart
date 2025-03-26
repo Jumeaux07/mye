@@ -86,6 +86,8 @@ class HomeController extends GetxController
         Env.userAuth = UserModel.fromJson(response.body['data']);
         // Env.usertoken = response.body['token'];
         Env.skill = response.body['data']['skill'].toString().split(',');
+        Env.contreIntert =
+            response.body['data']['centre_interet'].toString().split(',');
 
         log("${Env.userAuth.toJson()}");
         change(user, status: RxStatus.success());
@@ -163,9 +165,10 @@ class HomeController extends GetxController
     //    getAuthUser();
     //    getAllUser();
     // }
-
-    getAuthUser();
-    getAllUser();
+    if (box.hasData("is_first") && box.hasData("token")) {
+      getAuthUser();
+      getAllUser();
+    }
   }
 
   @override

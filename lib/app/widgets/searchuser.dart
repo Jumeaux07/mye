@@ -1,17 +1,13 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
-import 'package:nom_du_projet/app/widgets/custom_marcker.dart';
-import 'package:widget_to_marker/widget_to_marker.dart';
-
-import '../data/constant.dart';
 import '../modules/messagerie/views/messagerie_view.dart';
+import '../data/constant.dart';
 
 class NearbyUsersMap extends StatefulWidget {
   @override
@@ -19,32 +15,24 @@ class NearbyUsersMap extends StatefulWidget {
 }
 
 class _NearbyUsersMapState extends State<NearbyUsersMap> {
-  GoogleMapController? _mapController;
+  MapController? _mapController;
   Position? _currentPosition;
-  Set<Marker> _markers = {};
-  final double _searchRadius = 5000; // Rayon de recherche en mètres
+  List<Marker> _markers = [];
+  final double _searchRadius = 5000;
   final homeController = Get.put(HomeController());
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _mapController = MapController();
     _getCurrentLocation();
-    // _startTimer();
   }
 
   @override
   void dispose() {
-    // _timer?.cancel();
+    _timer?.cancel();
     super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(Duration(minutes: 10), (timer) {
-      if (mounted) {
-        _searchNearbyUsers();
-      }
-    });
   }
 
   Future<void> _getCurrentLocation() async {
@@ -55,12 +43,8 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        locationSettings: LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 10,
-        ),
+        desiredAccuracy: LocationAccuracy.high,
       );
-      printInfo(info: "long ${position.longitude} lat ${position.latitude}");
 
       if (mounted) {
         setState(() {
@@ -75,25 +59,41 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
     }
   }
 
-  Future<void> _addCurrentLocationMarker() async {
+  void _addCurrentLocationMarker() {
     if (_currentPosition != null) {
-      _markers.add(
-        Marker(
-          onTap: () {
-            // Get.to(() => MessagerieView());
-          },
-          markerId: MarkerId('current_location'),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
-          infoWindow: InfoWindow(title: 'Ma position'),
-          icon: await CustomMarcker(
-            text: 'Ma position',
-            image: Env.userAuth.profileImage ?? null,
-          ).toBitmapDescriptor(),
+      _markers.add(Marker(
+        point: LatLng(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
         ),
-      );
+        width: 80,
+        height: 80,
+        child: GestureDetector(
+          onTap: () {
+            // Gérer le tap sur le marqueur
+          },
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: Env.userAuth.profileImage != null
+                    ? NetworkImage(Env.userAuth.profileImage!)
+                    : null,
+                child: Env.userAuth.profileImage == null
+                    ? Icon(Icons.person)
+                    : null,
+              ),
+              Text(
+                'Ma position',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ));
     }
   }
 
@@ -114,24 +114,36 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
       double userLon = user.longitude ?? 0.00;
 
       if (userLon >= lon - lonRadius && userLon <= lon + lonRadius) {
-        BitmapDescriptor icon = await CustomMarcker(
-          text: user.pseudo ?? 'Utilisateur',
-          image: user.profileImage ?? null,
-        ).toBitmapDescriptor();
-
         newMarkers.add(
           Marker(
-            onTap: () {
-              if (Env.userAuth.isPremium == 1) {
-                Get.to(() => MessagerieView());
-              }
-            },
-            markerId: MarkerId(user.id.toString()),
-            position: LatLng(userLat, userLon),
-            icon: icon,
-            infoWindow: InfoWindow(
-              title: user.pseudo ?? 'Utilisateur',
-              snippet: 'Longue pression pour plus d\'infos',
+            point: LatLng(userLat, userLon),
+            width: 80,
+            height: 80,
+            child: GestureDetector(
+              onTap: () {
+                if (Env.userAuth.isPremium == 1) {
+                  Get.to(() => MessagerieView());
+                }
+              },
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: user.profileImage != null
+                        ? NetworkImage(user.profileImage!)
+                        : null,
+                    child:
+                        user.profileImage == null ? Icon(Icons.person) : null,
+                  ),
+                  Text(
+                    user.pseudo ?? 'Utilisateur',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -147,33 +159,52 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
 
   @override
   Widget build(BuildContext context) {
-    _searchNearbyUsers();
     if (_currentPosition == null) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(
+      body: FlutterMap(
+        mapController: _mapController,
+        options: MapOptions(
+          initialCenter: LatLng(
             _currentPosition!.latitude,
             _currentPosition!.longitude,
           ),
-          zoom: 14,
+          initialZoom: 14.0,
+          onTap: (tapPosition, point) {
+            // Gérer le tap sur la carte
+          },
         ),
-        markers: _markers,
-        onMapCreated: (GoogleMapController controller) {
-          _mapController = controller;
-        },
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.app',
+          ),
+          MarkerLayer(markers: _markers),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _searchNearbyUsers();
-        },
-        child: Icon(Icons.refresh),
-        tooltip: 'Actualiser la recherche',
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              if (_currentPosition != null && _mapController != null) {
+                _mapController!.move(
+                  LatLng(
+                      _currentPosition!.latitude, _currentPosition!.longitude),
+                  14.0,
+                );
+              }
+            },
+            child: Icon(Icons.my_location),
+          ),
+          SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _searchNearbyUsers,
+            child: Icon(Icons.refresh),
+          ),
+        ],
       ),
     );
   }

@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/modules/Conversation/views/conversation_view.dart';
 import 'package:nom_du_projet/app/modules/abonnement/views/abonnement_view.dart';
-import 'package:nom_du_projet/app/modules/notification/controllers/notification_controller.dart';
-
-import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
-import 'package:nom_du_projet/app/modules/relation_request/views/relation_request_view.dart';
+import 'package:nom_du_projet/app/pagerelation.dart';
 
 import '../../../data/constant.dart';
 import '../../../routes/app_pages.dart';
@@ -18,9 +15,6 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
-    final profileDetailController = Get.find<ProfileDetailController>();
-    final notificationController = Get.find<NotificationController>();
-    TextEditingController query = TextEditingController();
     return Obx(() => Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
@@ -35,7 +29,17 @@ class HomeView extends GetView<HomeController> {
                 label: "",
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.group_add),
+                icon: Badge(
+                    isLabelVisible: Env.connectionCount > 0,
+                    label: Text(
+                      Env.connectionCount.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: Icon(Icons.group_add)),
                 label: "",
               ),
               BottomNavigationBarItem(
@@ -50,7 +54,7 @@ class HomeView extends GetView<HomeController> {
           ),
           appBar: AppBar(
             title: Text(
-              "${controller.selectedIndex.value == 0 ? "Mye" : controller.selectedIndex.value == 1 ? "Demandes de connexion" : controller.selectedIndex.value == 2 ? "Aproximité" : controller.selectedIndex.value == 3 ? "Conversation" : ""}",
+              "${controller.selectedIndex.value == 0 ? "Mye" : controller.selectedIndex.value == 1 ? "Demandes" : controller.selectedIndex.value == 2 ? "Aproximité" : controller.selectedIndex.value == 3 ? "Conversation" : ""}",
               style: TextStyle(
                   color: Get.isDarkMode ? Colors.white : Colors.black),
             ),
@@ -79,10 +83,9 @@ class HomeView extends GetView<HomeController> {
               IconButton(
                 splashRadius: 24,
                 icon: Badge(
-                  isLabelVisible:
-                      notificationController.totalNotifcation.value > 0,
+                  isLabelVisible: Env.notificationnCount > 0,
                   label: Text(
-                    notificationController.totalNotifcation.toString(),
+                    Env.notificationnCount.toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -114,7 +117,7 @@ class HomeView extends GetView<HomeController> {
           body: controller.selectedIndex.value == 0
               ? Accueil()
               : controller.selectedIndex.value == 1
-                  ? RelationRequestView()
+                  ? Pagerelation()
                   : controller.selectedIndex.value == 2
                       ? NearbyUsersMap()
                       : Env.userAuth.isPremium == 0

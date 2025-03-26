@@ -1,16 +1,11 @@
-import 'dart:developer';
-
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
-import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
+import 'package:nom_du_projet/app/middleware/auth_middleware.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
-import 'package:nom_du_projet/app/widgets/custom_alert_post.dart';
-
-import '../../../data/models/secteur_model.dart';
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
@@ -36,9 +31,20 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String vemail, String vpassword) async {
+    final isConnected = await contectivityController.checkInternet();
+    if (!isConnected) {
+      final error = "Vérifier votre connexion internet";
+      showDialog(
+          context: Get.context!,
+          builder: (_) => CustomAlertDialog(
+              showAlertIcon: true,
+              message: error,
+              onPressed: () => Get.back()));
+      return;
+    }
     isLoginLaoding.value = true;
-    var data = {"email": email, "password": password};
+    var data = {"email": vemail, "password": vpassword};
     final response = await _authProvider.login(data);
 
     if (response.statusCode == 200) {
@@ -46,8 +52,14 @@ class LoginController extends GetxController {
       Env.usertoken = response.body["token"];
       Env.userAuth = UserModel.fromJson(response.body["user"]);
 
-      _authProvider.updateFcmToken("${box.read("fcm_token")}");
+      await FirebaseMessaging.instance.getToken().then((value) {
+        box.write("fcm_token", value);
+        _authProvider.updateFcmToken(value ?? "");
+      });
 
+      // _authProvider.updateFcmToken("${box.read("fcm_token")}");
+      email.value.clear();
+      password.value.clear();
       isLoginLaoding.value = false;
       Get.offAllNamed(Routes.HOME);
     } else {

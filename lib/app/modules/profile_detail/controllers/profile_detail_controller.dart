@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
+import 'package:nom_du_projet/app/data/models/secteur_model.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/widgets/detailspageother.dart';
@@ -18,6 +19,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   final userOther = UserModel().obs;
   final bio = TextEditingController().obs;
   final poste = TextEditingController().obs;
+  final centreIntert = <String>[].obs;
   final entreprise = TextEditingController().obs;
   final debut = TextEditingController().obs;
   final fin = TextEditingController().obs;
@@ -25,10 +27,17 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   final tags = <String>[].obs;
   final GetDataProvider _dataProvider = GetDataProvider();
   var isLoading = false.obs;
+  var isActive = false.obs;
   var error = Rxn<String>();
+  final result = false.obs;
 
   void updateTags(String value) {
     tags.add(value);
+    update();
+  }
+
+  void updateposteShoutait(List<String> value) {
+    centreIntert.value = value;
     update();
   }
 
@@ -53,10 +62,11 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
     }
   }
 
-  Future<void> updateBio() async {
+  Future<void> updateCentreInteret() async {
     try {
       change(null, status: RxStatus.loading());
-      final response = await _getData.updateBio(bio.value.text);
+      final response =
+          await _getData.updateCentreInteret(centreIntert.join(','));
       if (response.statusCode == 200) {
         Env.userAuth = UserModel.fromJson(response.body['data']);
         change(user, status: RxStatus.success());
@@ -74,6 +84,49 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
     }
   }
 
+  Future<void> updateBio() async {
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.updateBio(bio.value.text);
+      if (response.statusCode == 200) {
+        // Env.userAuth = UserModel.fromJson(response.body['data']);
+        await showUser("${Env.userAuth.id}");
+        change(user, status: RxStatus.success());
+        update();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+  }
+
+  Future<bool> saveSecteur(String secteur) async {
+    print("secteur $secteur");
+    try {
+      change(null, status: RxStatus.loading());
+      final response = await _getData.saveSecteur(secteur);
+      if (response.statusCode == 201) {
+        result.value = true;
+        change(user, status: RxStatus.success());
+        update();
+      } else {
+        change(null,
+            status: RxStatus.error(
+                "Une erreur s'est produite lors de la mise à jour des données"));
+      }
+    } catch (e) {
+      change(null,
+          status: RxStatus.error(
+              "Une erreur s'est produite lors de la  mise à jour  des données => $e"));
+    }
+    return result.value;
+  }
+
   Future<void> updateProfile(String nom, String prenom, String secteur,
       String ville, String lon, String lat) async {
     log("lon $lon lat $lat");
@@ -82,9 +135,9 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       final response =
           await _getData.updateProfile(nom, prenom, secteur, ville, lon, lat);
       if (response.statusCode == 200) {
-        Env.userAuth = UserModel.fromJson(response.body['data']);
-        change(user, status: RxStatus.success());
+        // Env.userAuth = UserModel.fromJson(response.body['data']);
         await showUser("${Env.userAuth.id}");
+        change(user, status: RxStatus.success());
         update();
         poste.value.clear();
         entreprise.value.clear();
@@ -102,17 +155,22 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
     }
   }
 
-  Future<void> updateExperience(
-      String poste, String entreprise, String dateDebut, String dateFin) async {
+  Future<void> updateExperience(String vposte, String ventreprise,
+      String vdateDebut, String vdateFin) async {
+    log("vposte $vposte ventreprise $ventreprise vdateDebut ${convertToLaravelDate(vdateDebut)} vdateFin ${convertToLaravelDate(vdateFin)}");
     try {
       change(null, status: RxStatus.loading());
       final response = await _getData.updateExperience(
-          poste, entreprise, dateDebut, dateFin);
+          vposte, ventreprise, vdateDebut, vdateFin);
 
       if (response.statusCode == 200) {
-        Env.userAuth = UserModel.fromJson(response.body['data']);
-        change(user, status: RxStatus.success());
+        // Env.userAuth = UserModel.fromJson(response.body['data']);ß
+        poste.value.clear();
+        entreprise.value.clear();
+        debut.value.clear();
+        fin.value.clear();
         await showUser("${Env.userAuth.id}");
+        change(user, status: RxStatus.success());
         update();
       } else {
         change(null,
@@ -156,7 +214,8 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       if (response.statusCode == 200) {
         user.value = UserModel.fromJson(response.body['data']);
         Env.userAuth = UserModel.fromJson(response.body['data']);
-        Get.toNamed(Routes.PROFILE_DETAIL);
+        isActive.value = user.value.isActive == 1 ? true : false;
+        Get.offNamed(Routes.PROFILE_DETAIL);
         isLoading.value = false;
       } else {
         error.value =
@@ -228,8 +287,6 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
-    update();
-    // showUser(user.value.id.toString());
   }
 
   @override

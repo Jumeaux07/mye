@@ -8,8 +8,10 @@ import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/Login/controllers/login_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
+import 'package:nom_du_projet/contectivity_controller.dart';
 
 import 'app/modules/Message/controllers/message_controller.dart';
 import 'app/modules/Profileregister/controllers/profileregister_controller.dart';
@@ -32,9 +34,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // final firebaseService = FirebaseService();
-  // await firebaseService.setupFirebaseMessaging();
-  // await firebaseService.initLocalNotifications(); // Important !
   await GetStorage.init();
   runApp(
     GetMaterialApp(
@@ -47,6 +46,7 @@ Future<void> main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       initialBinding: BindingsBuilder(() {
+        Get.put(ContectivityController());
         Get.put(LoginController());
         Get.put(HomeController());
         Get.put(SplashscreenController());
@@ -55,6 +55,7 @@ Future<void> main() async {
         Get.put(ProfileDetailController());
         Get.put(ConversationController());
         Get.put(MessageController());
+        Get.put(RelationRequestController());
         Get.lazyPut(() => OtpController());
         Get.put(FirebaseController());
       }),

@@ -60,6 +60,14 @@ class AbonnementController extends GetxController {
     ),
   ].obs;
 
+  // Nouvelle propriété pour le nombre de mois sélectionné
+  final selectedMonths = 1.obs;
+
+  // Méthode pour mettre à jour le nombre de mois
+  void updateSelectedMonths(int months) {
+    selectedMonths.value = months;
+  }
+
   void selectMethod(PaymentMethod method) {
     selectedMethod.value = method;
     log(method.id);

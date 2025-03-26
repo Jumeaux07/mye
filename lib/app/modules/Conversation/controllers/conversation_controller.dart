@@ -69,6 +69,8 @@ class ConversationController extends GetxController with StateMixin<dynamic> {
   @override
   void onInit() {
     super.onInit();
-    getConversation();
+    if (box.hasData("is_first") && box.hasData("token")) {
+      getConversation();
+    }
   }
 }

@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/cinetpay/views/cinetpay_view.dart';
-import 'package:nom_du_projet/app/routes/app_pages.dart';
+import 'package:http/http.dart' as http;
 import 'package:nom_du_projet/app/services/payement_service.dart';
 
 import '../controllers/abonnement_controller.dart';
@@ -27,7 +29,6 @@ class AbonnementView extends GetView<AbonnementController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Barre de drag
               Container(
                 width: 40,
                 height: 4,
@@ -39,7 +40,7 @@ class AbonnementView extends GetView<AbonnementController> {
               ),
 
               Text(
-                '${controller.abonnement.value.libelle} ${controller.abonnement.value.price} FCFA',
+                '${controller.abonnement.value.libelle}',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -47,33 +48,46 @@ class AbonnementView extends GetView<AbonnementController> {
               ),
               SizedBox(height: 20),
 
-              ...controller.abonnement.value
-                  .getItemList()
-                  .map((feature) => Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            Icon(Icons.check_circle, color: Colors.green),
-                            SizedBox(width: 8),
-                            Text(feature),
-                          ],
-                        ),
-                      )),
+              // Sélection du nombre de mois
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Durée : '),
+                  DropdownButton<int>(
+                    value: controller.selectedMonths.value,
+                    items: [1, 3, 6, 12].map((int months) {
+                      return DropdownMenuItem<int>(
+                        value: months,
+                        child: Text('$months mois'),
+                      );
+                    }).toList(),
+                    onChanged: (int? newValue) {
+                      if (newValue != null) {
+                        controller.updateSelectedMonths(newValue);
+                      }
+                    },
+                  ),
+                ],
+              ),
 
+              // Prix total
+              Text(
+                'Prix total: ${(controller.abonnement.value.price! * controller.selectedMonths.value).toStringAsFixed(2)} EUR',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               SizedBox(height: 20),
 
-              // Liste des méthodes de paiement sauvegardées
               Obx(() => Column(
                     children: controller.savedPaymentMethods
                         .map((method) => _buildPaymentMethodTile(method))
                         .toList(),
                   )),
 
-              // Bouton pour ajouter une nouvelle carte
-
               SizedBox(height: 20),
 
-              // Bouton de confirmation
               Obx(() => controller.isLoading.value
                   ? CircularProgressIndicator()
                   : ElevatedButton(
@@ -81,13 +95,50 @@ class AbonnementView extends GetView<AbonnementController> {
                           ? null
                           : () {
                               if (controller.selectedMethod.value?.id == '1') {
+                                var url = Uri.parse(
+                                    "https://api.franckprod.com/api/get-factures?jours=${controller.selectedMonths.value}");
+                                http.get(
+                                  url,
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization':
+                                        "Bearer ${box.read("token")}"
+                                  },
+                                ).then((response) {
+                                  if (response.statusCode == 201) {
+                                    // Traitement des données en cas de succès
+                                    final data = jsonDecode(response.body);
+                                    print('Données reçues: $data');
+                                    // Faites quelque chose avec les données
+                                  } else {
+                                    // Gestion des erreurs HTTP
+                                    print('Erreur: ${response.body}');
+                                  }
+                                }).catchError((error) {
+                                  // Gestion des erreurs de connexion
+                                  print('Erreur de connexion: $error');
+                                });
                                 Get.to(() => CinetpayView(
-                                    controller.abonnement.value.price
-                                        ?.toDouble(),
-                                    "Paiement de l'abonnement premium"));
-                                // Get.toNamed(Routes.CINETPAY);
+                                      "Paiement de l'abonnement premium",
+                                      genererChaineUnique(),
+                                      (controller.abonnement.value.price! *
+                                              controller.selectedMonths.value)
+                                          .toDouble(),
+                                    ));
+                                // Get.to(() => CinetpayView(
+                                //       "Paiement de l'abonnement premium",
+                                //       genererChaineUnique(),
+                                //       (controller.abonnement.value.price! *
+                                //               controller.selectedMonths.value)
+                                //           .toDouble(),
+                                //     ));
                               } else {
-                                PaymentService.instance.handlePayment();
+                                PaymentService.instance.handlePayment(
+                                    controller.selectedMonths.value.toString(),
+                                    (controller.abonnement.value.price! *
+                                        controller.selectedMonths.value),
+                                    controller.selectedMethod.value?.name ??
+                                        "Carte de crédit");
                               }
                             },
                       child: Text(
@@ -150,42 +201,5 @@ class AbonnementView extends GetView<AbonnementController> {
             ),
           ),
         ));
-  }
-
-  Widget _buildAddNewCardButton() {
-    return GestureDetector(
-      onTap: () {
-        // Implémenter la logique d'ajout de nouvelle carte
-        Get.back();
-        Get.snackbar(
-          'Info',
-          'Fonctionnalité d\'ajout de carte à implémenter',
-          backgroundColor: Colors.blue,
-          colorText: Colors.white,
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.only(top: 10),
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.add_circle_outline, color: Colors.blue),
-            SizedBox(width: 16),
-            Text(
-              'Ajouter une nouvelle carte',
-              style: TextStyle(
-                color: Colors.blue,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

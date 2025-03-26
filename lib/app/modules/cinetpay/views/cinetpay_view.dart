@@ -10,9 +10,11 @@ import '../../../widgets/custom_alert.dart';
 import '../controllers/cinetpay_controller.dart';
 
 class CinetpayView extends GetView<CinetpayController> {
-  CinetpayView(this.montant, this.description, {super.key});
-  final double? montant;
+  CinetpayView(this.description, this.transaction_id, this.montant,
+      {super.key});
+  final double montant;
   final String? description;
+  final String transaction_id;
   @override
   Widget build(BuildContext context) {
     log(montant.toString());
@@ -24,10 +26,10 @@ class CinetpayView extends GetView<CinetpayController> {
           configData: <String, dynamic>{
             'apikey': Env.API_KEY,
             'site_id': Env.SITE_ID,
-            'notify_url': 'https://api.franckprod.com/api/notifyurl'
+            'notify_url': 'https://api.franckprod.com/api/verify-payment'
           },
           paymentData: <String, dynamic>{
-            'transaction_id': 'YOUR_TRANSACTION_ID',
+            'transaction_id': transaction_id,
             'amount': montant ?? 100.0,
             'currency': 'XOF',
             'channels': 'ALL',

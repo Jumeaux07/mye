@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
+import 'package:http/http.dart' as http;
 
 // Définir un enum pour les états de paiement
 enum PaymentStatus { success, failed, canceled, pending }
@@ -10,6 +14,32 @@ enum PaymentStatus { success, failed, canceled, pending }
 class PaymentService {
   PaymentService._();
   static final PaymentService instance = PaymentService._();
+
+  //Update is premium
+  Future<void> updateIsPremium(String moyenpaiement, String idfacture) async {
+    var url = Uri.parse("https://api.franckprod.com/api/update-ispremium");
+    http.post(
+      url,
+      body: {'moyenpaiement': moyenpaiement, 'idfacture': idfacture},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ${box.read("token")}"
+      },
+    ).then((response) {
+      if (response.statusCode == 200) {
+        // Traitement des données en cas de succès
+        final data = jsonDecode(response.body);
+        log('Données reçues: $data');
+        // Faites quelque chose avec les données
+      } else {
+        // Gestion des erreurs HTTP
+        print('Erreur: ${response.body}');
+      }
+    }).catchError((error) {
+      // Gestion des erreurs de connexion
+      print('Erreur de connexion: $error');
+    });
+  }
 
   Future<PaymentStatus> makePayment(
       {required int amount,
@@ -100,15 +130,47 @@ class PaymentService {
   }
 
   // Dans votre widget/page
-  Future<void> handlePayment() async {
+  Future<void> handlePayment(
+    String selectedMonths,
+    int amount,
+    String moyenpaiement,
+  ) async {
     try {
       final status = await PaymentService.instance.makePayment(
-        amount: 10, // montant en dollars/euros
+        amount: _calculateAmount(amount), // montant en dollars/euros
         currency: 'eur', // ou 'usd'
       );
 
       switch (status) {
         case PaymentStatus.success:
+          var url =
+              Uri.parse("https://api.franckprod.com/api/update-ispremium-cb");
+          http.post(
+            url,
+            body: jsonEncode({
+              'jours': selectedMonths,
+              'moyenpaiement': moyenpaiement,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': "Bearer ${box.read("token")}"
+            },
+          ).then((response) {
+            log('Données reçues: ${response.body}');
+            if (response.statusCode == 201) {
+              // Traitement des données en cas de succès
+              final data = jsonDecode(response.body);
+              log('Données reçues: $data');
+
+              // Faites quelque chose avec les données
+            } else {
+              // Gestion des erreurs HTTP
+              print('Erreur: ${response.body}');
+            }
+          }).catchError((error) {
+            // Gestion des erreurs de connexion
+            print('Erreur de connexion: $error');
+          });
           // Afficher un message de succès
           ScaffoldMessenger.of(Get.context!)
               .showSnackBar(SnackBar(content: Text('Paiement réussi !')));

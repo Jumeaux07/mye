@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/widgets/customPasswordTextField.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
@@ -355,9 +356,11 @@ class SettingView extends GetView<SettingController> {
             TextButton(
               child: Text('Se déconnecter'),
               onPressed: () {
+                Env.userAuth = UserModel();
+                Env.connectionCount = 0;
                 final fcmtoken = box.read("fcm_token");
                 box.erase();
-                box.write("fcmtoken", fcmtoken);
+                box.write("fcm_token", fcmtoken);
                 Get.offAllNamed(Routes.LOGIN);
               },
             ),

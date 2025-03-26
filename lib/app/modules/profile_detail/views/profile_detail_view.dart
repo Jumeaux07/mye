@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
+import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/CustomTextField.dart';
 import 'package:nom_du_projet/app/widgets/custombuttonsimple.dart';
@@ -29,11 +33,15 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
   Widget build(BuildContext context) {
     // controller.showUser(Env.userAuth.id.toString());
     final profileRegisterController = Get.find<ProfileregisterController>();
+    final relationRequestController = Get.find<RelationRequestController>();
+    final conversationController = Get.find<ConversationController>();
     final homeController = Get.find<HomeController>();
     final _formKey = GlobalKey<FormState>();
     final _formKeyExperience = GlobalKey<FormState>();
     final _formKeyCompetence = GlobalKey<FormState>();
+    final _formKeyCentreInteret = GlobalKey<FormState>();
     final _formKeyBio = GlobalKey<FormState>();
+
     controller.bio.value.text = Env.userAuth.biographie ?? "";
     profileRegisterController.nomController.value.text = Env.userAuth.nom ?? "";
     profileRegisterController.prenomController.value.text =
@@ -42,6 +50,43 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
         Env.userAuth.secteurActivite ?? "";
     profileRegisterController.adresseController.value.text =
         Env.userAuth.adresseGeographique ?? "";
+    profileRegisterController.ville.value =
+        Env.userAuth.adresseGeographique ?? "";
+
+    Widget _buildFriendsSection() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Relations',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Obx(() => relationRequestController.connectionUsers.isEmpty
+              ? const Text('Aucune relation')
+              : SizedBox(
+                  height: 165,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: relationRequestController.connectionUsers.length,
+                    itemBuilder: (context, index) {
+                      final friend = relationRequestController
+                          .connectionUsers[index].connectedUser;
+                      return FriendCard(friend: friend ?? UserModel());
+                    },
+                  ),
+                )),
+        ],
+      );
+    }
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -255,7 +300,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                 .value
                                                 .text
                                                 .isEmpty) {
-                                              return " Secteur d'activité obligatoire";
+                                              return "Secteur d'activité obligatoire";
                                             }
                                           },
                                           controller: SingleSelectController(
@@ -277,20 +322,22 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                           },
                                           hintText: 'Secteur d\'activité',
                                           noResultFoundText:
-                                              "Aucun secteur d'activité",
+                                              "Ce secteur n'existe pas. Voulez-vous l'ajouter ?",
                                           decoration: CustomDropdownDecoration(
-                                              closedFillColor: !Get.isDarkMode
-                                                  ? Colors.grey[300]
-                                                  : Colors.white,
-                                              expandedFillColor: Get.isDarkMode
-                                                  ? Colors.grey[300]
-                                                  : Colors.white,
-                                              closedBorder: Border.all(),
-                                              closedBorderRadius:
-                                                  BorderRadius.circular(4)),
+                                            closedFillColor: !Get.isDarkMode
+                                                ? Colors.grey[300]
+                                                : Colors.white,
+                                            expandedFillColor: Get.isDarkMode
+                                                ? Colors.grey[300]
+                                                : Colors.white,
+                                            closedBorder: Border.all(),
+                                            closedBorderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
                                           items: profileRegisterController
                                               .secteursList,
                                           onChanged: (value) {
+                                            print("$value");
                                             profileRegisterController
                                                 .updateSecteur(
                                                     value?.libelle ?? "");
@@ -317,6 +364,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                     .value
                                                     .text
                                                     .isNotEmpty) {
+                                              Get.back();
                                               controller.updateProfile(
                                                   profileRegisterController
                                                       .nomController.value.text,
@@ -336,7 +384,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                       .latitude.value,
                                                   profileRegisterController
                                                       .longitude.value);
-                                              Get.back();
                                             }
                                           },
                                           enabled: true,
@@ -532,7 +579,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                               isValidator: true,
                                               validator: (value) {
                                                 if (value?.isEmpty ?? false) {
-                                                  return "Date de fin est obligatoire";
+                                                  return null;
                                                 }
 
                                                 try {
@@ -578,7 +625,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                 if (_formKeyExperience
                                                     .currentState!
                                                     .validate()) {
-                                                  print("object");
                                                   controller.updateExperience(
                                                       controller
                                                           .poste.value.text,
@@ -587,8 +633,8 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                       controller
                                                           .debut.value.text,
                                                       controller
-                                                          .debut.value.text);
-                                                  Get.back();
+                                                          .fin.value.text);
+                                                  // Get.back();
                                                 }
                                               },
                                               enabled: true,
@@ -617,6 +663,8 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                             : true,
                         child: Card(
                           elevation: 0.0,
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
                           child: Column(
                             // Ajout d'un Column pour contenir la liste
                             children: List.generate(
@@ -629,7 +677,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                     Env.userAuth.experiences?[index].poste ??
                                         "",
                                 period:
-                                    "${Env.userAuth.experiences?[index].dateDebut ?? ""} - ${Env.userAuth.experiences?[index].dateFin ?? ""}", // Correction : dateDebut -> dateFin
+                                    "${convertDate(Env.userAuth.experiences?[index].dateDebut.toString())} - ${Env.userAuth.experiences?[index].dateFin != null ? convertDate(Env.userAuth.experiences?[index].dateFin.toString()) : "Maintenant"}", // Correction : dateDebut -> dateFin
                               ),
                             ),
                           ),
@@ -748,6 +796,137 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 23,
+                              child: Text(
+                                'Matching',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                                height: 50,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.white,
+                                      Form(
+                                        key: _formKeyCentreInteret,
+                                        child: Wrap(children: [
+                                          Container(
+                                            padding: EdgeInsets.all(15),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Matching",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                CustomDropdown<
+                                                    String>.multiSelectSearch(
+                                                  hintText: 'Selectionner',
+                                                  initialItems: Env.userAuth
+                                                      .getCentreInteret(),
+                                                  items:
+                                                      profileRegisterController
+                                                          .secteursList
+                                                          .map((el) =>
+                                                              el.libelle ?? "")
+                                                          .toList(),
+                                                  onListChanged: (value) {
+                                                    controller
+                                                        .updateposteShoutait(
+                                                            value);
+                                                    print(
+                                                        'changing value to: $value');
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CustomButton(
+                                                  onPressed: () {
+                                                    if (_formKeyCentreInteret
+                                                            .currentState!
+                                                            .validate() &&
+                                                        Env.contreIntert
+                                                            .isNotEmpty) {
+                                                      controller
+                                                          .updateCentreInteret();
+                                                      Get.back();
+                                                    }
+                                                  },
+                                                  enabled: true,
+                                                  label: "Valider",
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                      ),
+                                    );
+                                  },
+                                  child: Visibility(
+                                    visible: true,
+                                    child: GoldIcons(
+                                      size: 25,
+                                      icon: Icons.add,
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                      // Compétences
+                      Visibility(
+                        replacement: Text("Secteur d'activité"),
+                        visible: (Env.userAuth.centreInteret != "" ||
+                                Env.userAuth.centreInteret != null)
+                            ? true
+                            : false,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 100,
+                                child: Card(
+                                    elevation: 0.0,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: Env.userAuth
+                                          .getCentreInteret()
+                                          .length,
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.all(10),
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SkillChip(Env.userAuth
+                                              .getCentreInteret()[index]),
+                                        );
+                                      },
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildFriendsSection(),
                     ],
                   ),
                 ),
@@ -756,6 +935,66 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
           );
         },
       )),
+    );
+  }
+}
+
+class FriendCard extends StatelessWidget {
+  final UserModel friend;
+
+  const FriendCard({required this.friend});
+  Widget _buildProfileImage(String? profileImage) {
+    return CircleAvatar(
+      radius: 30,
+      backgroundImage: _getBackgroundImage(profileImage),
+    );
+  }
+
+// Méthode helper qui gère l'ImageProvider
+  ImageProvider<Object> _getBackgroundImage(String? profileImage) {
+    if (profileImage == null || profileImage.isEmpty) {
+      return const AssetImage("assets/images/LOGO-MYE-Dark.png");
+    }
+
+    try {
+      return NetworkImage(profileImage);
+    } catch (e) {
+      return const AssetImage("assets/images/LOGO-MYE-Dark.png");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildProfileImage(friend.profileImage),
+            const SizedBox(height: 4),
+            Text(
+              '${friend.prenom} ${friend.nom}',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                // Navigate to friends list or add friend
+                if (Env.userAuth.isPremium == 0) {
+                  Get.toNamed(Routes.ABONNEMENT);
+                } else {
+                  conversationController.openNewDiscussion(friend);
+                }
+              },
+              icon: const Icon(Icons.send),
+              label: const Text('Message'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -6,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
+import 'package:nom_du_projet/contectivity_controller.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:ui' as ui;
 
@@ -25,7 +28,14 @@ const startconversationUrl = "/startConversation";
 const updatePswdUrl = "/update-password";
 const sendMessageUrlUrl = "/send-message";
 const sendFileUrl = "/send-file";
+const saveSecteurUrl = "/save-secteur";
+const sendRequestUrl = "/connections/request";
+const sendResponseRequestUrl = "/connections/request/";
+const getRequestUrl = "/connections/requests/pending";
+const getRequesSendtUrl = "/connections/requests/sent";
+const getRelationUrl = "/connections";
 const updateSkilUrl = "/update-skill";
+const updatecentreInteretUrl = "/update-centre-interet";
 const updateImageUrl = "/update-imageprofile";
 const updateBioUrl = "/update-bio";
 const getConversationUrl = "/get-conversation";
@@ -38,6 +48,7 @@ const readNotificationUrl = "/notifications-read/";
 const readAllNotificationUrl = "/notifications-read-all";
 const deleteNotificationUrl = "/delete-notification/";
 const deleteAllNotificationUrl = "/delete-all-notification/";
+const updatePremium = "/update-ispremium";
 
 const getSecteurUrl = "/get-all-secteurs";
 const getPubUrl = "/get-pub";
@@ -71,6 +82,25 @@ String convertDate(String? dateEn) {
   return formattedDate;
 }
 
+// Pour convertir "02/01/2025" en "2025-01-02"
+String? convertToLaravelDate(String? frenchDate) {
+  if (frenchDate == null || frenchDate.isEmpty) {
+    return null;
+  }
+
+  try {
+    final DateFormat formatFr = DateFormat('dd/MM/yyyy');
+    final DateFormat formatLaravel =
+        DateFormat('yyyy-MM-dd HH:mm:ss'); // Format complet pour Laravel/Carbon
+
+    DateTime date = formatFr.parse(frenchDate);
+    return formatLaravel.format(date);
+  } catch (e) {
+    print("Erreur de conversion de date: $e");
+    return null;
+  }
+}
+
 String formatTimestamp(DateTime timestamp) {
   final now = DateTime.now();
   final difference = now.difference(timestamp);
@@ -91,16 +121,30 @@ class Env {
   static UserModel userOther = UserModel();
   static String usertoken = "";
   static List<String> skill = [];
+  static List<String> contreIntert = [];
   static String mapsToken = "pk.22cea6c61d7cd26bad1424434572ed85";
-  static String API_KEY = "184127098565f9bc14b9ab28.07603673";
-  static String SITE_ID = "5866720";
+  static String API_KEY = "1126326932679b448298c262.74340501";
+  static String SITE_ID = "105886764";
   static String PUBLISHABLEKEY =
       "pk_test_51Nae9OCTPwtZUmrOoAgs4oIBecNZIAYQUkiMt25puI0o8auPaDAgQ2rY93HxFxLzCXdqksnisdye3xXzz2lZZZAH00GK0MIV2j";
   static String STRIPEKEY =
       "sk_test_51Nae9OCTPwtZUmrOCTHr2SHw8ydiYwxU6nURgqRJalX1eWf1A471d9qFRy3zotnvSXCmdow4IpwFXKF5fIMmD7U300B51fuqou";
   static String NOTIFY_URL = "";
+  static int notificationnCount = 0;
+  static int connectionCount = 0;
 }
 
 final conversationController = Get.find<ConversationController>();
 
 final dateFormatter = DateFormat('yyyy-MM-dd');
+
+final contectivityController = Get.find<ContectivityController>();
+
+String genererChaineUnique([int longueur = 15]) {
+  const caracteres =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  Random random = Random();
+
+  return List.generate(
+      longueur, (_) => caracteres[random.nextInt(caracteres.length)]).join();
+}

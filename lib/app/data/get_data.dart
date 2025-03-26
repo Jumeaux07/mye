@@ -198,7 +198,7 @@ class GetDataProvider extends GetConnect {
    */
   Future<Response> findPositionAddress(String query) async {
     final response = await get(
-        "https://api.locationiq.com/v1/autocomplete?key=${Env.mapsToken}&q=$query&limit=5&dedupe=1&");
+        "https://api.locationiq.com/v1/autocomplete?key=${Env.mapsToken}&countrycodes=CI&q=$query&limit=5&dedupe=1&");
     print("List of addresse ${response.body}");
     return response;
   }
@@ -509,6 +509,95 @@ class GetDataProvider extends GetConnect {
             statusCode: 500,
             body: 'Erreur lors de la mise a jour des compétences  de l'
                 'utilisateur');
+      }
+    });
+  }
+
+  /**
+ * Mise a jour des centre d'interet de l'utilisateur
+ */
+  Future<Response> updateCentreInteret(String centreInteret) async {
+    return safeApiCall(() async {
+      final url = baseUrl + updatecentreInteretUrl;
+      var body = {"centre_interet": centreInteret};
+
+      try {
+        final response = await post(
+            url,
+            headers: {"Authorization": "Bearer ${box.read("token")}"},
+            body);
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print(
+              "Mise a jour des centre d'interet de l'utilisateur: ${response.body}");
+        } else {
+          print(
+              "Erreur lors de la mise a jour des centre d'interet de l'utilisateur: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print(
+            "Exception lors de la mise a jour des centre d'interet de l'utilisateur: $e");
+        return Response(
+            statusCode: 500,
+            body: 'Erreur lors de la mise a jour des centre d'
+                'interet  de l'
+                'utilisateur');
+      }
+    });
+  }
+
+  Future<Response> saveSecteur(String libelle) async {
+    return safeApiCall(() async {
+      final url = baseUrl + saveSecteurUrl;
+      var body = {"libelle": libelle};
+
+      try {
+        final response = await post(
+            url,
+            headers: {"Authorization": "Bearer ${box.read("token")}"},
+            body);
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Save secteur: ${response.body}");
+        } else {
+          print("save secteur: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print("Save secteur: $e");
+        return Response(
+            statusCode: 500, body: 'Erreur lors de la sauvegarde du secteur');
       }
     });
   }
@@ -1052,6 +1141,223 @@ class GetDataProvider extends GetConnect {
         print("Exception lors de l'envoie de fichier $e");
         return Response(
             statusCode: 500, body: "Erreur lors de l'envoie de fichier");
+      }
+    });
+  }
+
+  /*
+ * Envoi de demande de conection
+ */
+  Future<Response> sendRequest(String recever_id) async {
+    return safeApiCall(() async {
+      final body = {
+        'receiver_id': recever_id,
+      };
+      final url = baseUrl + sendRequestUrl;
+      try {
+        final response = await post(
+            url,
+            headers: {"Authorization": "Bearer ${box.read("token")}"},
+            body);
+        print("${url} ${response.body}");
+        log("${response.statusCode}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Envoie de demande de connection: ${response.body}");
+        } else {
+          print("Erreur lors de l'envoie  de demande: ${response.statusCode}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de l'envoie  de demande $e");
+        return Response(
+            statusCode: 500, body: "Erreur lors de l'envoie  de demande");
+      }
+    });
+  }
+
+  Future<Response> sendResponseRequest(
+      String responseUser, String id_user) async {
+    return safeApiCall(() async {
+      final body = {
+        'status': responseUser,
+      };
+      final url = baseUrl + sendResponseRequestUrl + id_user;
+      print(url);
+      try {
+        final response = await post(
+            url,
+            headers: {"Authorization": "Bearer ${box.read("token")}"},
+            body);
+        log("${response.statusCode}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Envoie de fichier: ${response.body}");
+        } else {
+          print("Erreur lors de l'envoie  de reponse: ${response.statusCode}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de l'envoie  de reponse $e");
+        return Response(
+            statusCode: 500, body: "Erreur lors de l'envoie  de reponse");
+      }
+    });
+  }
+
+  /**
+ * Liste des demandes de connexion
+ */
+  Future<Response> getRequest() async {
+    return safeApiCall(() async {
+      final url = baseUrl + getRequestUrl;
+
+      try {
+        final response = await get(
+          url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"},
+        );
+        log("${response.body}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("recuperation  de demande: ${response.body}");
+        } else {
+          print(
+              "Erreur lors de recuperation  de demande: ${response.statusCode}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de recuperation  de demande $e");
+        return Response(
+            statusCode: 500, body: "Erreur lors de recuperation  de demande");
+      }
+    });
+  }
+
+  Future<Response> getRequestSend() async {
+    return safeApiCall(() async {
+      final url = baseUrl + getRequesSendtUrl;
+
+      try {
+        final response = await get(
+          url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"},
+        );
+        log("${response.body}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("recuperation  de demande: ${response.body}");
+        } else {
+          print(
+              "Erreur lors de recuperation  de demande envoye: ${response.statusCode}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de recuperation  de demande envoye $e");
+        return Response(
+            statusCode: 500,
+            body: "Erreur lors de recuperation  de demande envoye");
+      }
+    });
+  }
+
+  Future<Response> getRelation() async {
+    return safeApiCall(() async {
+      final url = baseUrl + getRelationUrl;
+
+      try {
+        final response = await get(
+          url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"},
+        );
+        log("${response.body}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("recuperation  de demande: ${response.body}");
+        } else {
+          print(
+              "Erreur lors de re relationcuperation  des relations: ${response.statusCode}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de recuperation  des relations $e");
+        return Response(
+            statusCode: 500, body: "Erreur lors de recuperation  des");
       }
     });
   }

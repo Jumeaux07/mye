@@ -14,8 +14,8 @@ class CustomDateField extends StatefulWidget {
     this.onDateSelected,
     this.decoration,
     this.errorStyle,
-    this.labelStyle, 
-    this.isValidator, 
+    this.labelStyle,
+    this.isValidator,
     this.validator,
   });
 
@@ -103,13 +103,15 @@ class _CustomDateFieldState extends State<CustomDateField> {
       final date = _dateFormatter.parse(value);
       if (widget.firstDate != null && date.isBefore(widget.firstDate!)) {
         setState(() {
-          _errorText = "La date doit être après ${_dateFormatter.format(widget.firstDate!)}";
+          _errorText =
+              "La date doit être après ${_dateFormatter.format(widget.firstDate!)}";
         });
         return;
       }
       if (widget.lastDate != null && date.isAfter(widget.lastDate!)) {
         setState(() {
-          _errorText = "La date doit être avant ${_dateFormatter.format(widget.lastDate!)}";
+          _errorText =
+              "La date doit être avant ${_dateFormatter.format(widget.lastDate!)}";
         });
         return;
       }
@@ -138,38 +140,39 @@ class _CustomDateFieldState extends State<CustomDateField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
-          validator:widget.isValidator==true? widget.validator : (value) {
-            if (value?.isEmpty??false) {
+          validator: widget.isValidator == true
+              ? widget.validator
+              : (value) {
+                  if (value?.isEmpty ?? false) {
                     setState(() {
                       _errorText = "${widget.label} est obligatoire";
                     });
                     return;
                   }
-          },
+                },
           controller: widget.controller,
           focusNode: _focusNode,
           onChanged: _validateDate,
           keyboardType: TextInputType.datetime,
-          decoration: (widget.decoration ?? const InputDecoration())
-              .copyWith(
-                errorText: _errorText,
-                errorStyle: widget.errorStyle,
-                hintText: widget.hintText ?? widget.dateFormat,
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: _showDatePicker,
-                  color: const Color(0xFFCBA948),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFCBA948),
-                  ),
-                ),
+          decoration: (widget.decoration ?? const InputDecoration()).copyWith(
+            errorText: _errorText,
+            errorStyle: widget.errorStyle,
+            hintText: widget.hintText ?? widget.dateFormat,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: _showDatePicker,
+              color: const Color(0xFFCBA948),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: const BorderSide(
+                color: Color(0xFFCBA948),
               ),
+            ),
+          ),
         ),
       ],
     );

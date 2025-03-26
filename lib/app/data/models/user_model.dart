@@ -9,6 +9,7 @@ class UserModel {
   final String? secteurActivite;
   final String? adresseGeographique;
   final String? skill;
+  final String? centreInteret;
   final String? biographie;
   final String? phone;
   final String? type;
@@ -35,6 +36,7 @@ class UserModel {
     this.secteurActivite,
     this.adresseGeographique,
     this.skill,
+    this.centreInteret,
     this.biographie,
     this.phone,
     this.type,
@@ -62,6 +64,7 @@ class UserModel {
     String? secteurActivite,
     String? adresseGeographique,
     String? skill,
+    String? centreInteret,
     String? biographie,
     String? phone,
     String? type,
@@ -88,6 +91,7 @@ class UserModel {
         secteurActivite: secteurActivite ?? this.secteurActivite,
         adresseGeographique: adresseGeographique ?? this.adresseGeographique,
         skill: skill ?? this.skill,
+        centreInteret: centreInteret ?? this.centreInteret,
         biographie: biographie ?? this.biographie,
         phone: phone ?? this.phone,
         type: type ?? this.type,
@@ -115,6 +119,7 @@ class UserModel {
         secteurActivite: json["secteur_activite"] ?? "Aucun secteur d'activité",
         adresseGeographique: json["adresse_geographique"],
         skill: json["skill"],
+        centreInteret: json["centre_interet"],
         biographie: json["biographie"],
         phone: json["phone"] ?? "",
         type: json["type"],
@@ -149,6 +154,7 @@ class UserModel {
         "secteur_activite": secteurActivite,
         "adresse_geographique": adresseGeographique,
         "skill": skill,
+        "centre_interet": centreInteret,
         "biographie": biographie,
         "phone": phone,
         "type": type,
@@ -179,6 +185,17 @@ class UserModel {
       competences = [];
     }
     return competences;
+  }
+
+  List<String> getCentreInteret() {
+    List<String> centreInterets;
+
+    if (posteSouhait != null) {
+      centreInterets = posteSouhait.toString().split(',');
+    } else {
+      centreInterets = [];
+    }
+    return centreInterets;
   }
 
   String getFullName() {

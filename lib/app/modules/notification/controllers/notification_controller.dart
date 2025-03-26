@@ -17,10 +17,11 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
       if (response.statusCode == 204) {
         change(null, status: RxStatus.error(" ${response.statusText}"));
       } else if (response.statusCode == 200) {
-        List list = response.body['notifications'];
+        final list = (response.body['notifications'] as List);
         totalNotifcation.value = response.body['total'];
         listNotification.value =
             list.map((e) => NotificationModel.fromJson(e)).toList();
+        Env.notificationnCount = totalNotifcation.value;
         update();
 
         change(listNotification, status: RxStatus.success());
@@ -30,9 +31,12 @@ class NotificationController extends GetxController with StateMixin<dynamic> {
                 "Une erreur s'est produite lors du chargement de données ${response.body}"));
       }
     } catch (e) {
+      print(
+          "Une erreur s'est produite lors du chargement de données  => ${e.toString()}");
+
       change(null,
           status: RxStatus.error(
-              "Une erreur s'est produite lors du chargement de données ${e.toString()}"));
+              "Une erreur s'est produite lors du chargement de données  => ${e.toString()}"));
     }
   }
 

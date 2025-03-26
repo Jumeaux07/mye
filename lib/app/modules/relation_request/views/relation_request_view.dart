@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/data/models/relation_model.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
@@ -14,35 +17,51 @@ class RelationRequestView extends GetView<RelationRequestController> {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
     final profileDetailController = Get.find<ProfileDetailController>();
     timeago.setLocaleMessages('fr', timeago_fr.FrMessages());
-    return Scaffold(
-      body: homeController.userList.isEmpty
-          ? Center(
-              child: Text('Aucune demande de connexion'),
-            )
-          : ListView.builder(
-              itemCount: homeController.userList.length,
-              itemBuilder: (context, index) {
-                final request = homeController.userList[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: _buildEnhancedProfileCard(
-                      request, profileDetailController),
-                );
-              },
-            ),
+
+    return Obx(
+      () => RefreshIndicator(
+        onRefresh: () {
+          controller.getRequest();
+
+          return Future.delayed(const Duration(seconds: 1));
+        },
+        child: Scaffold(
+            body: controller.requestUser.isEmpty
+                ? Center(
+                    child: Text('Aucune demande de connexion'),
+                  )
+                : controller.obx(
+                    (data) => ListView.builder(
+                      itemCount: controller.requestUser.length,
+                      itemBuilder: (context, index) {
+                        final request = controller.requestUser[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: _buildEnhancedProfileCard(
+                              request, profileDetailController),
+                        );
+                      },
+                    ),
+                    onLoading: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    onEmpty: Center(child: Text('Aucune demande de connexion')),
+                    onError: (error) => Text("${error}"),
+                  )),
+      ),
     );
   }
 
   Widget _buildEnhancedProfileCard(
-      UserModel user, ProfileDetailController controller) {
+      RelationModel relation, ProfileDetailController controller) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => controller.showUserOther(user.id.toString()),
+        onTap: () =>
+            controller.showUserOther(relation.getRelation().id.toString()),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -58,7 +77,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                         child: ClipOval(
                           child: FadeInImage.memoryNetwork(
                             placeholder: kTransparentImage,
-                            image: user.profileImage ??
+                            image: relation.getRelation().profileImage ??
                                 "https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996",
                             width: 60,
                             height: 60,
@@ -72,7 +91,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: user.getUserTypeColor(),
+                            color: relation.getRelation().getUserTypeColor(),
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: Get.isDarkMode
@@ -82,7 +101,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                             ),
                           ),
                           child: Icon(
-                            user.getUserTypeIcon(),
+                            relation.getRelation().getUserTypeIcon(),
                             size: 12,
                             color: Colors.white,
                           ),
@@ -99,7 +118,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                           children: [
                             Expanded(
                               child: Text(
-                                user.pseudo ?? "",
+                                relation.getRelation().pseudo ?? "",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -107,7 +126,17 @@ class RelationRequestView extends GetView<RelationRequestController> {
                               ),
                             ),
                             _buildConnectionButton(
-                                RelationRequestController(), user),
+                              RelationRequestController(),
+                              relation.getRelation(),
+                              () => controller.showUserOther(
+                                  relation.getRelation().id.toString()),
+                              () => RelationRequestController()
+                                  .sendResponseRequest(
+                                      "accepted", relation.id.toString()),
+                              () => RelationRequestController()
+                                  .sendResponseRequest(
+                                      "rejected", relation.id.toString()),
+                            )
                           ],
                         ),
                         const SizedBox(height: 4),
@@ -118,7 +147,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                               children: [
                                 Text(
                                   overflow: TextOverflow.ellipsis,
-                                  user.secteurActivite ?? "",
+                                  relation.getRelation().secteurActivite ?? "",
                                   style: TextStyle(
                                     color: Get.isDarkMode
                                         ? Colors.grey[300]
@@ -128,7 +157,7 @@ class RelationRequestView extends GetView<RelationRequestController> {
                               ]),
                         ]),
                         const SizedBox(height: 8),
-                        _buildUserTags(user),
+                        _buildUserTags(relation.getRelation()),
                       ],
                     ),
                   ),
@@ -142,15 +171,62 @@ class RelationRequestView extends GetView<RelationRequestController> {
   }
 
   Widget _buildConnectionButton(
-      RelationRequestController controller, UserModel user) {
+      RelationRequestController controller,
+      UserModel user,
+      void Function()? voir,
+      void Function()? accpter,
+      void Function()? refuser) {
     return Wrap(children: [
-      Icon(
-        Icons.close,
-        color: Colors.red,
+      InkWell(
+        onTap: refuser,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.redAccent.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.close,
+              color: Colors.red,
+            ),
+          ),
+        ),
       ),
-      Icon(
-        Icons.check,
-        color: Colors.green,
+      SizedBox(
+        width: 8,
+      ),
+      InkWell(
+        onTap: accpter,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.greenAccent.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
+          ),
+        ),
+      ),
+      SizedBox(
+        width: 8,
+      ),
+      InkWell(
+        onTap: voir,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.remove_red_eye,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
     ]);
   }
