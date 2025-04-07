@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/auth_provider.dart';
 import 'package:nom_du_projet/app/data/models/pub_model.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/services/matching_service.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../data/constant.dart';
 import '../../../data/get_data.dart';
@@ -21,8 +26,24 @@ class HomeController extends GetxController
   late AnimationController _animationController;
   late Animation<double> _animation;
 
+  ProximityService _proximityService = ProximityService();
+
   var selectedPlan = ''.obs;
   var isLoading = false.obs;
+
+  Timer? _timer;
+
+  void _startLocationUpdates() {
+    // Exécuter immédiatement au démarrage
+    _updateLocation();
+
+    // Répéter toutes les 10 minutes
+    _timer = Timer.periodic(Duration(minutes: 15), (timer) {
+      print(
+          "************************ Mise a jour de la position ***************");
+      _updateLocation();
+    });
+  }
 
   void selectPlan(String plan) {
     selectedPlan.value = plan;
@@ -151,8 +172,46 @@ class HomeController extends GetxController
     }
   }
 
+  Future<void> _updateLocation() async {
+    if (box.hasData("token")) {
+      try {
+        // Vérification des permissions
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+
+        // Récupération de la position actuelle
+        Position position = await Geolocator.getCurrentPosition();
+
+        var url = Uri.parse(baseUrl + updateProfillUrl);
+        var response = await http.post(
+          url,
+          body: jsonEncode({
+            'latitude': position.latitude,
+            'longitude': position.longitude,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer ${box.read("token")}",
+          },
+        );
+
+        log('Réponse reçue: ${response.body}');
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          log('Données reçues: $data');
+        } else {
+          print('Erreur: ${response.body}');
+        }
+      } catch (error) {
+        print('Erreur de connexion: $error');
+      }
+    }
+  }
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     super.onInit();
     _animationController = AnimationController(
@@ -161,10 +220,8 @@ class HomeController extends GetxController
     )..repeat(reverse: true);
     _animation =
         Tween<double>(begin: 0.0, end: 2.0).animate(_animationController);
-    // if(box.hasData("token")){
-    //    getAuthUser();
-    //    getAllUser();
-    // }
+    _proximityService.detectNearbyUsers();
+    _startLocationUpdates();
     if (box.hasData("is_first") && box.hasData("token")) {
       getAuthUser();
       getAllUser();
@@ -180,6 +237,7 @@ class HomeController extends GetxController
   void onClose() {
     super.onClose();
     _animationController.dispose();
+    _timer?.cancel();
   }
 
   Animation<double> get animation => _animation;

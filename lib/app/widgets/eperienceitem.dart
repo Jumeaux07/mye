@@ -29,6 +29,7 @@ class ExperienceItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: backgroundColor ?? Theme.of(context).cardColor,
@@ -75,7 +76,7 @@ class ExperienceItem extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 4),
-                      Row(
+                      Wrap(
                         children: [
                           Icon(
                             Icons.calendar_today,

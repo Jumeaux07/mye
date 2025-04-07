@@ -15,7 +15,7 @@ class Pagerelation extends GetView<RelationRequestController> {
         length: 2, // Nombre de tabs
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
             bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.group_add)),

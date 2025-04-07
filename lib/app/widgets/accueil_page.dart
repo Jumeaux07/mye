@@ -11,6 +11,7 @@ import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart'
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
 import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
+import 'package:nom_du_projet/app/widgets/shinerloading.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -158,10 +159,11 @@ class Accueil extends GetView<HomeController> {
                         child: Text("Aucun resultat"),
                       ),
                       onError: (error) => Center(
-                        child: Text(error.toString()),
+                        child: Text("Erreur réseau, actualisez la page."),
                       ),
-                      onLoading: const Center(
-                        child: CircularProgressIndicator(),
+                      onLoading: Center(
+                        child: ShimmerLoading(),
+                        // child: CircularProgressIndicator(),
                       ),
                       (data) => controller.userList.isEmpty
                           ? Center(

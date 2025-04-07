@@ -5,6 +5,8 @@ import 'package:nom_du_projet/app/data/models/notification_model.dart';
 import 'package:nom_du_projet/app/modules/notification/controllers/notification_controller.dart';
 
 import '../data/constant.dart';
+import '../modules/profile_detail/controllers/profile_detail_controller.dart';
+import '../routes/app_pages.dart';
 
 class Notificationitem extends StatelessWidget {
   const Notificationitem({super.key, required this.notification});
@@ -13,6 +15,7 @@ class Notificationitem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notificationController = Get.put(NotificationController());
+    final profiledetailController = Get.find<ProfileDetailController>();
     return Dismissible(
       key: Key(notification.id.toString()),
       background: Container(
@@ -60,6 +63,12 @@ class Notificationitem extends StatelessWidget {
             ],
           ),
           onTap: () {
+            if (notification.data?.data?.event != "NOTIFY") {
+              notificationController
+                  .readNotification(notification.id.toString());
+              profiledetailController.showUserOther(
+                  notification.data?.data?.event.toString() ?? "");
+            } else {}
             notificationController.readNotification(notification.id.toString());
             // TODO: Gérer l'action de la notification
             // if (notification.actionUrl != null) {

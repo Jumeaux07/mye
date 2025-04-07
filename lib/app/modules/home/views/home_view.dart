@@ -18,7 +18,7 @@ class HomeView extends GetView<HomeController> {
     return Obx(() => Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
+            backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
             currentIndex: controller.selectedIndex.value,
             onTap: (value) => controller.selectedIndex(value),
             items: [
@@ -83,6 +83,7 @@ class HomeView extends GetView<HomeController> {
               IconButton(
                 splashRadius: 24,
                 icon: Badge(
+                  backgroundColor: Colors.redAccent,
                   isLabelVisible: Env.notificationnCount > 0,
                   label: Text(
                     Env.notificationnCount.toString(),

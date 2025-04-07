@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import '../modules/messagerie/views/messagerie_view.dart';
 import '../data/constant.dart';
@@ -20,6 +21,7 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
   List<Marker> _markers = [];
   final double _searchRadius = 5000;
   final homeController = Get.put(HomeController());
+  final conversationController = Get.find<ConversationController>();
   Timer? _timer;
 
   @override
@@ -84,7 +86,7 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
                     : null,
               ),
               Text(
-                'Ma position',
+                'Moi',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -122,7 +124,7 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
             child: GestureDetector(
               onTap: () {
                 if (Env.userAuth.isPremium == 1) {
-                  Get.to(() => MessagerieView());
+                  conversationController.openNewDiscussion(user);
                 }
               },
               child: Column(

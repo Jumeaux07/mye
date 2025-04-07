@@ -234,7 +234,7 @@ class Detailspageother extends GetView<ProfileDetailController> {
                                             .experiences?[index].poste ??
                                         "",
                                     period:
-                                        "${controller.userOther.value.experiences?[index].dateDebut ?? ""} - ${controller.userOther.value.experiences?[index].dateFin ?? ""}", // Correction : dateDebut -> dateFin
+                                        "${convertDate(controller.userOther.value.experiences?[index].dateDebut.toString())} - ${controller.userOther.value.experiences?[index].dateFin != null ? convertDate(controller.userOther.value.experiences?[index].dateFin.toString()) : "Maintenant"}", // Correction : dateDebut -> dateFin
                                   ),
                                 ),
                               ),

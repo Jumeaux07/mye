@@ -14,7 +14,7 @@ class RegisterView extends GetView<RegisterController> {
   Widget build(BuildContext context) {
     Get.put(RegisterController());
     return Obx(() => Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
           body: SafeArea(
               child: ListView(
             padding: EdgeInsets.all(16),

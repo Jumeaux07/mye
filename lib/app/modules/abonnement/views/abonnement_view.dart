@@ -23,7 +23,7 @@ class AbonnementView extends GetView<AbonnementController> {
         body: Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Get.isDarkMode ? Colors.black87 : Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -72,7 +72,7 @@ class AbonnementView extends GetView<AbonnementController> {
 
               // Prix total
               Text(
-                'Prix total: ${(controller.abonnement.value.price! * controller.selectedMonths.value).toStringAsFixed(2)} EUR',
+                '${(controller.abonnement.value.price ?? 0 * controller.selectedMonths.value).toStringAsFixed(2)} EUR / Mois',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,

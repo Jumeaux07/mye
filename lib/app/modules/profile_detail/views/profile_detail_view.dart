@@ -181,7 +181,9 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                   Container(
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Get.isDarkMode
+                                            ? Colors.black
+                                            : Colors.white,
                                         borderRadius:
                                             BorderRadius.circular(25)),
                                     child: Column(
@@ -248,16 +250,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                               Duration(milliseconds: 1500),
                                           hintText: 'Adresse',
                                           noResultFoundText: "Aucune adresse",
-                                          decoration: CustomDropdownDecoration(
-                                              closedFillColor: !Get.isDarkMode
-                                                  ? Colors.grey[300]
-                                                  : Colors.white,
-                                              expandedFillColor: Get.isDarkMode
-                                                  ? Colors.grey[300]
-                                                  : Colors.white,
-                                              closedBorder: Border.all(),
-                                              closedBorderRadius:
-                                                  BorderRadius.circular(4)),
                                           items: profileRegisterController
                                               .positionAddressList,
                                           onChanged: (value) {
@@ -268,6 +260,18 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                 .updatePosition(
                                                     value ?? PositionModel());
                                           },
+                                          decoration: CustomDropdownDecoration(
+                                              expandedFillColor: Get.isDarkMode
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              searchFieldDecoration:
+                                                  SearchFieldDecoration(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.black),
+                                                      hintStyle: TextStyle(
+                                                          color: Colors.black)),
+                                              hintStyle: TextStyle(
+                                                  color: Colors.black)),
                                         ),
                                         SizedBox(height: 15),
                                         Customtextfield(
@@ -322,18 +326,19 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                           },
                                           hintText: 'Secteur d\'activité',
                                           noResultFoundText:
-                                              "Ce secteur n'existe pas. Voulez-vous l'ajouter ?",
+                                              "Aucun resultat trouvé",
                                           decoration: CustomDropdownDecoration(
-                                            closedFillColor: !Get.isDarkMode
-                                                ? Colors.grey[300]
-                                                : Colors.white,
-                                            expandedFillColor: Get.isDarkMode
-                                                ? Colors.grey[300]
-                                                : Colors.white,
-                                            closedBorder: Border.all(),
-                                            closedBorderRadius:
-                                                BorderRadius.circular(4),
-                                          ),
+                                              expandedFillColor: Get.isDarkMode
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              searchFieldDecoration:
+                                                  SearchFieldDecoration(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.black),
+                                                      hintStyle: TextStyle(
+                                                          color: Colors.black)),
+                                              hintStyle: TextStyle(
+                                                  color: Colors.black)),
                                           items: profileRegisterController
                                               .secteursList,
                                           onChanged: (value) {
@@ -448,7 +453,9 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                   onTap: () {
                                     Get.bottomSheet(
                                       isScrollControlled: true,
-                                      backgroundColor: Colors.white,
+                                      backgroundColor: Get.isDarkMode
+                                          ? Colors.black
+                                          : Colors.white,
                                       Form(
                                         key: _formKeyBio,
                                         child: Wrap(children: [
@@ -513,7 +520,266 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                           ),
                         ),
                       ),
-
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 20,
+                              child: Text(
+                                'Compétences',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                                height: 50,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Get.isDarkMode
+                                          ? Colors.black
+                                          : Colors.white,
+                                      Form(
+                                        key: _formKeyCompetence,
+                                        child: Wrap(children: [
+                                          Container(
+                                            padding: EdgeInsets.all(15),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Compétences",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                TagTextField(
+                                                  onTagsChanged: (tags) {
+                                                    controller.update(tags);
+                                                    // Faire quelque chose avec les tags
+                                                    print(
+                                                        'Tags actuels : $tags');
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CustomButton(
+                                                  onPressed: () {
+                                                    if (_formKeyCompetence
+                                                            .currentState!
+                                                            .validate() &&
+                                                        Env.skill.isNotEmpty) {
+                                                      controller.updateSkill();
+                                                      Get.back();
+                                                    }
+                                                  },
+                                                  enabled: true,
+                                                  label: "Valider",
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                      ),
+                                    );
+                                  },
+                                  child: Visibility(
+                                    visible: true,
+                                    child: GoldIcons(
+                                      size: 25,
+                                      icon: Icons.add,
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                      // Compétences
+                      Visibility(
+                        replacement: Text("Aucune compétence"),
+                        visible: Env.userAuth.skill == "" ? false : true,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 100,
+                                child: Card(
+                                    elevation: 0.0,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          Env.userAuth.getCompetence().length,
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.all(10),
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SkillChip(Env.userAuth
+                                              .getCompetence()[index]),
+                                        );
+                                      },
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 23,
+                              child: Text(
+                                'Matching',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                                height: 50,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Get.isDarkMode
+                                          ? Colors.black
+                                          : Colors.white,
+                                      Form(
+                                        key: _formKeyCentreInteret,
+                                        child: Wrap(children: [
+                                          Container(
+                                            padding: EdgeInsets.all(15),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Matching",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                CustomDropdown<
+                                                    String>.multiSelectSearch(
+                                                  hintText: 'Selectionner',
+                                                  initialItems: Env.userAuth
+                                                      .getCentreInteret(),
+                                                  decoration: CustomDropdownDecoration(
+                                                      expandedFillColor:
+                                                          Get.isDarkMode
+                                                              ? Colors.black
+                                                              : Colors.white,
+                                                      searchFieldDecoration:
+                                                          SearchFieldDecoration(
+                                                              textStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black)),
+                                                      hintStyle: TextStyle(
+                                                          color: Colors.black)),
+                                                  items:
+                                                      profileRegisterController
+                                                          .secteursList
+                                                          .map((el) =>
+                                                              el.libelle ?? "")
+                                                          .toList(),
+                                                  onListChanged: (value) {
+                                                    controller
+                                                        .updateposteShoutait(
+                                                            value);
+                                                    print(
+                                                        'changing value to: $value');
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CustomButton(
+                                                  onPressed: () {
+                                                    if (_formKeyCentreInteret
+                                                            .currentState!
+                                                            .validate() &&
+                                                        Env.contreIntert
+                                                            .isNotEmpty) {
+                                                      controller
+                                                          .updateCentreInteret();
+                                                      Get.back();
+                                                    }
+                                                  },
+                                                  enabled: true,
+                                                  label: "Valider",
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                      ),
+                                    );
+                                  },
+                                  child: Visibility(
+                                    visible: true,
+                                    child: GoldIcons(
+                                      size: 25,
+                                      icon: Icons.add,
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                      // Compétences
+                      Visibility(
+                        replacement: Text("Secteur d'activité"),
+                        visible: (Env.userAuth.centreInteret != "" ||
+                                Env.userAuth.centreInteret != null)
+                            ? true
+                            : false,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 100,
+                                child: Card(
+                                    elevation: 0.0,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: Env.userAuth
+                                          .getCentreInteret()
+                                          .length,
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.all(10),
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SkillChip(Env.userAuth
+                                              .getCentreInteret()[index]),
+                                        );
+                                      },
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -532,7 +798,9 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                               onTap: () {
                                 Get.bottomSheet(
                                   isScrollControlled: true,
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: Get.isDarkMode
+                                      ? Colors.black
+                                      : Colors.white,
                                   Form(
                                     key: _formKeyExperience,
                                     child: Wrap(children: [
@@ -684,247 +952,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                         ),
                       ),
 
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 20,
-                              child: Text(
-                                'Compétences',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                                height: 50,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.bottomSheet(
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.white,
-                                      Form(
-                                        key: _formKeyCompetence,
-                                        child: Wrap(children: [
-                                          Container(
-                                            padding: EdgeInsets.all(15),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "Compétences",
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                TagTextField(
-                                                  onTagsChanged: (tags) {
-                                                    controller.update(tags);
-                                                    // Faire quelque chose avec les tags
-                                                    print(
-                                                        'Tags actuels : $tags');
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CustomButton(
-                                                  onPressed: () {
-                                                    if (_formKeyCompetence
-                                                            .currentState!
-                                                            .validate() &&
-                                                        Env.skill.isNotEmpty) {
-                                                      controller.updateSkill();
-                                                      Get.back();
-                                                    }
-                                                  },
-                                                  enabled: true,
-                                                  label: "Valider",
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                    );
-                                  },
-                                  child: Visibility(
-                                    visible: true,
-                                    child: GoldIcons(
-                                      size: 25,
-                                      icon: Icons.add,
-                                    ),
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                      // Compétences
-                      Visibility(
-                        replacement: Text("Aucune compétence"),
-                        visible: Env.userAuth.skill == "" ? false : true,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 100,
-                                child: Card(
-                                    elevation: 0.0,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          Env.userAuth.getCompetence().length,
-                                      shrinkWrap: true,
-                                      padding: EdgeInsets.all(10),
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SkillChip(Env.userAuth
-                                              .getCompetence()[index]),
-                                        );
-                                      },
-                                    )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 23,
-                              child: Text(
-                                'Matching',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                                height: 50,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.bottomSheet(
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.white,
-                                      Form(
-                                        key: _formKeyCentreInteret,
-                                        child: Wrap(children: [
-                                          Container(
-                                            padding: EdgeInsets.all(15),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "Matching",
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                CustomDropdown<
-                                                    String>.multiSelectSearch(
-                                                  hintText: 'Selectionner',
-                                                  initialItems: Env.userAuth
-                                                      .getCentreInteret(),
-                                                  items:
-                                                      profileRegisterController
-                                                          .secteursList
-                                                          .map((el) =>
-                                                              el.libelle ?? "")
-                                                          .toList(),
-                                                  onListChanged: (value) {
-                                                    controller
-                                                        .updateposteShoutait(
-                                                            value);
-                                                    print(
-                                                        'changing value to: $value');
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CustomButton(
-                                                  onPressed: () {
-                                                    if (_formKeyCentreInteret
-                                                            .currentState!
-                                                            .validate() &&
-                                                        Env.contreIntert
-                                                            .isNotEmpty) {
-                                                      controller
-                                                          .updateCentreInteret();
-                                                      Get.back();
-                                                    }
-                                                  },
-                                                  enabled: true,
-                                                  label: "Valider",
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                    );
-                                  },
-                                  child: Visibility(
-                                    visible: true,
-                                    child: GoldIcons(
-                                      size: 25,
-                                      icon: Icons.add,
-                                    ),
-                                  ),
-                                )),
-                          ),
-                        ],
-                      ),
-                      // Compétences
-                      Visibility(
-                        replacement: Text("Secteur d'activité"),
-                        visible: (Env.userAuth.centreInteret != "" ||
-                                Env.userAuth.centreInteret != null)
-                            ? true
-                            : false,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 100,
-                                child: Card(
-                                    elevation: 0.0,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: Env.userAuth
-                                          .getCentreInteret()
-                                          .length,
-                                      shrinkWrap: true,
-                                      padding: EdgeInsets.all(10),
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SkillChip(Env.userAuth
-                                              .getCentreInteret()[index]),
-                                        );
-                                      },
-                                    )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       const SizedBox(height: 16),
                       _buildFriendsSection(),
                     ],
