@@ -62,9 +62,9 @@ class ConversationModel {
       ConversationModel(
         id: json["id"],
         receverId: json["reciver_id"],
-        nom: json["nom"],
+        nom: json["nom"] ?? "",
         image: json["image"],
-        lastmessage: json["lastmessage"],
+        lastmessage: json["lastmessage"] ?? "",
         destinataire: json["destinataire"] == null
             ? null
             : UserModel.fromJson(json["destinataire"]),
@@ -90,6 +90,6 @@ class ConversationModel {
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "laravel_through_key": laravelThroughKey,
-        "messages": messages,
+        "messages": messages?.map((x) => x.toJson()).toList(),
       };
 }

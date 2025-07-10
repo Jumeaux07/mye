@@ -20,7 +20,6 @@ class MessageView extends GetView<MessageController> {
   @override
   Widget build(BuildContext context) {
     controller.getMessages(Get.arguments['conversationId'].toString());
-    log(Get.arguments.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -42,9 +41,7 @@ class MessageView extends GetView<MessageController> {
         onEmpty: const Center(
           child: Text('Aucun message'),
         ),
-        onLoading: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        onLoading: null,
         onError: (error) => Center(
           child: Text(error.toString()),
         ),

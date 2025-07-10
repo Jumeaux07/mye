@@ -78,7 +78,6 @@ class MessageController extends GetxController with StateMixin<dynamic> {
   }
 
   void sendFile(String? conversationId, String receiverId, File file) async {
-    log('$conversationId $receiverId $file');
     change(null, status: RxStatus.loading());
     try {
       final response = await _getData.sendFile(
@@ -86,7 +85,6 @@ class MessageController extends GetxController with StateMixin<dynamic> {
         file,
         conversation_id: conversationId,
       );
-      log(response.body['data'].toString());
 
       if (response.statusCode == 204) {
         change(null, status: RxStatus.error(" ${response.statusText}"));

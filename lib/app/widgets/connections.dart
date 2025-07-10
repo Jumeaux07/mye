@@ -55,7 +55,6 @@ class Connections extends GetView<RelationRequestController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionHeader("Relations"),
                 controller.obx(
                   onEmpty: Center(
                     child: Text("Aucun resultat"),
@@ -362,7 +361,7 @@ class Connections extends GetView<RelationRequestController> {
                           children: [
                             Expanded(
                               child: Text(
-                                user.pseudo ?? "",
+                                user.getFullName(),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -407,15 +406,19 @@ class Connections extends GetView<RelationRequestController> {
   Widget _buildConnectionButton(
       ConversationController controller, UserModel user) {
     return OutlinedButton.icon(
+      style: ButtonStyle(
+          iconColor: WidgetStatePropertyAll(Colors.black),
+          foregroundColor: WidgetStatePropertyAll(Colors.black),
+          backgroundColor: WidgetStatePropertyAll(Colors.amber[100])),
       onPressed: () {
         if (Env.userAuth.isPremium == 0) {
           Get.toNamed(Routes.ABONNEMENT);
         } else {
-          controller.openNewDiscussion(user);
+          controller.hasConversation(user);
         }
       },
       icon: const Icon(Icons.send),
-      label: const Text("Message"),
+      label: const Text("Discuter"),
     );
   }
 

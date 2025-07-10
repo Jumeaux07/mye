@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/Login/views/forgot_password.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/customAppBar.dart';
 
@@ -103,9 +104,14 @@ class LoginView extends GetView<LoginController> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                     ),
                   ),
-                  Text(
-                    'Mot de passe oublié?',
-                    style: TextStyle(fontWeight: FontWeight.normal),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => ForgotPassword());
+                    },
+                    child: Text(
+                      'Mot de passe oublié?',
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    ),
                   ),
                 ],
               )

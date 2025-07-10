@@ -5,6 +5,7 @@ import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/profile_detail/controllers/profile_detail_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/routes/app_pages.dart';
 import 'package:nom_du_projet/app/widgets/eperienceitem.dart';
 import 'package:nom_du_projet/app/widgets/gold_icons.dart';
@@ -20,6 +21,7 @@ class Detailspageother extends GetView<ProfileDetailController> {
     // controller.showUser(Env.userOther.id.toString());
     final profileRegisterController = Get.find<ProfileregisterController>();
     final dconversationController = Get.find<ConversationController>();
+    final relationController = Get.find<RelationRequestController>();
     final homeController = Get.find<HomeController>();
     return RefreshIndicator(
       onRefresh: () async {
@@ -30,7 +32,7 @@ class Detailspageother extends GetView<ProfileDetailController> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               if (Env.userAuth.isPremium == 1) {
-                dconversationController.openNewDiscussion(Env.userOther);
+                dconversationController.hasConversation(Env.userOther);
               } else {
                 Get.toNamed(Routes.ABONNEMENT);
               }
@@ -44,9 +46,11 @@ class Detailspageother extends GetView<ProfileDetailController> {
               if (controller.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
+
               if (controller.error.value != null) {
                 return Center(child: Text(controller.error.value!));
               }
+
               return CustomScrollView(
                 slivers: [
                   // En-tête avec image de couverture et photo de profil
@@ -119,6 +123,39 @@ class Detailspageother extends GetView<ProfileDetailController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //Rou
+                          Row(
+                            children: [
+                              Visibility(
+                                visible: (relationController.connectionUsers
+                                            .where((el) =>
+                                                el.connectedUser?.id ==
+                                                Env.userOther.id)
+                                            .isNotEmpty ||
+                                        relationController.requestUserSend
+                                            .where((el) => (el.receiver?.id ==
+                                                    Env.userOther.id ||
+                                                el.sender?.id ==
+                                                    Env.userOther.id))
+                                            .isNotEmpty)
+                                    ? true
+                                    : false,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    // Navigate to friends list or add friend
+                                    controller.deleteAbonnement(
+                                        Env.userOther.id.toString());
+                                  },
+                                  icon: Icon(Icons.delete_outline,
+                                      color: Colors.red),
+                                  label: const Text(
+                                    'Se désabonner ',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           // Nom et titre
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

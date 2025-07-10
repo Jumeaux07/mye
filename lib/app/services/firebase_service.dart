@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -7,8 +8,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 import 'package:nom_du_projet/app/data/constant.dart';
+import 'package:nom_du_projet/app/data/models/conversation_model.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conv_controller.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/messagee_controller.dart';
 import 'package:nom_du_projet/app/modules/notification/controllers/notification_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
+import 'package:nom_du_projet/app/services/chat_service.dart';
 
 import '../data/auth_provider.dart';
 import '../routes/app_pages.dart';
@@ -20,9 +26,13 @@ class FirebaseService extends GetxController {
   final AuthProvider _authProvider = AuthProvider();
   final _notificationController = Get.put(NotificationController());
   final _conversationController = Get.put(ConversationController());
+  final _relationController = Get.put(RelationRequestController());
+  final convController = Get.put(ConvController());
+
   static final FirebaseService _instance = FirebaseService._internal();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  final _chatService = ChatService();
 
   factory FirebaseService() => _instance;
   FirebaseService._internal();
@@ -84,13 +94,28 @@ class FirebaseService extends GetxController {
           log("NOTIFIY EVENT");
           break;
         case "MESSAGE":
-          _conversationController.openDiscussion(_conversationController
-              .conversations
-              .where((el) =>
-                  el.id.toString() == event.data['id_conversation'].toString())
-              .toList()
-              .first);
-          log("MESSAGE EVENT");
+          try {
+            log("MESSAGE => ${event.data['conversation']}");
+            convController.fetchConversations();
+            final conversationJson = jsonDecode(event.data['conversation']);
+            final conversation = ConversationModel.fromJson(conversationJson);
+
+            final messageController = Get.find<MessageeController>();
+
+            // Si c'est bien la conversation en cours, on recharge les messages
+            if (messageController.conversation.id == conversation.id) {
+              await messageController.fetchMessages();
+            } else {
+              // Sinon, initialise avec la nouvelle conversation
+              messageController.initWithConversation(conversation);
+            }
+          } catch (e) {
+            log("Erreur MESSAGE Firebase : $e");
+          }
+          break;
+        case "REQUEST":
+          _relationController.getRequest();
+          log("REQUEST EVENT");
           break;
       }
     });

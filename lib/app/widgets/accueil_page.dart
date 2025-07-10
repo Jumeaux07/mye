@@ -42,10 +42,12 @@ class Accueil extends GetView<HomeController> {
     }
 
     Future.delayed(Duration(seconds: 1), () {
+      relationController.getRelation();
       relationController..getRequestSend();
       controller.getAuthUser();
       controller.getAllUser();
-      controller.getPub();
+      profileRegisterController.getSecteur();
+      // controller.getPub();
     });
     // relationController.getRequest();
 
@@ -53,137 +55,164 @@ class Accueil extends GetView<HomeController> {
         onRefresh: () async {
           await relationController
             ..getRequestSend();
+          relationController.getRelation();
           await controller.getAuthUser();
           await controller.getAllUser();
-          controller.getPub();
+          await profileRegisterController.getSecteur();
+          // controller.getPub();
         },
         child: Obx(
-          () => ListView(
-            children: [
-              //Si user n est pas encore actif, on affiche un messaage d appel a l action
-              Env.userAuth.isActive == 1
-                  ? Container()
-                  : InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.PROFILE_DETAIL);
-                      },
-                      child: FadeTransition(
-                        opacity: controller.animation,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 40,
-                            child: Center(
-                              child: Text(
-                                "Veuillez complèter vos informations svp",
-                                style: TextStyle(color: Colors.white),
+          () => Container(
+            color: Colors.amber.shade100,
+            child: Padding(
+              padding: EdgeInsets.only(top: 1),
+              child: Container(
+                padding: EdgeInsets.only(top: 25),
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3), // décalage vertical de l'ombre
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: ListView(
+                  children: [
+                    //Si user n est pas encore actif, on affiche un messaage d appel a l action
+                    Env.userAuth.isActive == 1
+                        ? Container()
+                        : InkWell(
+                            onTap: () {
+                              Get.toNamed(Routes.PROFILE_DETAIL);
+                            },
+                            child: FadeTransition(
+                              opacity: controller.animation,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: 40,
+                                  child: Center(
+                                    child: Text(
+                                      "Veuillez complèter vos informations svp",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.red,
+                                  ),
+                                ),
                               ),
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.red,
-                            ),
                           ),
-                        ),
-                      ),
-                    ),
 
-              // Bannière d'événements/actualités
-              Visibility(
-                visible: controller.pubList.isNotEmpty,
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: 150,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                  ),
-                  items: controller.pubList
-                      .map((pub) => _buildCarouselItem(
-                          pub.titre ?? "",
-                          pub.description ?? "",
-                          pub.url ?? "",
-                          pub.urlimage ?? ""))
-                      .toList(),
-                ),
-              ),
-
-              // Section de recherche améliorée
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  children: [
-                    // Barre de recherche existante
-                    _buildSearchBar(searchController, controller),
-
-                    // Suggestions de recherche rapide
-                    const SizedBox(height: 8),
+                    // Bannière d'événements/actualités
                     Visibility(
-                      visible:
-                          profileRegisterController.secteursList.isNotEmpty,
-                      child: SizedBox(
-                        height: 50,
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: () {
-                            profileRegisterController.secteursList.shuffle();
-                            return profileRegisterController.secteursList
-                                .take(4)
-                                .map((secteur) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: _buildQuickSearchChip(
-                                          secteur.libelle ?? ""),
-                                    ))
-                                .toList();
-                          }(),
+                      visible: controller.pubList.isNotEmpty,
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: 150,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
                         ),
+                        items: controller.pubList
+                            .map((pub) => _buildCarouselItem(
+                                pub.titre ?? "",
+                                pub.description ?? "",
+                                pub.url ?? "",
+                                pub.urlimage ?? ""))
+                            .toList(),
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
 
-              // Section "Découvrir"
-              // _buildDiscoverSection(),
+                    // Section de recherche améliorée
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: Column(
+                        children: [
+                          // Barre de recherche existante
+                          _buildSearchBar(searchController, controller),
 
-              // Liste des profils améliorée
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader("Suggestions"),
-                    controller.obx(
-                      onEmpty: Center(
-                        child: Text("Aucun resultat"),
-                      ),
-                      onError: (error) => Center(
-                        child: Text("Erreur réseau, actualisez la page."),
-                      ),
-                      onLoading: Center(
-                        child: ShimmerLoading(),
-                        // child: CircularProgressIndicator(),
-                      ),
-                      (data) => controller.userList.isEmpty
-                          ? Center(
-                              child: Text("Aucune donnée"),
-                            )
-                          : ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: controller.userList.length,
-                              itemBuilder: (context, index) =>
-                                  _buildEnhancedProfileCard(
-                                      controller.userList[index],
-                                      profiledetailController,
-                                      relationController),
+                          // Suggestions de recherche rapide
+                          const SizedBox(height: 8),
+                          Visibility(
+                            visible: profileRegisterController
+                                .secteursList.isNotEmpty,
+                            child: SizedBox(
+                              height: 50,
+                              child: ListView(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                children: () {
+                                  profileRegisterController.secteursList
+                                      .shuffle();
+                                  return profileRegisterController.secteursList
+                                      .take(4)
+                                      .map((secteur) => Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: _buildQuickSearchChip(
+                                                secteur.libelle ?? ""),
+                                          ))
+                                      .toList();
+                                }(),
+                              ),
                             ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Section "Découvrir"
+                    // _buildDiscoverSection(),
+
+                    // Liste des profils améliorée
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionHeader("Suggestions"),
+                          controller.obx(
+                            onEmpty: Center(
+                              child: Text("Aucun resultat"),
+                            ),
+                            onError: (error) => Center(
+                              child: Text("Erreur réseau, actualisez la page."),
+                            ),
+                            onLoading: Center(
+                              child: ShimmerLoading(),
+                              // child: CircularProgressIndicator(),
+                            ),
+                            (data) => controller.userList.isEmpty
+                                ? Center(
+                                    child: Text("Aucune donnée"),
+                                  )
+                                : ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: controller.userList.length,
+                                    itemBuilder: (context, index) =>
+                                        _buildEnhancedProfileCard(
+                                            controller.userList[index],
+                                            profiledetailController,
+                                            relationController),
+                                  ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ));
   }
@@ -355,9 +384,7 @@ class Accueil extends GetView<HomeController> {
         Text(
           title,
           style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 18, color: Color.fromARGB(255, 117, 115, 115)),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -515,7 +542,11 @@ class Accueil extends GetView<HomeController> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : OutlinedButton.icon(
+        : TextButton.icon(
+            style: ButtonStyle(
+                iconColor: WidgetStatePropertyAll(Colors.black),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                backgroundColor: WidgetStatePropertyAll(Colors.amber[100])),
             onPressed: () {
               if ((relationController.requestUser
                       .where((el) => (el.receiver?.id == user.id ||
@@ -531,7 +562,8 @@ class Accueil extends GetView<HomeController> {
                 if (Env.userAuth.isPremium == 0) {
                   Get.toNamed(Routes.ABONNEMENT);
                 } else {
-                  controller.openNewDiscussion(user);
+                  controller.hasConversation(user);
+                  // controller.openNewDiscussion(user);
                 }
               } else {
                 relationController.sendRequest(user.id.toString());

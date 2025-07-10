@@ -14,12 +14,14 @@ class PaymentMethod {
   final String name;
   final String icon;
   final String lastDigits;
+  final String imageAsset;
 
   PaymentMethod({
     required this.id,
     required this.name,
     required this.icon,
     this.lastDigits = '',
+    this.imageAsset = '',
   });
 }
 
@@ -51,13 +53,14 @@ class AbonnementController extends GetxController {
       name: 'Mobile Money',
       icon: '💲',
       lastDigits: '',
+      imageAsset: 'assets/images/wallet.jpg',
     ),
-    PaymentMethod(
-      id: '2',
-      name: 'Carte de crédit',
-      icon: '💳',
-      lastDigits: '',
-    ),
+    // PaymentMethod(
+    //   id: '2',
+    //   name: 'Carte de crédit',
+    //   icon: '💳',
+    //   lastDigits: '',
+    // ),
   ].obs;
 
   // Nouvelle propriété pour le nombre de mois sélectionné
@@ -66,6 +69,11 @@ class AbonnementController extends GetxController {
   // Méthode pour mettre à jour le nombre de mois
   void updateSelectedMonths(int months) {
     selectedMonths.value = months;
+    update();
+  }
+
+  int getTotal() {
+    return abonnement.value.price! * selectedMonths.value;
   }
 
   void selectMethod(PaymentMethod method) {

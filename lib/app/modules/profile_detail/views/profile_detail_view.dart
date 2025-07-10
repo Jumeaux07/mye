@@ -309,7 +309,18 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                           },
                                           controller: SingleSelectController(
                                               profileRegisterController
-                                                  .secteursList.first),
+                                                  .secteursList
+                                                  .firstWhere(
+                                            (el) =>
+                                                el.libelle ==
+                                                profileRegisterController
+                                                    .secteurController
+                                                    .value
+                                                    .text,
+                                            orElse: () => profileRegisterController
+                                                .secteursList
+                                                .first, // ou une valeur par défaut si vous préférez
+                                          )),
                                           searchHintText: "Secteur d'activité",
                                           headerBuilder:
                                               (context, selectedItem, enabled) {
@@ -525,6 +536,177 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
+                            child: Text(
+                              'Expérience',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.bottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Get.isDarkMode
+                                      ? Colors.black
+                                      : Colors.white,
+                                  Form(
+                                    key: _formKeyExperience,
+                                    child: Wrap(children: [
+                                      Container(
+                                        padding: EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "Ajouter une expérience",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Customtextfield(
+                                                textController:
+                                                    controller.poste.value,
+                                                label: "Poste"),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Customtextfield(
+                                                textController:
+                                                    controller.entreprise.value,
+                                                label: "Entreprise"),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            CustomDateField(
+                                              controller:
+                                                  controller.debut.value,
+                                              label: 'Date de début',
+                                              hintText: 'Sélectionner une date',
+                                              firstDate: DateTime(1900),
+                                              lastDate: DateTime.now(),
+                                              onDateSelected: (date) {
+                                                print(
+                                                    'Date sélectionnée: $date');
+                                              },
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            CustomDateField(
+                                              isValidator: true,
+                                              validator: (value) {
+                                                if (value?.isEmpty ?? false) {
+                                                  return null;
+                                                }
+
+                                                try {
+                                                  // Création du format de date français
+                                                  final DateFormat formatFr =
+                                                      DateFormat('dd/MM/yyyy');
+
+                                                  // Parse les dates du format français vers DateTime
+                                                  DateTime dateFin =
+                                                      formatFr.parse(controller
+                                                          .fin.value.text);
+                                                  DateTime dateDebut =
+                                                      formatFr.parse(controller
+                                                          .debut.value.text);
+
+                                                  if (dateFin.isBefore(
+                                                          dateDebut) ||
+                                                      dateFin.isAtSameMomentAs(
+                                                          dateDebut)) {
+                                                    return "Date de fin doit être supérieure à la date de début";
+                                                  }
+
+                                                  return null;
+                                                } catch (e) {
+                                                  return "Format de date invalide (JJ/MM/AAAA)";
+                                                }
+                                              },
+                                              controller: controller.fin.value,
+                                              label: 'Date de fin',
+                                              hintText: 'Sélectionner une date',
+                                              firstDate: DateTime(1900),
+                                              lastDate: DateTime.now(),
+                                              onDateSelected: (date) {
+                                                print(
+                                                    'Date sélectionnée: $date');
+                                              },
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            CustomButton(
+                                              onPressed: () {
+                                                if (_formKeyExperience
+                                                    .currentState!
+                                                    .validate()) {
+                                                  controller.updateExperience(
+                                                      controller
+                                                          .poste.value.text,
+                                                      controller.entreprise
+                                                          .value.text,
+                                                      controller
+                                                          .debut.value.text,
+                                                      controller
+                                                          .fin.value.text);
+                                                  // Get.back();
+                                                }
+                                              },
+                                              enabled: true,
+                                              label: "Valider",
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                );
+                              },
+                              child: GoldIcons(
+                                size: 25,
+                                icon: Icons.add,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      // Expérience professionnelle
+                      Visibility(
+                        replacement: Text("Aucune Expérience"),
+                        visible: Env.userAuth.experiences?.length == 0
+                            ? false
+                            : true,
+                        child: Card(
+                          elevation: 0.0,
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
+                          child: Column(
+                            // Ajout d'un Column pour contenir la liste
+                            children: List.generate(
+                              Env.userAuth.experiences?.length ?? 0,
+                              (index) => ExperienceItem(
+                                company: Env.userAuth.experiences?[index]
+                                        .nomEntreprise ??
+                                    "",
+                                position:
+                                    Env.userAuth.experiences?[index].poste ??
+                                        "",
+                                period:
+                                    "${convertDate(Env.userAuth.experiences?[index].dateDebut.toString())} - ${Env.userAuth.experiences?[index].dateFin != null ? convertDate(Env.userAuth.experiences?[index].dateFin.toString()) : "Maintenant"}", // Correction : dateDebut -> dateFin
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: SizedBox(
                               height: 20,
                               child: Text(
@@ -565,9 +747,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                                 TagTextField(
                                                   onTagsChanged: (tags) {
                                                     controller.update(tags);
-                                                    // Faire quelque chose avec les tags
-                                                    print(
-                                                        'Tags actuels : $tags');
                                                   },
                                                 ),
                                                 SizedBox(
@@ -623,7 +802,7 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                                       padding: EdgeInsets.all(10),
                                       itemBuilder: (context, index) {
                                         return Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.all(2.0),
                                           child: SkillChip(Env.userAuth
                                               .getCompetence()[index]),
                                         );
@@ -634,7 +813,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -780,177 +958,6 @@ class ProfileDetailView extends GetView<ProfileDetailController> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Expérience',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.bottomSheet(
-                                  isScrollControlled: true,
-                                  backgroundColor: Get.isDarkMode
-                                      ? Colors.black
-                                      : Colors.white,
-                                  Form(
-                                    key: _formKeyExperience,
-                                    child: Wrap(children: [
-                                      Container(
-                                        padding: EdgeInsets.all(15),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "Ajouter une expérience",
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Customtextfield(
-                                                textController:
-                                                    controller.poste.value,
-                                                label: "Poste"),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Customtextfield(
-                                                textController:
-                                                    controller.entreprise.value,
-                                                label: "Entrprise"),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            CustomDateField(
-                                              controller:
-                                                  controller.debut.value,
-                                              label: 'Date de début',
-                                              hintText: 'Sélectionner une date',
-                                              firstDate: DateTime(1900),
-                                              lastDate: DateTime.now(),
-                                              onDateSelected: (date) {
-                                                print(
-                                                    'Date sélectionnée: $date');
-                                              },
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            CustomDateField(
-                                              isValidator: true,
-                                              validator: (value) {
-                                                if (value?.isEmpty ?? false) {
-                                                  return null;
-                                                }
-
-                                                try {
-                                                  // Création du format de date français
-                                                  final DateFormat formatFr =
-                                                      DateFormat('dd/MM/yyyy');
-
-                                                  // Parse les dates du format français vers DateTime
-                                                  DateTime dateFin =
-                                                      formatFr.parse(controller
-                                                          .fin.value.text);
-                                                  DateTime dateDebut =
-                                                      formatFr.parse(controller
-                                                          .debut.value.text);
-
-                                                  if (dateFin.isBefore(
-                                                          dateDebut) ||
-                                                      dateFin.isAtSameMomentAs(
-                                                          dateDebut)) {
-                                                    return "Date de fin doit être supérieure à la date de début";
-                                                  }
-
-                                                  return null;
-                                                } catch (e) {
-                                                  return "Format de date invalide (JJ/MM/AAAA)";
-                                                }
-                                              },
-                                              controller: controller.fin.value,
-                                              label: 'Date de fin',
-                                              hintText: 'Sélectionner une date',
-                                              firstDate: DateTime(1900),
-                                              lastDate: DateTime.now(),
-                                              onDateSelected: (date) {
-                                                print(
-                                                    'Date sélectionnée: $date');
-                                              },
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            CustomButton(
-                                              onPressed: () {
-                                                if (_formKeyExperience
-                                                    .currentState!
-                                                    .validate()) {
-                                                  controller.updateExperience(
-                                                      controller
-                                                          .poste.value.text,
-                                                      controller.entreprise
-                                                          .value.text,
-                                                      controller
-                                                          .debut.value.text,
-                                                      controller
-                                                          .fin.value.text);
-                                                  // Get.back();
-                                                }
-                                              },
-                                              enabled: true,
-                                              label: "Valider",
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ]),
-                                  ),
-                                );
-                              },
-                              child: GoldIcons(
-                                size: 25,
-                                icon: Icons.add,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      // Expérience professionnelle
-                      Visibility(
-                        replacement: Text("Aucune Expérience"),
-                        visible: Env.userAuth.experiences?.length == 0
-                            ? false
-                            : true,
-                        child: Card(
-                          elevation: 0.0,
-                          color: Colors.white,
-                          surfaceTintColor: Colors.white,
-                          child: Column(
-                            // Ajout d'un Column pour contenir la liste
-                            children: List.generate(
-                              Env.userAuth.experiences?.length ?? 0,
-                              (index) => ExperienceItem(
-                                company: Env.userAuth.experiences?[index]
-                                        .nomEntreprise ??
-                                    "",
-                                position:
-                                    Env.userAuth.experiences?[index].poste ??
-                                        "",
-                                period:
-                                    "${convertDate(Env.userAuth.experiences?[index].dateDebut.toString())} - ${Env.userAuth.experiences?[index].dateFin != null ? convertDate(Env.userAuth.experiences?[index].dateFin.toString()) : "Maintenant"}", // Correction : dateDebut -> dateFin
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
 
                       const SizedBox(height: 16),
                       _buildFriendsSection(),
@@ -1001,7 +1008,7 @@ class FriendCard extends StatelessWidget {
             _buildProfileImage(friend.profileImage),
             const SizedBox(height: 4),
             Text(
-              '${friend.prenom} ${friend.nom}',
+              friend.getFullName(),
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -1013,11 +1020,11 @@ class FriendCard extends StatelessWidget {
                 if (Env.userAuth.isPremium == 0) {
                   Get.toNamed(Routes.ABONNEMENT);
                 } else {
-                  conversationController.openNewDiscussion(friend);
+                  conversationController.hasConversation(friend);
                 }
               },
               icon: const Icon(Icons.send),
-              label: const Text('Message'),
+              label: const Text('Discuter'),
             ),
           ],
         ),

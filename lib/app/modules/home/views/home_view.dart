@@ -26,7 +26,7 @@ class HomeView extends GetView<HomeController> {
                 icon: Icon(
                   Icons.home,
                 ),
-                label: "",
+                label: "Accueil",
               ),
               BottomNavigationBarItem(
                 icon: Badge(
@@ -40,26 +40,26 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                     child: Icon(Icons.group_add)),
-                label: "",
+                label: "Réseaux",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.share_location_rounded),
-                label: "",
+                label: "Proximité",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.message),
-                label: "",
+                label: "Discussions",
               ),
             ],
           ),
           appBar: AppBar(
             title: Text(
-              "${controller.selectedIndex.value == 0 ? "Mye" : controller.selectedIndex.value == 1 ? "Demandes" : controller.selectedIndex.value == 2 ? "Aproximité" : controller.selectedIndex.value == 3 ? "Conversation" : ""}",
+              "${controller.selectedIndex.value == 0 ? "${Env.userAuth.getFullName()}" : controller.selectedIndex.value == 1 ? "Réseaux" : controller.selectedIndex.value == 2 ? "Proximité" : controller.selectedIndex.value == 3 ? "Discussions" : ""}",
               style: TextStyle(
                   color: Get.isDarkMode ? Colors.white : Colors.black),
             ),
             elevation: 1,
-            backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: Get.isDarkMode ? Colors.black : Colors.amber[100],
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
@@ -123,7 +123,7 @@ class HomeView extends GetView<HomeController> {
                       ? NearbyUsersMap()
                       : Env.userAuth.isPremium == 0
                           ? AbonnementView()
-                          : ConversationView(),
+                          : ConversationListView(),
         ));
   }
 }

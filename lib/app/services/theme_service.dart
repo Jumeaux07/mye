@@ -35,7 +35,7 @@ class ThemeService {
         fontWeight: FontWeight.bold,
       ),
     ),
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryColor, // Utilisez votre couleur primaire
       brightness: Brightness.light,
@@ -65,7 +65,7 @@ class ThemeService {
         fontWeight: FontWeight.bold,
       ),
     ),
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryColor, // Gardez la même couleur de base
       brightness: Brightness.dark,
@@ -85,12 +85,12 @@ class ThemeService {
       selectedItemColor: primaryColor,
       unselectedItemColor: Colors.grey[400],
       selectedLabelStyle: TextStyle(
-        fontFamily: "Poppins",
+        fontFamily: "Inter",
         fontSize: 12,
         fontWeight: FontWeight.w600,
       ),
       unselectedLabelStyle: TextStyle(
-        fontFamily: "Poppins",
+        fontFamily: "Inter",
         fontSize: 12,
         fontWeight: FontWeight.normal,
       ),

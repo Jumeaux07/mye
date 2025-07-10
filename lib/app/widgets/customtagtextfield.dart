@@ -28,7 +28,10 @@ class _TagTextFieldState extends State<TagTextField> {
   @override
   void initState() {
     super.initState();
-    _controller.text = Env.userAuth.skill??"";
+    if (Env.skill[0] == "null") {
+      _removeTag(Env.skill[0]);
+    }
+    _controller.text = Env.userAuth.skill ?? "";
     _controller.addListener(_onTextChanged);
   }
 
@@ -36,12 +39,11 @@ class _TagTextFieldState extends State<TagTextField> {
     String text = _controller.text;
 
     // Vérifie si le dernier caractère est un espace ou une virgule
-    if (text.isNotEmpty && (text.endsWith(' ') || text.endsWith(','))) {
+    if (text.isNotEmpty && (text.endsWith(','))) {
       // Nettoie et ajoute le tag
       String newTag = text.substring(0, text.length - 1).trim();
 
-      if (newTag.isNotEmpty &&
-          !Env.skill.contains(newTag)) {
+      if (newTag.isNotEmpty && !Env.skill.contains(newTag)) {
         setState(() {
           Env.skill.add(newTag);
           _controller.clear();
@@ -62,39 +64,37 @@ class _TagTextFieldState extends State<TagTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Affichage des tags existants
-            if (Env.skill.isNotEmpty)
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: Env.skill.map((tag) {
-                  return Chip(
-                    label: Text(tag),
-                    onDeleted: () => _removeTag(tag),
-                    deleteIcon: Icon(Icons.close, size: 18),
-                  );
-                }).toList(),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Affichage des tags existants
+        if (Env.skill.isNotEmpty)
+          Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: Env.skill.map((tag) {
+                return Chip(
+                  label: Text(tag),
+                  onDeleted: () => _removeTag(tag),
+                  deleteIcon: Icon(Icons.close, size: 18),
+                );
+              }).toList()),
 
-            // Champ de texte pour la saisie
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: widget.hintText ??
-                    'Entrez vos tags (espace ou virgule pour valider)',
-                hintStyle: widget.hintStyle,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-                focusColor: Color(0xFFCBA948),
-                hoverColor: Color(0xFFCBA948),
-              ),
-              style: widget.textStyle,
-            ),
-          ],
-        );
+        // Champ de texte pour la saisie
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            hintText: widget.hintText ??
+                'Entrez vos tags (espace ou virgule pour valider)',
+            hintStyle: widget.hintStyle,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+            focusColor: Color(0xFFCBA948),
+            hoverColor: Color(0xFFCBA948),
+          ),
+          style: widget.textStyle,
+        ),
+      ],
+    );
   }
 
   @override

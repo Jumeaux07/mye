@@ -26,6 +26,11 @@ class HomeController extends GetxController
   late AnimationController _animationController;
   late Animation<double> _animation;
 
+  void resetData() {
+    userList.value = [];
+    pubList.value = [];
+  }
+
   ProximityService _proximityService = ProximityService();
 
   var selectedPlan = ''.obs;
@@ -220,7 +225,7 @@ class HomeController extends GetxController
     )..repeat(reverse: true);
     _animation =
         Tween<double>(begin: 0.0, end: 2.0).animate(_animationController);
-    _proximityService.detectNearbyUsers();
+    // _proximityService.detectNearbyUsers();
     _startLocationUpdates();
     if (box.hasData("is_first") && box.hasData("token")) {
       getAuthUser();

@@ -1,22 +1,18 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/messagee_controller.dart';
 import 'package:nom_du_projet/app/modules/Login/controllers/login_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
 import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/modules/splashscreen/controllers/splashscreen_controller.dart';
 import 'package:nom_du_projet/app/services/firebase_controller.dart';
 import 'package:nom_du_projet/contectivity_controller.dart';
-import 'package:workmanager/workmanager.dart';
 
 import 'app/modules/Message/controllers/message_controller.dart';
 import 'app/modules/Profileregister/controllers/profileregister_controller.dart';
@@ -42,6 +38,7 @@ Future<void> main() async {
   );
 
   await GetStorage.init();
+
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -64,6 +61,8 @@ Future<void> main() async {
         Get.put(MessageController());
         Get.put(RelationRequestController());
         Get.lazyPut(() => OtpController());
+        Get.lazyPut<MessageeController>(() => MessageeController(),
+            fenix: true);
         Get.put(FirebaseController());
       }),
     ),

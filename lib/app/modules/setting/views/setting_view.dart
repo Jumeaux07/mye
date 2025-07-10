@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
+import 'package:nom_du_projet/app/modules/Login/views/login_view.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
+import 'package:nom_du_projet/app/modules/setting/views/facture.dart';
 import 'package:nom_du_projet/app/widgets/customPasswordTextField.dart';
 import 'package:nom_du_projet/app/widgets/custom_alert.dart';
 
@@ -36,10 +40,7 @@ class SettingView extends GetView<SettingController> {
                           'https://img.freepik.com/vecteurs-premium/icone-profil-utilisateur-dans-style-plat-illustration-vectorielle-avatar-membre-fond-isole-concept-entreprise-signe-autorisation-humaine_157943-15752.jpg?w=996'),
                       radius: 25,
                     ),
-                    title: Env.userAuth.prenom == null
-                        ? Text("${Env.userAuth.pseudo ?? ""}")
-                        : Text(
-                            "${Env.userAuth.prenom ?? Env.userAuth.pseudo} ${Env.userAuth.nom ?? ""}"),
+                    title: Text("${Env.userAuth.getFullName()}"),
                     subtitle: Text(Env.userAuth.email ?? ""),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
@@ -214,7 +215,9 @@ class SettingView extends GetView<SettingController> {
                         "${Env.userAuth.isPremium == 1 ? "Preminum" : "Gratuit"}"),
                     onTap: () {
                       // TODO: Navigation vers gestion de l'abonnement
-                      Get.toNamed(Routes.ABONNEMENT);
+                      if (true) {
+                        Get.to(() => AbonnementView());
+                      }
                     },
                   ),
                   ListTile(
@@ -357,11 +360,15 @@ class SettingView extends GetView<SettingController> {
               child: Text('Se déconnecter'),
               onPressed: () {
                 Env.userAuth = UserModel();
+                Env.userOther = UserModel();
                 Env.connectionCount = 0;
                 final fcmtoken = box.read("fcm_token");
                 box.erase();
-                box.write("fcm_token", fcmtoken);
                 Get.offAllNamed(Routes.LOGIN);
+                box.write("fcm_token", fcmtoken);
+                Get.find<HomeController>().resetData();
+                Get.find<ConversationController>().resetData();
+                Get.find<RelationRequestController>().resetData();
               },
             ),
           ],

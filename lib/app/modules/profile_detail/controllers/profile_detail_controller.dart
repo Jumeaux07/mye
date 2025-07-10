@@ -6,6 +6,7 @@ import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/secteur_model.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Profileregister/controllers/profileregister_controller.dart';
+import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/widgets/detailspageother.dart';
 
 import '../../../data/constant.dart';
@@ -24,6 +25,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
   final debut = TextEditingController().obs;
   final fin = TextEditingController().obs;
   final profilreregisterController = Get.put(ProfileregisterController());
+  final relationController = Get.put(RelationRequestController());
   final tags = <String>[].obs;
   final GetDataProvider _dataProvider = GetDataProvider();
   var isLoading = false.obs;
@@ -129,7 +131,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
 
   Future<void> updateProfile(String nom, String prenom, String secteur,
       String ville, String lon, String lat) async {
-    log("lon $lon lat $lat");
+    log("lon $lon lat $lat adresse $ville secteur");
     try {
       change(null, status: RxStatus.loading());
       final response =
@@ -139,10 +141,10 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
         await showUser("${Env.userAuth.id}");
         change(user, status: RxStatus.success());
         update();
-        poste.value.clear();
-        entreprise.value.clear();
-        debut.value.clear();
-        fin.value.clear();
+        // poste.value.clear();
+        // entreprise.value.clear();
+        // debut.value.clear();
+        // fin.value.clear();
       } else {
         change(null,
             status: RxStatus.error(
@@ -169,6 +171,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
         entreprise.value.clear();
         debut.value.clear();
         fin.value.clear();
+        Get.back();
         await showUser("${Env.userAuth.id}");
         change(user, status: RxStatus.success());
         update();
@@ -192,6 +195,7 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
       if (response.statusCode == 200) {
         Env.userAuth = UserModel.fromJson(response.body['data']);
         change(user, status: RxStatus.success());
+        Get.back();
         await showUser("${Env.userAuth.id}");
         update();
       } else {
@@ -216,6 +220,30 @@ class ProfileDetailController extends GetxController with StateMixin<dynamic> {
         Env.userAuth = UserModel.fromJson(response.body['data']);
         isActive.value = user.value.isActive == 1 ? true : false;
         Get.offNamed(Routes.PROFILE_DETAIL);
+        isLoading.value = false;
+      } else {
+        error.value =
+            "Une erreur s'est produite lors de la récuperation des données ${response.body['data']}";
+        isLoading.value = false;
+      }
+    } catch (e) {
+      error.value =
+          "Une erreur s'est produite lors la récuperation des données  des données => $e";
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> deleteAbonnement(id) async {
+    try {
+      isLoading.value = true;
+      final response = await _getData.deleteConnection(
+        id,
+      );
+
+      if (response.statusCode == 200) {
+        relationController.getRequest();
+        Get.back();
+        // Get.offNamed(Routes.PROFILE_DETAIL);
         isLoading.value = false;
       } else {
         error.value =

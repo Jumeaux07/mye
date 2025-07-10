@@ -22,6 +22,8 @@ abstract class Routes {
   static const CONVERSATION = _Paths.CONVERSATION;
   static const OFFLINE = _Paths.OFFLINE;
   static const RELATION_REQUEST = _Paths.RELATION_REQUEST;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const UPDATE_PASSWORD = _Paths.UPDATE_PASSWORD;
 }
 
 abstract class _Paths {
@@ -45,4 +47,6 @@ abstract class _Paths {
   static const CONVERSATION = '/conversation';
   static const OFFLINE = '/offline';
   static const RELATION_REQUEST = '/relation-request';
+  static const FORGOT_PASSWORD = '/fortgot-password';
+  static const UPDATE_PASSWORD = '/update-password';
 }

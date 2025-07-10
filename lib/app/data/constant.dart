@@ -7,15 +7,15 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nom_du_projet/app/data/models/user_model.dart';
+import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:nom_du_projet/contectivity_controller.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:ui' as ui;
 
-import '../modules/Conversation/controllers/conversation_controller.dart';
 import '../widgets/custom_marcker.dart';
 
-const baseUrl = "https://api.franckprod.com/api";
+const baseUrl = "https://api-mye.cefir.tech/api";
 const registerUrl = "/user/register/step1";
 const verifyOtpCodeUrl = "/user/otp_verify";
 const getAbonnementUrl = "/get-all-facturation";
@@ -26,10 +26,14 @@ const loginUrl = "/login";
 const getUserUrl = "/me";
 const startconversationUrl = "/startConversation";
 const updatePswdUrl = "/update-password";
+const ressetpasswordUrl = "/ressetpassword";
+const verifyOTPdUrl = "/verifyOTP";
+const resetPasswordUrl = "/resetPassword";
 const sendMessageUrlUrl = "/send-message";
 const sendFileUrl = "/send-file";
 const saveSecteurUrl = "/save-secteur";
 const sendRequestUrl = "/connections/request";
+const deleteConnectionUrl = "/connections/requests/delete";
 const sendResponseRequestUrl = "/connections/request/";
 const getRequestUrl = "/connections/requests/pending";
 const getRequesSendtUrl = "/connections/requests/sent";
@@ -49,6 +53,7 @@ const readAllNotificationUrl = "/notifications-read-all";
 const deleteNotificationUrl = "/delete-notification/";
 const deleteAllNotificationUrl = "/delete-all-notification/";
 const updatePremium = "/update-ispremium";
+const getfacturelist = "/get-factures-liste";
 
 const getSecteurUrl = "/get-all-secteurs";
 const getPubUrl = "/get-pub";
@@ -123,8 +128,10 @@ class Env {
   static List<String> skill = [];
   static List<String> contreIntert = [];
   static String mapsToken = "pk.22cea6c61d7cd26bad1424434572ed85";
-  static String API_KEY = "1126326932679b448298c262.74340501";
+  static String API_KEY = "91988269679b43217f5bb6.89080309";
   static String SITE_ID = "105886764";
+  // static String API_KEY = "1126326932679b448298c262.74340501";
+  // static String SITE_ID = "105886764";
   static String PUBLISHABLEKEY =
       "pk_test_51Nae9OCTPwtZUmrOoAgs4oIBecNZIAYQUkiMt25puI0o8auPaDAgQ2rY93HxFxLzCXdqksnisdye3xXzz2lZZZAH00GK0MIV2j";
   static String STRIPEKEY =

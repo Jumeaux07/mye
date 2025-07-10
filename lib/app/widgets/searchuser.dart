@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart';
+import 'package:nom_du_projet/app/routes/app_pages.dart';
 import '../modules/messagerie/views/messagerie_view.dart';
 import '../data/constant.dart';
 
@@ -125,6 +126,8 @@ class _NearbyUsersMapState extends State<NearbyUsersMap> {
               onTap: () {
                 if (Env.userAuth.isPremium == 1) {
                   conversationController.openNewDiscussion(user);
+                } else {
+                  Get.toNamed(Routes.ABONNEMENT);
                 }
               },
               child: Column(

@@ -18,8 +18,14 @@ class Pagerelation extends GetView<RelationRequestController> {
             backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
             bottom: TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.group_add)),
-                Tab(icon: Icon(Icons.group_rounded)),
+                Tab(
+                  icon: Icon(Icons.group_add),
+                  text: "Demandes",
+                ),
+                Tab(
+                  icon: Icon(Icons.group_rounded),
+                  text: "Relations",
+                ),
               ],
             ),
           ),

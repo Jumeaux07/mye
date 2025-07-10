@@ -107,23 +107,35 @@ class NotificationModelData {
 
 class DataData {
   final String? event;
+  final String? image;
+  final String? requestid;
 
   DataData({
     this.event,
+    this.image,
+    this.requestid,
   });
 
   DataData copyWith({
     String? event,
+    String? image,
+    String? requestid,
   }) =>
       DataData(
         event: event ?? this.event,
+        image: image ?? this.image,
+        requestid: requestid ?? this.requestid,
       );
 
   factory DataData.fromJson(Map<String, dynamic> json) => DataData(
         event: json["event"],
+        image: json["image"],
+        requestid: json["requestid"],
       );
 
   Map<String, dynamic> toJson() => {
         "event": event,
+        "image": image,
+        "requestid": requestid,
       };
 }

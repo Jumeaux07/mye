@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:nom_du_projet/app/modules/Login/views/forgot_password.dart';
+import 'package:nom_du_projet/app/modules/Login/views/updatepassword.dart';
 
 import '../middleware/auth_middleware.dart';
 import '../middleware/connectivity_middleware.dart';
@@ -140,7 +142,7 @@ class AppPages {
         ]),
     GetPage(
         name: _Paths.CONVERSATION,
-        page: () => const ConversationView(),
+        page: () => const ConversationListView(),
         binding: ConversationBinding(),
         middlewares: [
           AuthMiddleware(),
@@ -154,6 +156,16 @@ class AppPages {
       name: _Paths.RELATION_REQUEST,
       page: () => const RelationRequestView(),
       binding: RelationRequestBinding(),
+    ),
+
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPassword(),
+    ),
+
+    GetPage(
+      name: _Paths.UPDATE_PASSWORD,
+      page: () => const Updatepassword(),
     ),
   ];
 }

@@ -12,12 +12,14 @@ import '../controllers/otp_controller.dart';
 
 class OtpView extends GetView<OtpController> {
   OtpView(this.email, this.password, this.passwordConfirmation, this.type,
+      this.isReset,
       {super.key});
 
   final String? email;
   final String? password;
   final String? passwordConfirmation;
   final String? type;
+  bool? isReset = false;
 
   final registerController = Get.find<RegisterController>();
   final profileRegisterController = Get.find<ProfileregisterController>();
@@ -108,27 +110,37 @@ class OtpView extends GetView<OtpController> {
                           isLoading: controller.isLoadingOtp.value,
                           label: 'Valider',
                           onTap: () {
-                            controller.verifyOtpCode(
+                            if (isReset != null) {
+                              registerController.verifyOtpCodeReset(
                                 email ?? "",
                                 controller.pinController.value.text,
-                                password ?? "",
-                                passwordConfirmation ?? "",
-                                type ?? "");
+                              );
+                            } else {
+                              controller.verifyOtpCode(
+                                  email ?? "",
+                                  controller.pinController.value.text,
+                                  password ?? "",
+                                  passwordConfirmation ?? "",
+                                  type ?? "");
+                            }
                           }),
                     ),
-                    InkWell(
-                      onTap: () => registerController.reSendOtpUser(
-                          registerController.pseudoController.value.text,
-                          registerController.emailController.value.text,
-                          registerController.passwordController.value.text,
-                          registerController
-                              .passwordConfirmationController.value.text),
-                      child: Text(
-                        "Renvoyer le code?",
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.black),
+                    Visibility(
+                      visible: isReset == null,
+                      child: InkWell(
+                        onTap: () => registerController.reSendOtpUser(
+                            registerController.pseudoController.value.text,
+                            registerController.emailController.value.text,
+                            registerController.passwordController.value.text,
+                            registerController
+                                .passwordConfirmationController.value.text),
+                        child: Text(
+                          "Renvoyer le code?",
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w100,
+                              color: Colors.black),
+                        ),
                       ),
                     ),
                   ],

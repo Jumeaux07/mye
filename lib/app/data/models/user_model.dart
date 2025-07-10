@@ -199,7 +199,11 @@ class UserModel {
   }
 
   String getFullName() {
-    return '$nom $prenom';
+    if ((nom?.isNotEmpty ?? false) || (prenom?.isNotEmpty ?? false)) {
+      return "${nom ?? ''} ${prenom ?? ''}".trim();
+    } else {
+      return pseudo ?? '';
+    }
   }
 
   Color getUserTypeColor() {

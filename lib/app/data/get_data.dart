@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -411,6 +412,159 @@ class GetDataProvider extends GetConnect {
             statusCode: 500,
             body: 'Erreur lors de la mise a jour du mot de passe de l'
                 'utilisateur');
+      }
+    });
+  }
+
+  /**
+ * Mot de passe oublie
+ */
+  Future<Response> resetpasswordrequest(String email) async {
+    return safeApiCall(() async {
+      final url = baseUrl + ressetpasswordUrl;
+      var body = {"email": email};
+
+      try {
+        final response = await post(url, body);
+        if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Mot de passe oublie: ${response.body}");
+        } else {
+          print("Erreur Mot de passe oublie: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de Mot de passe oublie: $e");
+        return Response(
+            statusCode: 500, body: 'Erreur lors de lMot de passe oublier');
+      }
+    });
+  }
+
+  /**
+ * Verification  code OTP
+ */
+  Future<Response> verifyOtpReset(String email, String otp) async {
+    return safeApiCall(() async {
+      final url = baseUrl + verifyOTPdUrl;
+      var body = {"email": email, "otp": otp};
+      log("OTP => $otp Email => $email");
+      try {
+        final response = await post(url, body);
+        if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Mot de passe oublie: ${response.body}");
+        } else {
+          print("Erreur Verification otp: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de Verification otp:: $e");
+        return Response(
+            statusCode: 500, body: 'Erreur lors de la Verification otp:');
+      }
+    });
+  }
+
+  /**
+ * Verification  code OTP
+ */
+  Future<Response> resetpassword(String password) async {
+    return safeApiCall(() async {
+      final url = baseUrl + resetPasswordUrl;
+      var body = {
+        "email": box.read("email"),
+        "reset_token": box.read("reset_token"),
+        "password": password
+      };
+      log("$body");
+      try {
+        final response = await post(url, body);
+        if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("mise a jour du mot de passe: ${response.body}");
+        } else {
+          print("Erreur mise a jour du mot de passe: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception mise a jour du mot de passe: $e");
+        return Response(
+            statusCode: 500, body: 'Erreur lors de la Verification otp:');
+      }
+    });
+  }
+
+/**
+ * Delete requestUser
+ */
+  Future<Response> deleteConnection(String id) async {
+    return safeApiCall(() async {
+      final url = baseUrl + deleteConnectionUrl;
+      var body = {
+        "id": id,
+      };
+
+      try {
+        final response = await post(
+          url,
+          body,
+          headers: {"Authorization": "Bearer ${box.read("token")}"},
+        );
+        if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("Desabonnee: ${response.body}");
+        } else {
+          print("Erreur Desabonnee: ${response.body}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception Desabonnee: $e");
+        return Response(statusCode: 500, body: 'Erreur lors de Desabonnee:');
       }
     });
   }
@@ -1192,12 +1346,12 @@ class GetDataProvider extends GetConnect {
   }
 
   Future<Response> sendResponseRequest(
-      String responseUser, String id_user) async {
+      String responseUser, String id_request) async {
     return safeApiCall(() async {
       final body = {
         'status': responseUser,
       };
-      final url = baseUrl + sendResponseRequestUrl + id_user;
+      final url = baseUrl + sendResponseRequestUrl + id_request;
       print(url);
       try {
         final response = await post(
@@ -1275,6 +1429,50 @@ class GetDataProvider extends GetConnect {
         print("Exception lors de recuperation  de demande $e");
         return Response(
             statusCode: 500, body: "Erreur lors de recuperation  de demande");
+      }
+    });
+  }
+
+  /**
+ * Liste des factures
+ */
+  Future<Response> getFactures() async {
+    return safeApiCall(() async {
+      final url = baseUrl + getfacturelist;
+
+      try {
+        final response = await get(
+          url,
+          headers: {"Authorization": "Bearer ${box.read("token")}"},
+        );
+        log("${response.body}");
+        if (response.statusCode == 405 || response.statusCode == 401) {
+          Get.offAllNamed(Routes.LOGIN);
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(content: Text("Vous n'êtes pas connecté")));
+        } else if (response.statusCode == 503) {
+          return Response(
+            statusCode: 503,
+            statusText: 'Pas de connexion Internet',
+            body: null,
+          );
+        } else if (response.body == null) {
+          return Response(
+            statusCode: 204, // No Content
+            statusText: 'Aucune donnée disponible',
+            body: null,
+          );
+        } else if (response.isOk) {
+          print("recuperation  des factures: ${response.body}");
+        } else {
+          print(
+              "Erreur lors de recuperation  des factures: ${response.statusCode} ${url} ${box.read("token")}");
+        }
+        return response;
+      } catch (e) {
+        print("Exception lors de recuperation  des factures $e");
+        return Response(
+            statusCode: 500, body: "Erreur lors de recuperation  des factures");
       }
     });
   }

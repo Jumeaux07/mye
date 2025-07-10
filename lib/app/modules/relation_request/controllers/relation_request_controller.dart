@@ -4,6 +4,7 @@ import 'package:nom_du_projet/app/data/constant.dart';
 import 'package:nom_du_projet/app/data/get_data.dart';
 import 'package:nom_du_projet/app/data/models/connections_model.dart';
 import 'package:nom_du_projet/app/data/models/relation_model.dart';
+import 'package:nom_du_projet/app/routes/app_pages.dart';
 
 import '../../../data/models/user_model.dart';
 
@@ -15,6 +16,13 @@ class RelationRequestController extends GetxController
   final connectionUsers = <ConnectionsModel>[].obs;
   final isLoading = false.obs;
   final currentLoadingUserId = 0.obs;
+
+  void resetData() {
+    requestUser.value = [];
+    requestUserSend.value = [];
+    connectionUsers.value = [];
+    currentLoadingUserId.value = 0;
+  }
 
   void sendRequest(String receiverId) async {
     isLoading.value = true;
@@ -48,13 +56,15 @@ class RelationRequestController extends GetxController
     }
   }
 
-  void sendResponseRequest(String starus, String idUser) async {
+  void sendResponseRequest(String starus, String idRequest) async {
     change(null, status: RxStatus.loading());
     try {
-      final response = await _getData.sendResponseRequest(starus, idUser);
+      final response = await _getData.sendResponseRequest(starus, idRequest);
       if (response.statusCode == 204) {
         change(null, status: RxStatus.error(" ${response.statusText}"));
       } else if (response.statusCode == 200) {
+        Get.back();
+        getRequest();
         ScaffoldMessenger.of(Get.context!)
             .showSnackBar(SnackBar(content: Text("succès")));
 
@@ -88,7 +98,6 @@ class RelationRequestController extends GetxController
             .map((el) => RelationModel.fromJson(el))
             .toList();
         Env.connectionCount = requestUser.length;
-        print("cooool ${requestUser}");
         update();
         // ScaffoldMessenger.of(Get.context!)
         //     .showSnackBar(SnackBar(content: Text("Demande envoyée")));

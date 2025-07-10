@@ -7,6 +7,7 @@ import 'package:nom_du_projet/app/data/constant.dart';
 
 class ProximityService {
   Future<void> detectNearbyUsers() async {
+    log("Proxymite");
     // Vérification des permissions
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {

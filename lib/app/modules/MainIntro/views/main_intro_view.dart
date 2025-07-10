@@ -77,11 +77,11 @@ class MainIntroView extends GetView<MainIntroController> {
                             Get.to(() => LoginView());
                           }),
                       SizedBox(height: 15),
-                      GoldButtonGoogle(
-                        onTap: () {
-                          controller.signInWithGoogle();
-                        },
-                      ),
+                      // GoldButtonGoogle(
+                      //   onTap: () {
+                      //     controller.signInWithGoogle();
+                      //   },
+                      // ),
                       SizedBox(height: 15),
                       InkWell(
                         onTap: () {

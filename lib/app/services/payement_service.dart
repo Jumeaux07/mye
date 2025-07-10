@@ -17,7 +17,7 @@ class PaymentService {
 
   //Update is premium
   Future<void> updateIsPremium(String moyenpaiement, String idfacture) async {
-    var url = Uri.parse("https://api.franckprod.com/api/update-ispremium");
+    var url = Uri.parse("$baseUrl/update-ispremium");
     http.post(
       url,
       body: {'moyenpaiement': moyenpaiement, 'idfacture': idfacture},
@@ -126,7 +126,7 @@ class PaymentService {
   }
 
   int _calculateAmount(int amount) {
-    return amount * 100;
+    return amount;
   }
 
   // Dans votre widget/page

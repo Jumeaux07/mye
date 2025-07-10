@@ -11,6 +11,7 @@ import '../../../routes/app_pages.dart';
 class LoginController extends GetxController {
   //TODO: Implement LoginController
   final formKey = GlobalKey<FormState>().obs;
+  final formKeyForgotpassword = GlobalKey<FormState>().obs;
   final email = TextEditingController().obs;
   final password = TextEditingController().obs;
   final isLoginLaoding = false.obs;
