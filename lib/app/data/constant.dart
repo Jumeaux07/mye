@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:nom_du_projet/app/data/models/user_model.dart';
 import 'package:nom_du_projet/app/modules/Conversation/controllers/conversation_controller.dart';
 import 'package:nom_du_projet/app/services/permission_service.dart';
 import 'package:nom_du_projet/contectivity_controller.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:ui' as ui;
 
@@ -154,4 +156,11 @@ String genererChaineUnique([int longueur = 15]) {
 
   return List.generate(
       longueur, (_) => caracteres[random.nextInt(caracteres.length)]).join();
+}
+
+Future<String> getVersionNumber() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String version = packageInfo.version;
+  box.write("version", version);
+  return version;
 }

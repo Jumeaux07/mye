@@ -8,7 +8,7 @@ import 'package:nom_du_projet/app/modules/home/controllers/home_controller.dart'
 import 'package:nom_du_projet/app/modules/relation_request/controllers/relation_request_controller.dart';
 import 'package:nom_du_projet/app/modules/setting/views/facture.dart';
 import 'package:nom_du_projet/app/widgets/customPasswordTextField.dart';
-import 'package:nom_du_projet/app/widgets/custom_alert.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../data/constant.dart';
 import '../../../routes/app_pages.dart';
@@ -236,7 +236,7 @@ class SettingView extends GetView<SettingController> {
                 [
                   ListTile(
                     title: Text('Version de l\'application'),
-                    subtitle: Text('1.0.0'),
+                    subtitle: Text('${box.read("version") ?? "1.0"}'),
                   ),
                   ListTile(
                     title: Text('Conditions d\'utilisation'),
@@ -332,8 +332,43 @@ class SettingView extends GetView<SettingController> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
-                // TODO: Implémenter la suppression du compte
-                Navigator.of(context).pop();
+                // Exemple avec méthode POST (à adapter selon l'API)
+                http.post(
+                  Uri.parse('https://api-mye.cefir.tech/api/delete-account'),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization':
+                        'Bearer ${box.read("token")}', // si nécessaire
+                  },
+                ).then((response) {
+                  if (response.statusCode == 200) {
+                    // Suppression réussie
+                    Navigator.of(context).pop(); // Fermer la boîte de dialogue
+                    Env.userAuth = UserModel();
+                    Env.userOther = UserModel();
+                    Env.connectionCount = 0;
+                    final fcmtoken = box.read("fcm_token");
+                    box.erase();
+                    Get.offAllNamed(Routes.LOGIN);
+                    box.write("fcm_token", fcmtoken);
+                    Get.find<HomeController>().resetData();
+                    Get.find<ConversationController>().resetData();
+                    Get.find<RelationRequestController>().resetData();
+                    // Affiche un message ou redirige
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Compte supprimé avec succès')),
+                    );
+                  } else {
+                    // Erreur lors de la suppression
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erreur : ${response.body}')),
+                    );
+                  }
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Erreur réseau : $error')),
+                  );
+                });
               },
             ),
           ],

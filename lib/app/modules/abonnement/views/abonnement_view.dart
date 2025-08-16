@@ -145,7 +145,7 @@ class AbonnementView extends GetView<AbonnementController> {
                                   if (controller.selectedMethod.value?.id ==
                                       '1') {
                                     var url = Uri.parse(
-                                        "https://api.franckprod.com/api/get-factures?jours=${controller.selectedMonths.value}");
+                                        "${baseUrl}/get-factures?jours=${controller.selectedMonths.value}");
                                     http.get(
                                       url,
                                       headers: {

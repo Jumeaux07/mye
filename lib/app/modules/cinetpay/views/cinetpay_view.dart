@@ -34,12 +34,12 @@ class CinetpayView extends GetView<CinetpayController> {
           configData: <String, dynamic>{
             'apikey': Env.API_KEY,
             'site_id': Env.SITE_ID,
-            'notify_url': 'https://api.franckprod.com/api/verify-payment'
+            'notify_url': '${baseUrl}/verify-payment'
           },
           paymentData: <String, dynamic>{
             'transaction_id': transaction_id,
-            'amount': 100,
-            // 'amount': calculateAmount(montant) ?? 100.0,
+            // 'amount': 100,
+            'amount': calculateAmount(montant),
             'currency': 'XOF',
             'channels': 'ALL',
             'description': description ?? 'Abonnement premium',

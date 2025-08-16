@@ -143,8 +143,7 @@ class PaymentService {
 
       switch (status) {
         case PaymentStatus.success:
-          var url =
-              Uri.parse("https://api.franckprod.com/api/update-ispremium-cb");
+          var url = Uri.parse("${baseUrl}/update-ispremium-cb");
           http.post(
             url,
             body: jsonEncode({

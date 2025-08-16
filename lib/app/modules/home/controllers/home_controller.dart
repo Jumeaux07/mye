@@ -218,7 +218,7 @@ class HomeController extends GetxController
   @override
   Future<void> onInit() async {
     super.onInit();
-    super.onInit();
+    getVersionNumber();
     _animationController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,

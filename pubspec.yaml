@@ -2,7 +2,7 @@ name: nom_du_projet
 description: Une nouvelle application Flutter.
 publish_to: "none" # Remplacez par 'none' si vous ne souhaitez pas publier ce package.
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -55,6 +55,8 @@ dependencies:
   pdf: ^3.11.3
   printing: ^5.14.2
   workmanager: ^0.6.0
+  device_info_plus: ^11.3.0
+  package_info_plus: ^8.3.1
   # smart_auth: ^2.0.0
 
 dev_dependencies:

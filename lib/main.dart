@@ -21,7 +21,6 @@ import 'app/modules/otp/controllers/otp_controller.dart';
 import 'app/modules/profile_detail/controllers/profile_detail_controller.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'app/routes/app_pages.dart';
-import 'package:http/http.dart' as http;
 import 'app/services/theme_service.dart';
 import 'firebase_options.dart';
 
